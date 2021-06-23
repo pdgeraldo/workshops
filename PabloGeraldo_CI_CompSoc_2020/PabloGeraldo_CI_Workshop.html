@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Causal Inference Crash Course</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pablo Geraldo Bastías" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Causal Inference Crash Course
+## (PO and SCM for the same price!)
+### Pablo Geraldo Bastías
+### UCLA Sociology (<a href="mailto:pdgeraldo@ucla.edu" class="email">pdgeraldo@ucla.edu</a>)
+### February 10th, 2020
+
+---
+
+
+`$$\newcommand\indep{\perp\!\!\!\perp}$$`
+`$$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$`
+
+
+
+## Why should we study causal inference?
+
+&lt;br&gt;
+
+The social sciences are experimenting what some authors have called a "credibility revolution" (Angrist and Pischke, 2010), an "identification revolution" (Morgan, 2016), or simply a "causal revolution" (Pearl and MacKenzie, 2018).
+
+In artificial intelligence/ML, causality have been deemed ["the next frontier"](https://phys.org/news/2019-02-causal-disentanglement-frontier-ai.html) and ["the next most important thing"](https://www.datasciencecentral.com/profiles/blogs/causality-the-next-most-important-thing-in-ai-ml).
+
+The enourmous progress in the last decades has been facilitated by the development of a mathematical framework that provide researchers with tools to handle causal questions: Potential Outcomes and Structural Causal Model.
+
+---
+
+
+
+## What should you expect from this workshop?
+
+This workshop is designed as a "Crash Course", so we can obviously focus only on a few things:
+
+&lt;br&gt;
+
+* Familiarize yourself with the most used CI frameworks
+
+* Use potential outcomes and the do-operator to formalize causal estimands
+
+* Use directed acyclic graphs (DAGs) to encode qualitative assumptions
+
+* Derive identification results and testable implications from a DAG 
+
+* Assess the plausibility of different identification strategies applied to real problems
+
+&lt;br&gt;
+
+At the end of our session, I hope you feel better equipped to read and evaluate the applied literature and to design your own studies using appropriate identification strategies (or at least having a clear idea on what to look for and where!).
+
+---
+
+
+## What are we not covering today?
+
+There is a lot of stuff out there! Some areas that you might be interested in but we don't have enough time to review today:
+
+&lt;br&gt;
+
+* Sequential estimation for time-varying treatments (g-methods)
+
+* Estimation in general, including Targeted Maximum Likelihood
+
+* Machine learning for heterogeneous treatment effects
+
+* Do-calculus and PO-calculus for identification
+
+* Causal mediation analysis, causal attribution
+
+* Other graphical models (MCM, SWIGs, the Hypothetical Model)
+
+* Selection diagrams for missing data
+
+* Data fusion (aka generalization, external validity)
+
+* Causal discovery (going from the data to the DAG)
+
+---
+
+
+
+## Intuitions about causality
+### Have you heard any of these before?
+
+&lt;br&gt;
+"Correlation does not imply causation"
+
+--
+
+
+"No causation without manipulation"
+
+--
+
+"Causal inference is a missing data problem"
+
+--
+
+"Design thriumps analysis"
+
+--
+
+&lt;br&gt;
+
+.center[Any other mantra?]
+
+???
+## Intuitions about causality
+### Have you heard any of these before?
+
+&lt;br&gt;
+"Correlation does not imply causation" `\(\rightarrow\)` But can we go from one to the other?
+
+"No causation without manipulation" `\(\rightarrow\)` What about race or gender?
+
+"Causal inference is a missing data problem" `\(\rightarrow\)` Or the other way around?
+
+"Design thriumps analysis" `\(\rightarrow\)` But what do we mean by design? And analysis?
+
+---
+class: center, middle
+
+# What is causal inference about?
+---
+
+
+## Statistics/ML vs Causal Inference
+.pull-left[
+  ###Statistics/ML
+
+  + Passive observation of the data generating process
+  + Estimand: Joint probabilities, CEF
+   `$$P(X,Y)$$`
+   `$$E(Y|X)$$`
+  + Focus on asymptotics / out of sample prediction
+  + Estimation problem: variance-bias tradeoff
+  + Pearl: "deep learning is just curve fitting"
+]
+
+.pull-right[
+  ###Causal Inference
+  
+  + Prediction under interventions on the data generating process
+  + Estimand: interventional quantities
+  `$$P(Y|do(x))$$` 
+  `$$E(Y|do(x)) - E(Y|do(x'))$$` 
+  `$$= E(Y_x) - E(Y_{x'})$$`
+  + Identification problem: consistency (infinite sample)
+  + Estimation problem: in general, focus on bias over variance (but changing)
+]
+
+---
+
+
+
+## The ladder of causality 
+
+| Level | Estimand | Activity | Field/Discipline | Example |
+|-------| -------- | -------- | ----- | ------- |
+| Association | `\(\mathbf{P(Y \vert X)}\)` | Seeing, Observing | Stats, Machine Learning | *What would I believe about Y if I see X?* &lt;br&gt; What is the expected income of a college graduate? |
+| Intervention | `\(\mathbf{P(Y \vert do(x))}\)` | Doing, Intervening | Experiments, Policy evaluation | *What would happen with Y if I do X?* &lt;br&gt; What would be my income if I graduate from college? |
+| Counterfactual | `\(\mathbf{P(Y_x \vert x',y')}\)` | Imagining, Retrospecting | Structural Models | *What would have happened with Y have I done X instead of X'? Why?* &lt;br&gt; What would have been my parents' income have they graduated from college, given that they didn't attend?| 
+
+.footnote[Pearl and Mackenzie (2018)]
+
+???
+In PO, generally the interventional and the counterfactual level are treated as equivalent. But you will never get an unbiased estimation of counterfactual quantities using experiments!
+
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Let's imagine an example: the effect of the graduate program attended on the quality of your first job after graduation
+
+.pull-left[
+
+```r
+set.seed(1988)
+# sample size
+N &lt;- 10000
+# student selectivity
+W &lt;- rnorm(N, mean=250, sd=50) 
+# program selectivity
+X &lt;- 0.6*W + rnorm(N, mean=0, sd=10)
+# quality of first job
+*Y &lt;- 0.3*W - 0.2*X + rnorm(N)
+data &lt;- tibble(Y=Y, X=X, W=W)
+```
+]
+
+.pull-right[
+&lt;img src="PabloGeraldo_CI_Workshop_files/figure-html/unnamed-chunk-2-1.png" width="80%" /&gt;
+]
+
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Let's imagine an example: the effect of the graduate program attended on the quality of your first job after graduation
+
+.pull-left[
+Let's see what a linear regression would tell
+
+```r
+lm(Y~X, data=data)
+```
+
+```
+## 
+## Call:
+## lm(formula = Y ~ X, data = data)
+## 
+## Coefficients:
+## (Intercept)            X  
+##      7.8506       0.2476
+```
+
+However, we know that the effect is negative!
+]
+
+.pull-right[
+&lt;img src="PabloGeraldo_CI_Workshop_files/figure-html/unnamed-chunk-4-1.png" width="80%" /&gt;
+]
+
+---
+
+
+
+## Is **doing** *really* that different from **seeing**?
+
+.pull-left[
+What if we instead randomize students to different programs?
+
+```r
+# let's randomize students to programs!
+*X &lt;- sample(min(X):max(X),
+            N, replace=TRUE)
+# quality of first job
+Y &lt;- 0.3*W - 0.2*X + rnorm(N)
+data$Xrand &lt;- X
+data$Ytrue &lt;- Y
+
+lm(Ytrue~Xrand, data=data)
+```
+
+```
+## 
+## Call:
+## lm(formula = Ytrue ~ Xrand, data = data)
+## 
+## Coefficients:
+## (Intercept)        Xrand  
+##     74.9410      -0.2001
+```
+]
+
+.pull-right[
+&lt;img src="PabloGeraldo_CI_Workshop_files/figure-html/unnamed-chunk-6-1.png" width="80%" /&gt;
+]
+
+---
+
+
+
+
+## Is **doing** *really* that different from **seeing**?
+
+.pull-left[
+Can we fix the observational data by adjusting for `\(W\)`?
+
+```r
+# Same regression
+# Plus controls
+lm(Y~X+W, data=data)
+```
+
+```
+## 
+## Call:
+## lm(formula = Y ~ X + W, data = data)
+## 
+## Coefficients:
+## (Intercept)            X            W  
+##     0.02049     -0.20011      0.29996
+```
+]
+
+.pull-right[
+&lt;img src="PabloGeraldo_CI_Workshop_files/figure-html/unnamed-chunk-8-1.png" width="80%" /&gt;
+]
+
+---
+
+## Is **doing** *really* that different from **seeing**?
+
+.pull-left[
+Where are we getting the data from?
+
+```r
+# Registry of JMC
+prob &lt;- 1/(1+exp(-(X-Y*2)))
+data$C &lt;- rbinom(N, 1, prob=prob)
+
+lm(Ytrue~Xrand, data=data %&gt;% 
+     filter(C==1))
+```
+
+```
+## 
+## Call:
+## lm(formula = Ytrue ~ Xrand, data = data %&gt;% filter(C == 1))
+## 
+## Coefficients:
+## (Intercept)        Xrand  
+##     63.5425      -0.1526
+```
+]
+
+.pull-right[
+&lt;img src="PabloGeraldo_CI_Workshop_files/figure-html/unnamed-chunk-10-1.png" width="80%" /&gt;
+]
+
+---
+
+
+
+class: center, middle
+
+# Potential Outcomes
+---
+
+
+## Potential Outcomes
+
+
+Introduced by Neyman (1923) in the context of experimental design. They remained only used in that context for decades!
+
+&lt;br&gt;
+
+* Imported and developed by Donald Rubin for observational studies (1974)
+
+* They are really great to clarify *what do we want to know* (**estimand**)
+
+* This includes identifying *reasons for discrepancies* between what we observe and our estimand (**bias**) 
+
+* They are great to formalize *what needs to be true*  for our estimand to be identified with a given *estimator* (**assumptions**)
+
+* They are not-so-great to assess if our assumptions are plausible or defensible (more on this soon!)
+
+---
+
+
+## Potential Outcomes: Notation
+
+
+Let's start with some definitions: 
+
+&lt;br&gt;
+
+`\(Y\)` is the outcome variable *as we observe it*
+
+`\(X\)` is the variable whose effect we want to study (treatment, exposure)
+
+`\(Y_x\)` is the potential outcome when we **set** `\(X=x\)`. For example, when `\(X \in \{0,1\}\)`:
+
+  * `\(Y_1\)` is the potential outcome under "treatment"
+
+  * `\(Y_0\)` is the potential outcome under "control"
+
+
+---
+
+
+
+## Potential Outcomes: Notation
+
+You will find a lot of equivalent notations for potential outcomes. It could be confusing, but it is good to get practice working with different variants (at least if you want to read the papers!)
+
+`$$Y(x) = Y_x = Y^x$$`
+
+**Read it like this**: 
+
+The value that the variable `\(Y\)` would take if we set the variable `\(X\)` to the value `\(x\)`.
+
+.center[Can you ever observe any of those potential outcomes?]
+
+--
+
+**Consistency** (also known as SUTVA)
+
+`$$X = x \rightarrow Y = Y_x$$`
+
+For the binary treatment case, we have:
+
+`$$Y = XY_1 + (1-X)Y_0$$`
+
+---
+
+
+## Potential Outcomes: The Science Table
+
+
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` |
+|----|---|---|-----|-------|--------|
+| 1 | A | 1 | 1 | 1 | 0 |
+| 2 | A | 0 | 0 | 0 | 0 |
+| 3 | A | 0 | 0 | 1 |-1 |
+| 4 | A | 1 | 1 | 0 | 1 |
+| 5 | A | 1 | 1 | 1 | 0 |
+| 6 | B | 0 | 1 | 0 | 1 |
+| 7 | B | 0 | 1 | 0 | 1 |
+| 8 | B | 0 | 0 | 0 | 0 |
+| 9 | B | 1 | 0 | 1 |-1 |
+| 10 |B | 1 | 1 | 1 | 0 |
+]
+
+.pull-right[
+The basic calculation device (usually implicit) for that matter is the **science table**. Basically, the full schedule response of the potential outcomes under different treatment conditions
+]
+
+
+---
+
+
+
+
+## Potential Outcomes: Average Treatment Effect
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` |
+|----|---|---|-----|-------|--------|
+| 1 | A | 1 | 1 | 1 | 0 |
+| 2 | A | 0 | 0 | 0 | 0 |
+| 3 | A | 0 | 0 | 1 |-1 |
+| 4 | A | 1 | 1 | 0 | 1 |
+| 5 | A | 1 | 1 | 1 | 0 |
+| 6 | B | 0 | 1 | 0 | 1 |
+| 7 | B | 0 | 1 | 0 | 1 |
+| 8 | B | 0 | 0 | 0 | 0 |
+| 9 | B | 1 | 0 | 1 |-1 |
+| 10 |B | 1 | 1 | 1 | 0 |
+]
+
+.pull-right[
+`$$\text{ATE} = E(Y_{ai}) - E(Y_{bi})$$`
+`$$(6/10) - (5/10) = \mathbf{\color{blue}{0.1}}$$`
+]
+---
+
+
+## Potential Outcomes: difference in means
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` |
+|----|---|---|-----|-------|--------|
+| 1 | A | 1 | 1 | . | . |
+| 2 | A | 0 | 0 | . | . |
+| 3 | A | 0 | 0 | . | . |
+| 4 | A | 1 | 1 | . | . |
+| 5 | A | 1 | 1 | . | . |
+| 6 | B | 0 | . | 0 | . |
+| 7 | B | 0 | . | 0 | . |
+| 8 | B | 0 | . | 0 | . |
+| 9 | B | 1 | . | 1 | . |
+| 10 |B | 1 | . | 1 | . |
+]
+
+.pull-right[
+`$$\text{ATE} = E(Y_{ai}) - E(Y_{bi})$$`
+`$$(6/10) - (5/10) = \mathbf{\color{blue}{0.1}}$$`
+
+&lt;br&gt;
+`$$\text{diff-in-means} = E(Y_i|X=a) - E(Y_i|X=b)$$`
+`$$(3/5)-(2/5) = \mathbf{\color{red}{0.2}}$$`
+&lt;br&gt;
+`$$\color{red}{\text{diff-in-means} \neq \text{ATE}}$$`
+
+.center[But why?]
+]
+---
+
+
+## Potential Outcomes: sources of bias
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` |
+|----|---|---|-----|-------|--------|
+| 1 | A | 1 | 1 | . | . |
+| 2 | A | 0 | 0 | . | . |
+| 3 | A | 0 | 0 | . | . |
+| 4 | A | 1 | 1 | . | . |
+| 5 | A | 1 | 1 | . | . |
+| 6 | B | 0 | . | 0 | . |
+| 7 | B | 0 | . | 0 | . |
+| 8 | B | 0 | . | 0 | . |
+| 9 | B | 1 | . | 1 | . |
+| 10 |B | 1 | . | 1 | . |
+]
+
+.pull-right[
+`$$E(\text{diff-in-means})$$`
+`$$= E(Y_i|X=a) - E(Y_i|X=b)$$`
+`$$= E(Y_a|X=a) - E(Y_b|X=b)$$`
+`$$= ATE +$$`
+`$$(E[Y_b|X=a] - E[Y_b|X=b])+$$`
+`$$(1-P[X])(ATT-ATC)$$`
+`$$= \mathbf{\color{blue}{0.1}} + \color{red}{0.2 + (0.5)(-0.2) = \mathbf{0.2}}$$`
+]
+---
+
+
+
+## Potential Outcomes: identification assumptions
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` |
+|----|---|---|-----|-------|--------|
+| 1 | A | 1 | 1 | 1 | 0 |
+| 2 | A | 0 | 0 | 0 | 0 |
+| 3 | A | 0 | 0 | 1 |-1 |
+| 4 | A | 1 | 1 | 0 | 1 |
+| 5 | A | 1 | 1 | 1 | 0 |
+| 6 | B | 0 | 1 | 0 | 1 |
+| 7 | B | 0 | 1 | 0 | 1 |
+| 8 | B | 0 | 0 | 0 | 0 |
+| 9 | B | 1 | 0 | 1 |-1 |
+| 10 |B | 1 | 1 | 1 | 0 |
+]
+
+.pull-right[
+We need the following condition to be true:
+$$
+Y_x \indep X 
+$$
+
+Do we meet that condition here? No!
+`$$(Y_{ai},Y_{bi}) \nindep X$$`
+
+Because: 
+`$$P(Y_a = y | X=a) \neq P(Y_a = y)$$`
+`$$P(Y_b = y | X=b) \neq P(Y_b = y)$$`
+]
+---
+
+
+## Potential Outcomes: identification assumptions
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` | `\(W_i\)` |
+|----|---|---|-----|-------|--------| --- |
+| 1 | A | 1 | 1 | 1 | 0 | Quant |
+| 2 | A | 0 | 0 | 0 | 0 | Quant |
+| 3 | A | 0 | 0 | 1 |-1 | Qual |
+| 4 | A | 1 | 1 | 0 | 1 | Quant |
+| 5 | A | 1 | 1 | 1 | 0 | Qual |
+| 6 | B | 0 | 1 | 0 | 1 | Qual |
+| 7 | B | 0 | 1 | 0 | 1 | Quant |
+| 8 | B | 0 | 0 | 0 | 0 | Qual |
+| 9 | B | 1 | 0 | 1 |-1 | Qual |
+| 10 |B | 1 | 1 | 1 | 0 | Quant |
+]
+
+.pull-right[
+What about including another covariate `\(W\)`?
+
+Does the following condition holds?
+$$
+Y_x \indep X | W
+$$
+
+Not quite either! But still "better" than before, right? Let's define:
+
+`$$\text{ATE}_{W} = E(Y_a-Y_b|W=w)$$`
+and the estimator
+`$$\widehat{\text{ATE}}_{W} =$$` 
+`$$E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)$$`
+]
+---
+
+
+
+## Potential Outcomes: identification assumptions
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` | `\(W_i\)` |
+|----|---|---|-----|-------|--------| --- |
+| 1 | A | 1 | 1 | 1 | 0 | Quant |
+| 2 | A | 0 | 0 | 0 | 0 | Quant |
+| 3 | A | 0 | 0 | 1 |-1 | Qual |
+| 4 | A | 1 | 1 | 0 | 1 | Quant |
+| 5 | A | 1 | 1 | 1 | 0 | Qual |
+| 6 | B | 0 | 1 | 0 | 1 | Qual |
+| 7 | B | 0 | 1 | 0 | 1 | Quant |
+| 8 | B | 0 | 0 | 0 | 0 | Qual |
+| 9 | B | 1 | 0 | 1 |-1 | Qual |
+| 10 |B | 1 | 1 | 1 | 0 | Quant |
+]
+
+.pull-right[
+`$$\widehat{\text{ATE}}_{W=quant} = 0.16$$`
+`$$\widehat{\text{ATE}}_{W=qual} = 0.16$$`
+`$$\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16$$`
+However, look a the true `\(\text{ATE}_W\)`:
+`$$\text{ATE}_{W=quant} = -0.2$$`
+`$$\text{ATE}_{W=qual} = 0.4$$`
+`$$\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}$$`
+]
+---
+
+
+
+## Potential Outcomes: how to assess our assumptions?
+
+One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.
+
+.pull-left[
+| Unit | `\(X_i\)` | `\(Y_i\)` | `\(Y_{ai}\)` | `\(Y_{bi}\)` | `\(\tau_i\)` | `\(W_i\)` |
+|----|---|---|-----|-------|--------| ---|
+| 1 | A | 1 | 1 | . | . | Quant |
+| 2 | A | 0 | 0 | . | . | Quant |
+| 3 | A | 0 | 0 | . | . | Qual |
+| 4 | A | 1 | 1 | . | . | Quant |
+| 5 | A | 1 | 1 | . | . | Qual |
+| 6 | B | 0 | . | 0 | . | Qual |
+| 7 | B | 0 | . | 0 | . | Quant |
+| 8 | B | 0 | . | 0 | . | Qual |
+| 9 | B | 1 | . | 1 | . | Qual |
+| 10 |B | 1 | . | 1 | . | Quant |
+]
+
+.pull-right[
+In general, we rely on **extra-statistical assumptions** about the data generating process to claim causal identification.
+
+&lt;br&gt;
+&gt;"No causes in, no cases out"
+&gt;&gt; Nancy Cartwright
+
+&lt;br&gt;
+
+The question is how to assess our identification strategies, with very limited information, while being transparent about what we are assuming!
+]
+---
+
+
+
+## Potential Outcomes: key insights
+
+&lt;br&gt;
+
+* They are really great to clarify *what do we want to know* (**estimand**)
+
+--
+
+* This includes identifying *reasons for discrepancies* between what we observe and our estimand (**bias**) 
+
+--
+
+* They are great to formalize *what needs to be true*  for our estimand to be identified with a given *estimator* (**assumptions**)
+
+--
+
+* They are not-so-great to assess if our assumptions are plausible or defensible
+
+--
+
+&lt;br&gt;
+
+.center[Can anyone tell how to assess the assumption about the *conditional* independence of the **potential outcomes** with respecto to the treatment?]
+
+--
+
+.center[We can certainly *understand* the statement saying that the treatment is assigned **as-if random** adjusting for covariates. But what about its plausibility?]
+
+---
+
+
+
+
+## Potential Outcomes: limitations
+
+&lt;br&gt;
+
+One problem with this formulation is how to assess the plausibility of the conditional independence assumption when it does not hold by design.
+
+We are stating that `\(P(Y_x|X=x) = P(Y_x)\)`, but we never get to observe the full distribution of potential outcomes.
+
+What type of criteria should we use when discussing others' causal claims? What kind of criteria should we use in our own research to judge if we are getting what we are looking for?
+
+Here is where DAGs shine, offering a graphical criteria that is equivalent to the unconfoundedness statement, the *backdoor criterion*.
+
+
+---
+
+
+
+class: center, middle
+
+# Structural Causal Model
+---
+
+
+## Structural Causal Model (SCM)
+
+Unifying approach to causal inference, developed by Pearl, Robins, among others:
+
+&lt;br&gt;
+
+* (Non-parametric) Structural Equation Models
+  * Generalization of the path analysis and SEM you might be familiar with
+
+* Graphical representation using Directed Acyclic Graphs (DAGs)
+
+* Potential Outcomes are **derived** from a SCM
+
+* Transparent representation of **qualitative assumptions**
+
+* Testable implications of our model of the data generating process
+---
+
+
+## Directed Acyclic Graphs: Notation
+
+Probabilistic graphical models are mathematical objects that represent relations among variables (probability factorizations) 
+
+They are compounded by two ingredients: **nodes** (vertices) and **edges** (links)
+
+Directed Acyclic Graphs (DAGs) are one class of graphical models, with the following characteristics:
+
+* **Directed**: The edges point *from* one variable *to* another variable
+
+* **Acyclic**: The paths in the graph flow in certain direction, if you follow the edges you cannot arrive back to the starting point
+
+* **Graph**: well, you get it!
+
+`\(\color{red}{\text{Important:}}\)`: under certain conditions, a DAG can be causally interpreted, in which case we talk about "causal DAGs" or causal diagrams
+
+Basically, this happen when we assume that no pair of nodes share a common ancestor that is not included in the DAG
+
+
+---
+
+## Directed Acyclic Graphs: Notation
+
+
+We can go from one variable to another following a *path* along the edges 
+
+When you can traverse a path without colliding into an edge in the opposite direction we call it a **connecting path** that transmit information
+
+When you encounter an edge pointing into the opposite direction along a path we call it a **blocking path** that do not transmit information
+
+&lt;br&gt;
+
+`\(\color{red}{\text{Faithfulness:}}\)` `\(d-\)`connection in the graph implies association between variables in reality, while `\(d-\)`separation implies their independence
+
+---
+
+## Directed Acyclic Graphs: Notation
+
+
+We can go from one variable to another following a *path* along the edges
+
+When you can traverse a path without colliding into an edge in the opposite direction we call it a **connecting path** that transmit information
+
+When you encounter an edge pointing into the opposite direction along a path we call it a **blocking path** that do not transmit information
+
+* A chain, in which you can travel from `\(X\)` to `\(Y\)` through `\(M\)`, is a `\(d-\)`connected path: `$$X \rightarrow M \rightarrow Y$$`
+
+* A fork, in which you can go from a common cause `\(W\)` to both `\(X\)` and `\(Y\)` is a `\(d-\)`connected path: `$$X \leftarrow W \rightarrow Y$$`
+
+* A collider, in which you can't go from `\(X\)` to `\(Y\)` due to two edges pointing into a third variable `\(C\)`, is a `\(d-\)`separated path: `$$X \rightarrow C \leftarrow Y$$`
+
+---
+
+
+## Directed Acyclic Graphs: Notation
+
+
+By adjusting for a variable (represented by a box in the graph), we can turn connecting into blocking paths and vice versa
+
+Therefore, we can have *conditional* `\(d-\)`separation, and *conditional* `\(d-\)`connection
+
+* When you adjust for the intermediate variable `\(M\)` in a chain, `\(X\)` and `\(Y\)` become conditionally independent: `$$X \rightarrow \boxed{M} \rightarrow Y$$`
+
+* When you adjust for the common cause `\(W\)` in a fork, `\(X\)` and `\(Y\)` become conditionally independent: `$$X \leftarrow \boxed{W} \rightarrow Y$$`
+
+* When you adjust for a collider variable `\(C\)`, the pair `\(X\)` and `\(Y\)` become conditionally associated: `$$X \cdots \boxed{C} \cdots Y$$`
+
+---
+
+
+
+## Confounding paths
+
+.pull-left[
+| Confounding |
+|-----|
+| `\(W = f_w(U_w)\)` |
+| `\(X = f_x(W, U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+]
+
+.pull-right[
+
+.center[&lt;img src="img\confounder1.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following paths
+
+`$$X \rightarrow Y$$`
+
+`$$X \leftarrow W \rightarrow Y$$`
+]
+---
+
+## Confounding paths
+
+.pull-left[
+| Confounding |
+|-----|
+| `\(W = f_w(U_w)\)` |
+| `\(X = f_x(W, U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
+
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+]
+
+.pull-right[
+
+.center[&lt;img src="img\confounder3.pdf" width="300" height="200" /&gt;]
+
+The following path is open
+
+`$$X \rightarrow Y$$`
+
+But this is now closed
+
+`$$X \leftarrow \boxed{W} \rightarrow Y$$`
+]
+
+---
+
+## Confounding paths
+
+.pull-left[
+| Confounding |
+|-----|
+| `\(W = f_w(U_w)\)` |
+| `\(X = f_x(W, U_x)\)` |
+| `\(Y = f_y(W, U_y)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of `\(X\)` on `\(Y\)`?
+]
+
+.pull-right[
+
+.center[&lt;img src="img\confounder2.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following path
+
+`$$X \leftarrow W \rightarrow Y$$`
+]
+---
+
+
+## Mediating paths
+
+.pull-left[
+| Mediation |
+|-----|
+| `\(X = f_x(U_x)\)` |
+| `\(M = f_m(X, U_m)\)` |
+| `\(Y = f_y(M, X, U_y)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of `\(X\)` on `\(Y\)`?
+]
+
+.pull-right[
+
+.center[&lt;img src="img/mediation1.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following paths
+
+`$$X \rightarrow Y$$`
+
+`$$X \rightarrow M \rightarrow Y$$`
+]
+---
+
+
+## Mediating paths
+
+.pull-left[
+| Mediation |
+|-----|
+| `\(X = f_x(U_x)\)` |
+| `\(M = f_m(X, U_m)\)` |
+| `\(Y = f_y(M, X, U_y)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of `\(X\)` on `\(Y\)`?
+]
+
+.pull-right[
+
+.center[&lt;img src="img/mediation2.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following path
+
+`$$X \rightarrow Y$$`
+
+But this path is now closed
+
+`$$X \rightarrow \boxed{M} \rightarrow Y$$`
+]
+---
+
+
+## Colliding paths
+
+.pull-left[
+| Colliders |
+|-----|
+| `\(X = f_x(U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
+| `\(C = f_c(X, Y, U_c)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of `\(X\)` on `\(Y\)`?
+]
+
+.pull-right[
+
+.center[&lt;img src="img\collider1.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following paths
+
+`$$X \rightarrow Y$$`
+
+`$$X \rightarrow C \leftarrow Y$$`
+]
+---
+
+## Colliding paths
+
+.pull-left[
+| Colliders |
+|-----|
+| `\(X = f_x(U_x)\)` |
+| `\(Y = f_y(W, U_y)\)` |
+| `\(C = f_c(X, Y, U_c)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of `\(X\)` on `\(Y\)`?
+]
+
+.pull-right[
+
+.center[&lt;img src="img\collider2.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following path
+
+`$$X \rightarrow C \leftarrow Y$$`
+]
+---
+
+## Colliding paths
+
+.pull-left[
+| Colliders |
+|-----|
+| `\(X = f_x(U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
+| `\(C = f_c(X, Y, U_c)\)` |
+
+&lt;br&gt;
+
+Are `\(X\)` and `\(Y\)` marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of `\(X\)` on `\(Y\)`?
+]
+
+.pull-right[
+
+.center[&lt;img src="img\collider3.pdf" width="300" height="200" /&gt;]
+
+The DAG includes the following (open) path
+
+`$$X \rightarrow \boxed{C} \leftarrow Y$$`
+]
+---
+
+## Side note: are colliders that important?
+
+&lt;br&gt; 
+
+One common question (and an area of debate among practitioners) is if colliders are really that important *in applied settings*. This is a hard question to answer, because, you know... we just don't know. 
+
+But we know that they are **possible** and that their importance would depend on the structure of our causal graph.
+
+A few compelling examples of collider bias in recent social sciences are discussed by:
+
+* [Shalizi and Thomas (2011)](https://journals.sagepub.com/doi/abs/10.1177/0049124111404820) in the context of network homophily and contagion
+
+* [Richard Breen (2018)](https://academic.oup.com/esr/article/34/6/603/5094485) in the context of intergenerational mobility
+
+* [Knox, Lowe and Mummolo (2020)](https://scholar.princeton.edu/jmummolo/publications/bias-built-how-administrative-records-mask-racially-biased-policing) in the context of police shootings
+
+A great general introduction to the topic is offered by [Elwert and Winship (2014)](https://www.annualreviews.org/doi/abs/10.1146/annurev-soc-071913-043455)
+
+---
+
+
+## Do-operator and interventions
+
+&lt;br&gt;
+
+Pearl introduced the `\(do-\)`operator to clearly distinguish between passive observations and interventions on the data generating process
+
+In other words, is a form to make explicit the gap between interventional quantities and traditional conditional expectations
+
+Causal identification corresponds to removing the `\(do-\)`operator from an expression, following the rules of `\(do-\)`calculus, reducing it to an observational quantity. If there is no equivalece, it means that the quantity of interest is not identified
+
+Given the correspondence between a system of non-parametric structural equations and a given DAG, we can express the operation of **doing** as a *minimal surgery on the structural equation defining the treatment*
+
+---
+
+## Interventional graphs
+
+.pull-left[
+Let's start with the following observational data generating process
+
+| Structural Causal Model |
+|---|
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)` |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
+
+]
+
+.pull-right[
+.center[&lt;img src="img\intervention1.pdf" width="300" height="300" /&gt;]
+]
+
+---
+
+## Interventional graphs
+
+.pull-left[
+Intervening in the model to make `\(X=x\)` creates an interventional graph `\(G_{\bar{X}}\)`, in which all the incoming arrows into `\(X\)` have been removed
+
+| Structural Causal Model |
+|---|
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = x\)` |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
+
+]
+
+.pull-right[
+.center[&lt;img src="img\intervention2.pdf" width="300" height="300" /&gt;]
+]
+
+???
+Mention invariance of the remaining functions!!!
+
+---
+
+
+
+## Interventional graphs
+
+.pull-left[
+The purpose of an observational study is to allow only **causal paths** between the treatment `\(X\)` and the outcome `\(Y\)`, and block all the **non causal paths**
+
+| Structural Causal Model |
+|---|
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)` |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
+
+]
+
+.pull-right[
+.center[&lt;img src="img\intervention3.pdf" width="300" height="300" /&gt;]
+
+Adjusting for `\(W\)` blocks a non-causal path, but opens a new one. 
+
+`\(P(Y|do(x))\)` is not identified conditioning on `\(W\)` alone
+]
+
+???
+This is to relativize the idea of "confounder" as a property of the variables, instead of a property of paths relative to the pair (X,Y)
+
+---
+
+
+
+## Interventional graphs
+
+.pull-left[
+The purpose of an observational study is to allow only **causal paths** between the treatment `\(X\)` and the outcome `\(Y\)`, and block all the **non causal paths**
+
+| Structural Causal Model |
+|---|
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)`  |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
+
+]
+
+.pull-right[
+.center[&lt;img src="img\intervention4.pdf" width="300" height="300" /&gt;]
+
+Adjusting for `\((Z_1,W)\)` blocks all non-causal paths
+
+`\(P(Y|do(x))\)` is identified conditioning on `\((Z_1,W)\)`
+]
+
+---
+
+
+
+## Interventional graphs
+
+.pull-left[
+The purpose of an observational study is to allow only **causal paths** between the treatment `\(X\)` and the outcome `\(Y\)`, and block all the **non causal paths**
+
+| Structural Causal Model |
+|---|
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)`  |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
+
+]
+
+.pull-right[
+.center[&lt;img src="img\intervention5.pdf" width="300" height="300" /&gt;]
+
+Adjusting for `\((Z_2,W)\)` also blocks all non-causal paths
+
+`\(P(Y|do(x))\)` is identified conditioning on `\((Z_2,W)\)`
+]
+
+---
+
+## Back-door Criterion (Pearl)
+
+&lt;br&gt;
+
+What we just did can be summarized by the back-door criterion
+
+A set of variables `\(W\)` satisfied the back-door criterion relative to an ordered pair of variables `\((X,Y)\)` in a DAG `\(G\)` if:
+
+  (i) no node in `\(W\)` is a descendant of `\(X\)`; and
+  (ii) `\(W\)` blocks every path between `\(X\)` and `\(Y\)` that contains an arrow into `\(X\)`
+
+`\(\color{red}{\text{Important:}}\)` satifying the backdoor criterion implies the unconfoundedness assumption
+`$$Y_x \indep X|W$$`
+
+The **back-door adjustment** indicates that we can recover the effect of `\(X\)` on `\(Y\)` adjusting for any `\(W\)` that satisfy the backdoor criterion
+
+`$$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$`
+
+.footnote[Pearl, *Causality*, pp.79-81]
+
+---
+
+
+
+## SCM: Key insights
+
+&lt;br&gt;
+
+* Causal identification is contingent on a given model encoding our assumptions
+
+* Causal identification is finding an observational quantity that is equivalent to an interventional quantity
+
+* Confounding (and bias) is a property of paths in a graph, not variables
+
+* Confounding is relative to the pair `\((X,Y)\)`, not just `\(X\)`
+
+* It is not necessary to adjust for all *parents* of the treatment to block all backdoor paths
+
+* Bias is not monotonically decreasing on the number of variables included
+
+* `\(do-\)`calculus can be used to identify the effect of multiple interventions, to recover from missingness data, and to generalize study results.
+
+---
+
+
+##SCM: limitations
+
+&lt;br&gt; 
+
+One problem with the Structural Causal Model framework is that you need to assume a certain DAG. Conditional on your model, most identification tasks are rather trivial (algorithmic)
+
+&gt;&gt;"Causality is in the model"
+&gt;&gt;&gt; James Heckman (2005)
+
+However, this is something that we always do! The only matter is how transparent are we about the assumptions we are making anyway
+
+Another problem, more important for issues like mediation analysis and counterfactuals in general, is that we are sometimes making more assumptions that we are willing to
+
+For this cases, other causal (and graphical) models, like the [Single World Intervention Graphs](https://www.csss.washington.edu/Papers/wp128.pdf) (Richardson and Robins, 2013) can help
+
+Being fully non-parametric, certain canonical models are not identified using DAGs (like IVs). However, this only shows that they require parametric assumptions, no matter how weak
+
+---
+
+
+class: center, middle
+
+# Identification Strategies
+---
+
+## Identification Strategies: a short tour
+
+Identification strategies are well-known set of assumptions that are sufficient for the causal interpretation of certain estimators:
+
+* **Randomization** ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff in means estimator.
+
+* **Selection on Observables** (aka Conditional Ignorability, Unconfoundedness) for multiple regression, (propensity score) matching and (inverse probability) weighting.
+
+  * In FE confounders are assumed to be fully captured by constant characteristics of the individual, group, or time.
+  
+* **Parallel trends** for the difference-in-difference estimator (equivalent to a two-way fixed effects in the two group, two periods case)
+
+  * Generalizations for multiple groups, multiple adoption periods, and synthetic controls
+  
+* **Instrumental Variables** and quasi-experiments (exogenous variation in the treatment assignment plus exclusion restriction) for the 2SLS and Wald estimator
+
+  * RDD can be interpreted as IVs or under continuity assumptions.
+  
+---
+
+## Random Assignment
+
+.pull-left[
+
+What are the identification assumptions for experimental studies?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_random.pdf" width="350" height="200" /&gt;]
+
+]
+
+---
+
+## Regression Discontinuity
+
+
+.pull-left[
+
+What are the identification assumptions for the regression discontinuity design?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_RDD1.pdf" width="350" height="200" /&gt;]
+
+]
+
+
+---
+
+## Regression Discontinuity
+
+
+.pull-left[
+
+What are the identification assumptions for the regression discontinuity design?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_RDD2.pdf" width="350" height="200" /&gt;]
+
+]
+
+---
+
+## Regression Discontinuity
+
+
+.pull-left[
+
+What are the identification assumptions for the regression discontinuity design?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_RDD3.pdf" width="350" height="300" /&gt;]
+
+]
+---
+
+## Regression Discontinuity
+
+
+.pull-left[
+
+What are the identification assumptions for the regression discontinuity design?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_RDD4.pdf" width="350" height="300" /&gt;]
+
+]
+
+---
+
+## Regression Discontinuity
+
+
+.pull-left[
+
+What are the identification assumptions for the regression discontinuity design?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_RDD5.pdf" width="350" height="300" /&gt;]
+
+]
+
+---
+
+## Regression Discontinuity
+
+
+.pull-left[
+
+What are the identification assumptions for the regression discontinuity design?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_RDD6.pdf" width="350" height="300" /&gt;]
+
+]
+---
+
+## Instrumental Variables
+
+
+.pull-left[
+
+What are the identification assumptions for the instrumental variable regression?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_IV.pdf" width="350" height="200" /&gt;]
+
+]
+
+
+---
+
+## Instrumental Variables
+
+
+.pull-left[
+
+What are the identification assumptions for the instrumental variable regression?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_IVcond.pdf" width="350" height="300" /&gt;]
+
+]
+
+
+---
+
+## Instrumental Variables
+
+
+.pull-left[
+
+What are the identification assumptions for the instrumental variable regression?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_IVcond2.pdf" width="350" height="300" /&gt;]
+
+]
+
+
+---
+
+## Selection on Observables
+
+
+.pull-left[
+
+What are the identification assumptions for the regression, matching, or weighting estimators?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_SOO.pdf" width="300" height="200" /&gt;]
+
+]
+
+
+---
+
+
+## Selection on Observables
+
+
+.pull-left[
+
+What are the identification assumptions for the regression, matching, or weighting estimators?
+
+]
+
+.pull-right[
+.center[&lt;img src="img\id_SOO2.pdf" width="300" height="200" /&gt;]
+
+]
+
+
+---
+
+
+## Is there a ladder of identification strategies?
+
+&lt;br&gt;
+In general, it is assumed that the stronger the assumptions, the less credible an identification strategy would be
+
+We would prefere experiments (the so-called *gold standard*) and, in the lack of experiments, we would prefer strategies in which our assumptions hold **by design**
+
+Designs in which there is an **exogenous** source of variation in the treatment status (like IV, RDD, quasi-experiments in general) are considered more plausible
+
+However, is there a natural hierarchy of identification strategies that can tell us, *a priori*, which assumptions are more credible in empirical applications?
+
+Do empirical applications corresponds to the labels that we use to describe a given research design? Any thoughts?
+
+
+---
+
+## Where to go now?
+
+* Structural Causal Model
+  * The Book of Why (Pearl and MacKenzie)
+  * Causal Inference in Statistics. A Primer (Pearl, Glymour and Jewell)
+  * Causality (Pearl)
+  
+* Potential Outcomes
+  * Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction (Imbens and Rubin)
+  * Mostly Harmless Econometrics (Angrist and Pischke)
+  
+* General and integrative introductions
+  * Causal Inference: The Mixtape (Cunnigham)
+  * Causal Inference (Hernan and Robins)
+  * Counterfactuals and Causal Inference (Morgan and Winship)
+
+
+---
+
+class: center, middle
+
+# We are done! 
+
+---
+
+
+class: center, middle
+
+# Additional Examples
+
+---
+
+
+## Random Assignment
+
+Under random assignment, the following assumption holds by design:
+
+$$
+Y_x \indep X 
+$$
+
+Which means that the treatment status of the participants of an experiment is not related to their potential outcomes. This justifies directly comparing the observed outcomes of two different treatment groups.
+
+.pull-left[
+`$$E(Y|X=1) - E(Y|X=0)$$`
+`$$E(Y_1|X=1) - E(Y_0|X=0)$$`
+`$$\text{DiM} = \text{ATE} = E(Y_1) - E(Y_0)$$`
+]
+
+.pull-right[
+diff in means of observed outcomes
+
+by consistency assumption
+
+by randomization
+]
+
+---
+
+## Selection on Observables
+
+Sometimes, in the abscense of randomization, we can still argue that the potential outcomes are independent of the treatment status conditional on some observable characteristic.
+
+$$
+Y_x \indep X | W
+$$
+
+This holds by design under block randomization (when `\(W\)` is the block variable).
+
+.pull-left[
+`$$E(Y|X=1, W) - E(Y|X=0, W)$$`
+`$$E(Y_1|X=1,W) - E(Y_0|X=0,W)$$`
+`$$\text{ATE}_W = E(Y_1|W) - E(Y_0|W)$$`
+`$$\text{ATE} = E_W[E(Y_1|W) - E(Y_0|W)]$$`
+]
+
+.pull-right[
+diff in means of observed `\(Y\)`s within `\(W\)`
+
+by consistency assumption
+
+by randomization
+
+by iterated expectations
+]
+
+The last two steps required also a **Positivity** assumption: `$$\forall w, 0 &lt; P(X|W) &lt; 1$$`
+
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:10",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
