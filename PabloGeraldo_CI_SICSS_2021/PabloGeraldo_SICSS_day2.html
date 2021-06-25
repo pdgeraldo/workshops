@@ -1,38 +1,31 @@
----
-title: "Causal Inference Workshop"
-subtitle: "(Day 2: Graphical models)"
-author: "Pablo Geraldo (pdgeraldo@ucla.edu)"
-institute: "SICSS - UCLA"
-date: "June 25, 2021"
-output:
-  xaringan::moon_reader:
-    css: xaringan-themer.css
-    lib_dir: libs
-    nature:
-      ratio: '16:10'
-      highlightStyle: tomorrow
-      highlightLines: true
-      countIncrementalSlides: false
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Causal Inference Workshop</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Pablo Geraldo (pdgeraldo@ucla.edu)" />
+    <meta name="date" content="2021-06-25" />
+    <script src="libs/header-attrs-2.7/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Causal Inference Workshop
+## (Day 2: Graphical models)
+### Pablo Geraldo (<a href="mailto:pdgeraldo@ucla.edu" class="email">pdgeraldo@ucla.edu</a>)
+### SICSS - UCLA
+### June 25, 2021
+
 ---
 
-$$\newcommand\indep{\perp\!\!\!\perp}$$
-$$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$
-```{r xaringan-themer, include=FALSE, warning=FALSE}
-library(xaringanthemer)
-style_duo_accent(
-  primary_color = "#2d68c4", 
-  secondary_color = "#f2a900",
-  link_color = "#f2a900",
-  title_slide_text_color = "#f2a900",
-  header_font_google = google_font("Josefin Sans"),
-  text_font_google   = google_font("Montserrat", "300", "300i"),
-  code_font_google   = google_font("Fira Mono"))
-```
 
-```{r setup, include=FALSE}
-library(tidyverse)
-library(ggdag)
-```
+`$$\newcommand\indep{\perp\!\!\!\perp}$$`
+`$$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$`
+
+
+
 
 
 ## Recap from day 1
@@ -53,7 +46,7 @@ library(ggdag)
 
 --
 
-<br>
+&lt;br&gt;
 
 .center[But what do we do when we have *less than perfect* experiments?]
 --
@@ -64,17 +57,17 @@ library(ggdag)
 
 ## Why graphical models?
 
-<br>
+&lt;br&gt;
 
 Formally, potential outcomes are sufficient to specify our estimand, sources of bias, and assumptions needed for causal identification.
 
-<br>
+&lt;br&gt;
 
 However, assessing the plausibility of identification assumptions rely on the researchers being able to reason about (conditional) independence between *counterfactual* variables. 
 
 --
 
-<br>
+&lt;br&gt;
 
 .center[Any ideas on how to assess the assumption about the *conditional* independence of the **potential outcomes** with respect to the treatment, without randomization?]
 
@@ -87,17 +80,17 @@ However, assessing the plausibility of identification assumptions rely on the re
 ## Why graphical models?
 ### Assessing ignorability
 
-<br>
+&lt;br&gt;
 
-When we say the treatment assignment is **strongly ignorable** we are stating that $P(Y_x|X=x) = P(Y_x)$, but we never get to observe the full distribution of potential outcomes!
+When we say the treatment assignment is **strongly ignorable** we are stating that `\(P(Y_x|X=x) = P(Y_x)\)`, but we never get to observe the full distribution of potential outcomes!
 
-<br>
+&lt;br&gt;
 
 * What type of criteria should we use when discussing others' causal claims? 
 
 * What kind of criteria should we use in our own research to judge if we are getting what we are looking for?
 
-<br>
+&lt;br&gt;
 
 Here is where DAGs shine, offering a graphical criteria that is equivalent to the unconfoundedness statement, the *backdoor criterion*.
 
@@ -113,7 +106,7 @@ class: center, middle
 
 Unifying approach to causal inference, developed by Pearl, Robins, among others:
 
-<br>
+&lt;br&gt;
 
 * (Non-parametric) Structural Equation Models
   * Generalization of the path analysis and SEM you might be familiar with
@@ -142,7 +135,7 @@ Directed Acyclic Graphs (DAGs) are one class of graphical models, with the follo
 
 * **Graph**: well, you get it!
 
-$\color{red}{\text{Important:}}$: under certain conditions, a DAG can be causally interpreted, in which case we talk about "causal DAGs" or causal diagrams
+`\(\color{red}{\text{Important:}}\)`: under certain conditions, a DAG can be causally interpreted, in which case we talk about "causal DAGs" or causal diagrams
 
 Basically, this happen when we assume that no pair of nodes share a common ancestor that is not included in the DAG
 
@@ -158,9 +151,9 @@ When you can traverse a path without colliding into an edge in the opposite dire
 
 When you encounter an edge pointing into the opposite direction along a path we call it a **blocking path** that do not transmit information
 
-<br>
+&lt;br&gt;
 
-$\color{red}{\text{Faithfulness:}}$ $d-$connection in the graph implies association between variables in reality, while $d-$separation implies their independence
+`\(\color{red}{\text{Faithfulness:}}\)` `\(d-\)`connection in the graph implies association between variables in reality, while `\(d-\)`separation implies their independence
 
 ---
 
@@ -173,11 +166,11 @@ When you can traverse a path without colliding into an edge in the opposite dire
 
 When you encounter an edge pointing into the opposite direction along a path we call it a **blocking path** that do not transmit information
 
-* A chain, in which you can travel from $X$ to $Y$ through $M$, is a $d-$connected path: $$X \rightarrow M \rightarrow Y$$
+* A chain, in which you can travel from `\(X\)` to `\(Y\)` through `\(M\)`, is a `\(d-\)`connected path: `$$X \rightarrow M \rightarrow Y$$`
 
-* A fork, in which you can go from a common cause $W$ to both $X$ and $Y$ is a $d-$connected path: $$X \leftarrow W \rightarrow Y$$
+* A fork, in which you can go from a common cause `\(W\)` to both `\(X\)` and `\(Y\)` is a `\(d-\)`connected path: `$$X \leftarrow W \rightarrow Y$$`
 
-* A collider, in which you can't go from $X$ to $Y$ due to two edges pointing into a third variable $C$, is a $d-$separated path: $$X \rightarrow C \leftarrow Y$$
+* A collider, in which you can't go from `\(X\)` to `\(Y\)` due to two edges pointing into a third variable `\(C\)`, is a `\(d-\)`separated path: `$$X \rightarrow C \leftarrow Y$$`
 
 ---
 
@@ -187,13 +180,13 @@ When you encounter an edge pointing into the opposite direction along a path we 
 
 By adjusting for a variable (represented by a box in the graph), we can turn connecting into blocking paths and vice versa
 
-Therefore, we can have *conditional* $d-$separation, and *conditional* $d-$connection
+Therefore, we can have *conditional* `\(d-\)`separation, and *conditional* `\(d-\)`connection
 
-* When you adjust for the intermediate variable $M$ in a chain, $X$ and $Y$ become conditionally independent: $$X \rightarrow \boxed{M} \rightarrow Y$$
+* When you adjust for the intermediate variable `\(M\)` in a chain, `\(X\)` and `\(Y\)` become conditionally independent: `$$X \rightarrow \boxed{M} \rightarrow Y$$`
 
-* When you adjust for the common cause $W$ in a fork, $X$ and $Y$ become conditionally independent: $$X \leftarrow \boxed{W} \rightarrow Y$$
+* When you adjust for the common cause `\(W\)` in a fork, `\(X\)` and `\(Y\)` become conditionally independent: `$$X \leftarrow \boxed{W} \rightarrow Y$$`
 
-* When you adjust for a collider variable $C$, the pair $X$ and $Y$ become conditionally associated: $$X \cdots \boxed{C} \cdots Y$$
+* When you adjust for a collider variable `\(C\)`, the pair `\(X\)` and `\(Y\)` become conditionally associated: `$$X \cdots \boxed{C} \cdots Y$$`
 
 ---
 
@@ -204,26 +197,26 @@ Therefore, we can have *conditional* $d-$separation, and *conditional* $d-$conne
 .pull-left[
 | Confounding |
 |-----|
-| $W = f_w(U_w)$ |
-| $X = f_x(W, U_x)$ |
-| $Y = f_y(W, X, U_y)$ |
+| `\(W = f_w(U_w)\)` |
+| `\(X = f_x(W, U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 ]
 
 .pull-right[
 
-.center[<img src="confounder1.pdf" width="300" height="200" />]
+.center[&lt;img src="confounder1.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following paths
 
-$$X \rightarrow Y$$
+`$$X \rightarrow Y$$`
 
-$$X \leftarrow W \rightarrow Y$$
+`$$X \leftarrow W \rightarrow Y$$`
 ]
 ---
 
@@ -232,29 +225,29 @@ $$X \leftarrow W \rightarrow Y$$
 .pull-left[
 | Confounding |
 |-----|
-| $W = f_w(U_w)$ |
-| $X = f_x(W, U_x)$ |
-| $Y = f_y(W, X, U_y)$ |
+| `\(W = f_w(U_w)\)` |
+| `\(X = f_x(W, U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
 
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 ]
 
 .pull-right[
 
-.center[<img src="img\confounder3.pdf" width="300" height="200" />]
+.center[&lt;img src="img\confounder3.pdf" width="300" height="200" /&gt;]
 
 The following path is open
 
-$$X \rightarrow Y$$
+`$$X \rightarrow Y$$`
 
 But this is now closed
 
-$$X \leftarrow \boxed{W} \rightarrow Y$$
+`$$X \leftarrow \boxed{W} \rightarrow Y$$`
 ]
 
 ---
@@ -264,26 +257,26 @@ $$X \leftarrow \boxed{W} \rightarrow Y$$
 .pull-left[
 | Confounding |
 |-----|
-| $W = f_w(U_w)$ |
-| $X = f_x(W, U_x)$ |
-| $Y = f_y(W, U_y)$ |
+| `\(W = f_w(U_w)\)` |
+| `\(X = f_x(W, U_x)\)` |
+| `\(Y = f_y(W, U_y)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 
-Is there a causal effect of $X$ on $Y$?
+Is there a causal effect of `\(X\)` on `\(Y\)`?
 ]
 
 .pull-right[
 
-.center[<img src="img\confounder2.pdf" width="300" height="200" />]
+.center[&lt;img src="img\confounder2.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following path
 
-$$X \leftarrow W \rightarrow Y$$
+`$$X \leftarrow W \rightarrow Y$$`
 ]
 ---
 
@@ -293,28 +286,28 @@ $$X \leftarrow W \rightarrow Y$$
 .pull-left[
 | Mediation |
 |-----|
-| $X = f_x(U_x)$ |
-| $M = f_m(X, U_m)$ |
-| $Y = f_y(M, X, U_y)$ |
+| `\(X = f_x(U_x)\)` |
+| `\(M = f_m(X, U_m)\)` |
+| `\(Y = f_y(M, X, U_y)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 
-Is there a causal effect of $X$ on $Y$?
+Is there a causal effect of `\(X\)` on `\(Y\)`?
 ]
 
 .pull-right[
 
-.center[<img src="img/mediation1.pdf" width="300" height="200" />]
+.center[&lt;img src="img/mediation1.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following paths
 
-$$X \rightarrow Y$$
+`$$X \rightarrow Y$$`
 
-$$X \rightarrow M \rightarrow Y$$
+`$$X \rightarrow M \rightarrow Y$$`
 ]
 ---
 
@@ -324,30 +317,30 @@ $$X \rightarrow M \rightarrow Y$$
 .pull-left[
 | Mediation |
 |-----|
-| $X = f_x(U_x)$ |
-| $M = f_m(X, U_m)$ |
-| $Y = f_y(M, X, U_y)$ |
+| `\(X = f_x(U_x)\)` |
+| `\(M = f_m(X, U_m)\)` |
+| `\(Y = f_y(M, X, U_y)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 
-Is there a causal effect of $X$ on $Y$?
+Is there a causal effect of `\(X\)` on `\(Y\)`?
 ]
 
 .pull-right[
 
-.center[<img src="img/mediation2.pdf" width="300" height="200" />]
+.center[&lt;img src="img/mediation2.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following path
 
-$$X \rightarrow Y$$
+`$$X \rightarrow Y$$`
 
 But this path is now closed
 
-$$X \rightarrow \boxed{M} \rightarrow Y$$
+`$$X \rightarrow \boxed{M} \rightarrow Y$$`
 ]
 ---
 
@@ -357,28 +350,28 @@ $$X \rightarrow \boxed{M} \rightarrow Y$$
 .pull-left[
 | Colliders |
 |-----|
-| $X = f_x(U_x)$ |
-| $Y = f_y(W, X, U_y)$ |
-| $C = f_c(X, Y, U_c)$ |
+| `\(X = f_x(U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
+| `\(C = f_c(X, Y, U_c)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 
-Is there a causal effect of $X$ on $Y$?
+Is there a causal effect of `\(X\)` on `\(Y\)`?
 ]
 
 .pull-right[
 
-.center[<img src="img\collider1.pdf" width="300" height="200" />]
+.center[&lt;img src="img\collider1.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following paths
 
-$$X \rightarrow Y$$
+`$$X \rightarrow Y$$`
 
-$$X \rightarrow C \leftarrow Y$$
+`$$X \rightarrow C \leftarrow Y$$`
 ]
 ---
 
@@ -387,26 +380,26 @@ $$X \rightarrow C \leftarrow Y$$
 .pull-left[
 | Colliders |
 |-----|
-| $X = f_x(U_x)$ |
-| $Y = f_y(W, U_y)$ |
-| $C = f_c(X, Y, U_c)$ |
+| `\(X = f_x(U_x)\)` |
+| `\(Y = f_y(W, U_y)\)` |
+| `\(C = f_c(X, Y, U_c)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 
-Is there a causal effect of $X$ on $Y$?
+Is there a causal effect of `\(X\)` on `\(Y\)`?
 ]
 
 .pull-right[
 
-.center[<img src="img\collider2.pdf" width="300" height="200" />]
+.center[&lt;img src="img\collider2.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following path
 
-$$X \rightarrow C \leftarrow Y$$
+`$$X \rightarrow C \leftarrow Y$$`
 ]
 ---
 
@@ -415,32 +408,32 @@ $$X \rightarrow C \leftarrow Y$$
 .pull-left[
 | Colliders |
 |-----|
-| $X = f_x(U_x)$ |
-| $Y = f_y(W, X, U_y)$ |
-| $C = f_c(X, Y, U_c)$ |
+| `\(X = f_x(U_x)\)` |
+| `\(Y = f_y(W, X, U_y)\)` |
+| `\(C = f_c(X, Y, U_c)\)` |
 
-<br>
+&lt;br&gt;
 
-Are $X$ and $Y$ marginally independent?
+Are `\(X\)` and `\(Y\)` marginally independent?
 
 Are they conditionally independent?
 
-Is there a causal effect of $X$ on $Y$?
+Is there a causal effect of `\(X\)` on `\(Y\)`?
 ]
 
 .pull-right[
 
-.center[<img src="img\collider3.pdf" width="300" height="200" />]
+.center[&lt;img src="img\collider3.pdf" width="300" height="200" /&gt;]
 
 The DAG includes the following (open) path
 
-$$X \rightarrow \boxed{C} \leftarrow Y$$
+`$$X \rightarrow \boxed{C} \leftarrow Y$$`
 ]
 ---
 
 ## Side note: are colliders that important?
 
-<br> 
+&lt;br&gt; 
 
 One common question (and an area of debate among practitioners) is if colliders are really that important *in applied settings*. This is a hard question to answer, because, you know... we just don't know. 
 
@@ -461,13 +454,13 @@ A great general introduction to the topic is offered by [Elwert and Winship (201
 
 ## Do-operator and interventions
 
-<br>
+&lt;br&gt;
 
-Pearl introduced the $do-$operator to clearly distinguish between passive observations and interventions on the data generating process
+Pearl introduced the `\(do-\)`operator to clearly distinguish between passive observations and interventions on the data generating process
 
 In other words, is a form to make explicit the gap between interventional quantities and out more familiar conditional expectations
 
-Causal identification corresponds to removing the $do-$operator from an expression, following the rules of $do-$calculus, reducing it to an observational quantity. If there is no equivalece, it means that the quantity of interest is not identified
+Causal identification corresponds to removing the `\(do-\)`operator from an expression, following the rules of `\(do-\)`calculus, reducing it to an observational quantity. If there is no equivalece, it means that the quantity of interest is not identified
 
 Given the correspondence between a system of non-parametric structural equations and a given DAG, we can express the operation of **doing** as a *minimal surgery on the structural equation defining the treatment*
 
@@ -480,16 +473,16 @@ Let's start with the following observational data generating process
 
 | Structural Causal Model |
 |---|
-| $Z_1 = f_{z1}(U_{z1})$ |
-| $Z_2 = f_{z2}(U_{z2})$ |
-| $W = f_{w}(Z_1, Z_2, U_{w})$ |
-| $X = f_{z1}(Z_1, W, U_{x})$ |
-| $Y = f_{y}(Z_2, W, U_{y})$ |
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)` |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
 
 ]
 
 .pull-right[
-.center[<img src="img\intervention1.pdf" width="300" height="300" />]
+.center[&lt;img src="img\intervention1.pdf" width="300" height="300" /&gt;]
 ]
 
 ---
@@ -497,20 +490,20 @@ Let's start with the following observational data generating process
 ## Interventional graphs
 
 .pull-left[
-Intervening in the model to make $X=x$ creates an interventional graph $G_{\bar{X}}$, in which all the incoming arrows into $X$ have been removed
+Intervening in the model to make `\(X=x\)` creates an interventional graph `\(G_{\bar{X}}\)`, in which all the incoming arrows into `\(X\)` have been removed
 
 | Structural Causal Model |
 |---|
-| $Z_1 = f_{z1}(U_{z1})$ |
-| $Z_2 = f_{z2}(U_{z2})$ |
-| $W = f_{w}(Z_1, Z_2, U_{w})$ |
-| $X = x$ |
-| $Y = f_{y}(Z_2, W, U_{y})$ |
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = x\)` |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
 
 ]
 
 .pull-right[
-.center[<img src="img\intervention2.pdf" width="300" height="300" />]
+.center[&lt;img src="img\intervention2.pdf" width="300" height="300" /&gt;]
 ]
 
 ???
@@ -523,24 +516,24 @@ Mention invariance of the remaining functions!!!
 ## Interventional graphs
 
 .pull-left[
-The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+The purpose of an observational study is to allow only **causal paths** between the treatment `\(X\)` and the outcome `\(Y\)`, and block all the **non causal paths**
 
 | Structural Causal Model |
 |---|
-| $Z_1 = f_{z1}(U_{z1})$ |
-| $Z_2 = f_{z2}(U_{z2})$ |
-| $W = f_{w}(Z_1, Z_2, U_{w})$ |
-| $X = f_{z1}(Z_1, W, U_{x})$ |
-| $Y = f_{y}(Z_2, W, U_{y})$ |
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)` |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
 
 ]
 
 .pull-right[
-.center[<img src="img\intervention3.pdf" width="300" height="300" />]
+.center[&lt;img src="img\intervention3.pdf" width="300" height="300" /&gt;]
 
-Adjusting for $W$ blocks a non-causal path, but opens a new one. 
+Adjusting for `\(W\)` blocks a non-causal path, but opens a new one. 
 
-$P(Y|do(x))$ is not identified conditioning on $W$ alone
+`\(P(Y|do(x))\)` is not identified conditioning on `\(W\)` alone
 ]
 
 ???
@@ -553,24 +546,24 @@ This is to relativize the idea of "confounder" as a property of the variables, i
 ## Interventional graphs
 
 .pull-left[
-The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+The purpose of an observational study is to allow only **causal paths** between the treatment `\(X\)` and the outcome `\(Y\)`, and block all the **non causal paths**
 
 | Structural Causal Model |
 |---|
-| $Z_1 = f_{z1}(U_{z1})$ |
-| $Z_2 = f_{z2}(U_{z2})$ |
-| $W = f_{w}(Z_1, Z_2, U_{w})$ |
-| $X = f_{z1}(Z_1, W, U_{x})$  |
-| $Y = f_{y}(Z_2, W, U_{y})$ |
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)`  |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
 
 ]
 
 .pull-right[
-.center[<img src="img\intervention4.pdf" width="300" height="300" />]
+.center[&lt;img src="img\intervention4.pdf" width="300" height="300" /&gt;]
 
-Adjusting for $(Z_1,W)$ blocks all non-causal paths
+Adjusting for `\((Z_1,W)\)` blocks all non-causal paths
 
-$P(Y|do(x))$ is identified conditioning on $(Z_1,W)$
+`\(P(Y|do(x))\)` is identified conditioning on `\((Z_1,W)\)`
 ]
 
 ---
@@ -580,45 +573,45 @@ $P(Y|do(x))$ is identified conditioning on $(Z_1,W)$
 ## Interventional graphs
 
 .pull-left[
-The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+The purpose of an observational study is to allow only **causal paths** between the treatment `\(X\)` and the outcome `\(Y\)`, and block all the **non causal paths**
 
 | Structural Causal Model |
 |---|
-| $Z_1 = f_{z1}(U_{z1})$ |
-| $Z_2 = f_{z2}(U_{z2})$ |
-| $W = f_{w}(Z_1, Z_2, U_{w})$ |
-| $X = f_{z1}(Z_1, W, U_{x})$  |
-| $Y = f_{y}(Z_2, W, U_{y})$ |
+| `\(Z_1 = f_{z1}(U_{z1})\)` |
+| `\(Z_2 = f_{z2}(U_{z2})\)` |
+| `\(W = f_{w}(Z_1, Z_2, U_{w})\)` |
+| `\(X = f_{z1}(Z_1, W, U_{x})\)`  |
+| `\(Y = f_{y}(Z_2, W, U_{y})\)` |
 
 ]
 
 .pull-right[
-.center[<img src="img\intervention5.pdf" width="300" height="300" />]
+.center[&lt;img src="img\intervention5.pdf" width="300" height="300" /&gt;]
 
-Adjusting for $(Z_2,W)$ also blocks all non-causal paths
+Adjusting for `\((Z_2,W)\)` also blocks all non-causal paths
 
-$P(Y|do(x))$ is identified conditioning on $(Z_2,W)$
+`\(P(Y|do(x))\)` is identified conditioning on `\((Z_2,W)\)`
 ]
 
 ---
 
 ## Back-door Criterion (Pearl)
 
-<br>
+&lt;br&gt;
 
 What we just did can be summarized by the back-door criterion
 
-A set of variables $W$ satisfied the back-door criterion relative to an ordered pair of variables $(X,Y)$ in a DAG $G$ if:
+A set of variables `\(W\)` satisfied the back-door criterion relative to an ordered pair of variables `\((X,Y)\)` in a DAG `\(G\)` if:
 
-  (i) no node in $W$ is a descendant of $X$; and
-  (ii) $W$ blocks every path between $X$ and $Y$ that contains an arrow into $X$
+  (i) no node in `\(W\)` is a descendant of `\(X\)`; and
+  (ii) `\(W\)` blocks every path between `\(X\)` and `\(Y\)` that contains an arrow into `\(X\)`
 
-$\color{red}{\text{Important:}}$ satifying the backdoor criterion implies the unconfoundedness assumption
-$$Y_x \indep X|W$$
+`\(\color{red}{\text{Important:}}\)` satifying the backdoor criterion implies the unconfoundedness assumption
+`$$Y_x \indep X|W$$`
 
-The **back-door adjustment** (aka **g-formula**) indicates that we can recover the effect of $X$ on $Y$ adjusting for any $W$ that satisfy the backdoor criterion
+The **back-door adjustment** (aka **g-formula**) indicates that we can recover the effect of `\(X\)` on `\(Y\)` adjusting for any `\(W\)` that satisfy the backdoor criterion
 
-$$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$
+`$$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$`
 
 .footnote[Pearl, *Causality*, pp.79-81]
 
@@ -627,7 +620,7 @@ $$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$
 
 ## SCM: Key insights
 
-<br>
+&lt;br&gt;
 
 * Causal identification is contingent on a given model encoding our assumptions
 
@@ -635,25 +628,25 @@ $$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$
 
 * Confounding (and bias) is a property of paths in a graph, not variables
 
-* Confounding is relative to the pair $(X,Y)$, not just $X$
+* Confounding is relative to the pair `\((X,Y)\)`, not just `\(X\)`
 
 * It is not necessary to adjust for all *parents* of the treatment to block all backdoor paths
 
 * Bias is not monotonically decreasing on the number of variables included
 
-* $do-$calculus can be used to identify the effect of multiple interventions, to recover from missingness data, and to generalize study results.
+* `\(do-\)`calculus can be used to identify the effect of multiple interventions, to recover from missingness data, and to generalize study results.
 
 ---
 
 
 ##SCM: limitations
 
-<br> 
+&lt;br&gt; 
 
 One problem with the Structural Causal Model framework is that you need to assume a certain DAG. Conditional on your model, most identification tasks are rather trivial (algorithmic)
 
->>"Causality is in the model"
->>> James Heckman (2005)
+&gt;&gt;"Causality is in the model"
+&gt;&gt;&gt; James Heckman (2005)
 
 However, this is something that we always do! The only matter is how transparent are we about the assumptions we are making anyway
 
@@ -694,7 +687,7 @@ Identification strategies are well-known set of assumptions that are sufficient 
 
 ## Is there a ladder of identification strategies?
 
-<br>
+&lt;br&gt;
 In general, it is assumed that the stronger the assumptions, the less credible an identification strategy would be
 
 We would prefere experiments (the so-called *gold standard*) and, in the lack of experiments, we would prefer strategies in which our assumptions hold **by design**
@@ -711,14 +704,14 @@ Do empirical applications corresponds to the labels that we use to describe a gi
 ## Debates in applied research
 
 *Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as* identification strategies
->Guido Imbens (2019)
+&gt;Guido Imbens (2019)
 
 *About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: 'Make your theories elaborate.' The reply puzzled me at first, since by Occam's razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.*
->B. G. Cochran (cited in Rosenbaum, 1995)
+&gt;B. G. Cochran (cited in Rosenbaum, 1995)
 
 
 *No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g. IV!)*
->Jason Abaluck (cited in Imbens, 2019)
+&gt;Jason Abaluck (cited in Imbens, 2019)
 
 ---
 
@@ -763,3 +756,95 @@ Open [www.dagitty.net](http://www.dagitty.net) and launch it. There, you can cre
   * Is the effect identified?
   * Can you think in possible violations of their assumptions?
 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:10",
+"highlightStyle": "tomorrow",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
