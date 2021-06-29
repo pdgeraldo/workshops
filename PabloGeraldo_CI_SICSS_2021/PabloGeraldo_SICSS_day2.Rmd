@@ -1,6 +1,6 @@
 ---
 title: "Causal Inference Workshop"
-subtitle: "(Day 2: Graphical models)"
+subtitle: "(Day 2: Graphical models and observational data)"
 author: "Pablo Geraldo (pdgeraldo@ucla.edu)"
 institute: "SICSS - UCLA"
 date: "June 25, 2021"
