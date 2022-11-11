@@ -5,21 +5,143 @@ format: revealjs
 editor: visual
 ---
 
-## Quarto
+## Why should we study causal inference?
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+<br>
 
-## Bullets
+The social sciences are experimenting what some authors have called a "credibility revolution" (Angrist and Pischke, 2010), an "identification revolution" (Morgan, 2016), or simply a "causal revolution" (Pearl and MacKenzie, 2018).
 
-When you click the **Render** button a document will be generated that includes:
+In artificial intelligence/ML, causality have been deemed [**"the next frontier"**](https://phys.org/news/2019-02-causal-disentanglement-frontier-ai.html) and [**"the next most important thing"**](https://www.datasciencecentral.com/profiles/blogs/causality-the-next-most-important-thing-in-ai-ml).
 
--   Content authored with markdown
--   Output from executable code
+The enormous progress in the last decades has been facilitated by the development of a mathematical framework that provide researchers with tools to handle causal questions: Potential Outcomes and Structural Causal Model.
 
-## Code
+------------------------------------------------------------------------
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+## What should you expect from this workshop?
 
-```{r}
-1 + 1
-```
+This workshop is designed as a "Crash Course", so we can obviously focus only on a few things:
+
+<br>
+
+-   Familiarize yourself with the most widely used CI frameworks
+
+-   Understand the role of randomization to tackle causal questions
+
+-   Use potential outcomes and the do-operator to formalize causal estimands
+
+-   Use directed acyclic graphs (DAGs) to encode qualitative assumptions
+
+-   Derive identification results and testable implications from a DAG
+
+-   Assess the plausibility of different identification strategies applied to real problems
+
+<br>
+
+At the end of our two sessions, I hope you feel better equipped to read and evaluate the applied literature and to design your own studies using appropriate identification strategies (or at least having a clear idea on what to look for and where!).
+
+------------------------------------------------------------------------
+
+## What are we not covering today?
+
+There is a lot of stuff out there! Some areas that you might be interested in but we don't have enough time to review today:
+
+<br>
+
+-   Sequential estimation for time-varying treatments (g-methods)
+
+-   Estimation in general, including Targeted Maximum Likelihood
+
+-   Machine learning for heterogeneous treatment effects
+
+-   Do-calculus and PO-calculus for identification
+
+-   Causal mediation analysis, causal attribution
+
+-   Other graphical models (MCM, SWIGs, the Hypothetical Model)
+
+-   Selection diagrams for missing data
+
+-   Data fusion (generalization, external validity)
+
+-   Causal discovery (going from the data to the DAG)
+
+------------------------------------------------------------------------
+
+## Intuitions about causality
+
+### Have you heard any of these before?
+
+<br>
+
+"Correlation does not imply causation"
+
+--
+
+.center\[But can we go from one to the other?\]
+
+--
+
+"No causation without manipulation"
+
+--
+
+.center\[Then what about race or gender?\]
+
+--
+
+"Causal inference is a missing data problem"
+
+--
+
+.center\[Or is it the other way around?\]
+
+--
+
+"For causal inference, design trumps analysis"
+
+--
+
+.center\[But what do we mean by design? And analysis?\]
+
+---
+class: center, middle
+
+# What is causal inference about?
+---
+
+## Statistics/ML vs Causal Inference
+
+::: columns
+::: {.colum width="50%"}
+\### Statistics/ML
+
+-   Passive observation of the data generating process
+-   Estimand: Joint probabilities, CEF $$P(X,Y)$$ $$E(Y|X)$$
+-   Focus on asymptotics / out of sample prediction
+-   Estimation problem: variance-bias tradeoff
+-   Pearl: "deep learning is just curve fitting"
+:::
+
+::: {.colum width="50%"}
+\### Causal Inference
+
+-   Prediction **under interventions** on the data generating process
+-   Estimand: interventional quantities $$P(Y|do(x))$$ $$E(Y|do(x)) - E(Y|do(x'))$$ $$= E(Y_x) - E(Y_{x'})$$
+-   Identification problem: consistency (infinite sample)
+-   Estimation problem: in general, focus on bias over variance (but changing)
+:::
+:::
+
+------------------------------------------------------------------------
+
+## The ladder of causality
+
+| Level          | Estimand                      | Activity                 | Field/Discipline               | Example                                                                                                                                                                           |
+|---------------|---------------|---------------|---------------|---------------|
+| Association    | $\mathbf{P(Y \vert X)}$       | Seeing, Observing        | Stats, Machine Learning        | *What would I believe about Y if I see X?* <br> What is the expected income of a college graduate?                                                                                |
+| Intervention   | $\mathbf{P(Y \vert do(x))}$   | Doing, Intervening       | Experiments, Policy evaluation | *What would happen with Y if I do X?* <br> What would be my income if I graduate from college?                                                                                    |
+| Counterfactual | $\mathbf{P(Y_x \vert x',y')}$ | Imagining, Retrospecting | Structural Models              | *What would have happened with Y have I done X instead of X'? Why?* <br> What would have been my parents' income have they graduated from college, given that they didn't attend? |
+
+.footnote\[Pearl and Mackenzie (2018)\]
+
+??? In PO, generally the interventional and the counterfactual level are treated as equivalent. But you will never get an unbiased estimation of counterfactual quantities using experiments!
