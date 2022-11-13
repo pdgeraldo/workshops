@@ -9,6 +9,7 @@
 <link href="PabloGeraldo_Quasi_01_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.1.189">
 
+  <meta name="author" content="Pablo Geraldo">
   <title>Introducción a los diseños cuasi-experimentales</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -325,138 +326,65 @@
 <section id="title-slide" class="center">
   <h1 class="title">Introducción a los diseños cuasi-experimentales</h1>
   <p class="subtitle">Inferencia causal: resultados potenciales y modelos gráficos</p>
+  <p class="author">Pablo Geraldo</p>
+  <p class="date">15/11/2022</p>
 </section>
 
-<section id="why-should-we-study-causal-inference" class="slide level2">
-<h2>Why should we study causal inference?</h2>
-<p><br></p>
-<p>The social sciences are experimenting what some authors have called a “credibility revolution” (Angrist and Pischke, 2010), an “identification revolution” (Morgan, 2016), or simply a “causal revolution” (Pearl and MacKenzie, 2018).</p>
-<p>In artificial intelligence/ML, causality have been deemed <a href="https://phys.org/news/2019-02-causal-disentanglement-frontier-ai.html"><strong>“the next frontier”</strong></a> and <a href="https://www.datasciencecentral.com/profiles/blogs/causality-the-next-most-important-thing-in-ai-ml"><strong>“the next most important thing”</strong></a>.</p>
-<p>The enormous progress in the last decades has been facilitated by the development of a mathematical framework that provide researchers with tools to handle causal questions: Potential Outcomes and Structural Causal Model.</p>
+<section>
+<section id="causalidad" class="title-slide slide level1 center">
+<h1>Causalidad</h1>
+
 </section>
-<section id="what-should-you-expect-from-this-workshop" class="slide level2">
-<h2>What should you expect from this workshop?</h2>
-<p>This workshop is designed as a “Crash Course”, so we can obviously focus only on a few things:</p>
-<p><br></p>
-<ul>
-<li><p>Familiarize yourself with the most widely used CI frameworks</p></li>
-<li><p>Understand the role of randomization to tackle causal questions</p></li>
-<li><p>Use potential outcomes and the do-operator to formalize causal estimands</p></li>
-<li><p>Use directed acyclic graphs (DAGs) to encode qualitative assumptions</p></li>
-<li><p>Derive identification results and testable implications from a DAG</p></li>
-<li><p>Assess the plausibility of different identification strategies applied to real problems</p></li>
-</ul>
-<p><br></p>
-<p>At the end of our two sessions, I hope you feel better equipped to read and evaluate the applied literature and to design your own studies using appropriate identification strategies (or at least having a clear idea on what to look for and where!).</p>
+<section id="por-qué-estudiar-inferencia-causal" class="slide level2">
+<h2>¿Por qué estudiar inferencia causal?</h2>
+<p><br> “Revolución de credibilidad” en las ciencias sociales (Angrist and Pischke, 2010), “revolución de identificación” (Morgan, 2016), o simplemente “revolucion causal” (Pearl y MacKenzie, 2018)</p>
+<p><br> En inteligencia artificial, diversos autores han declarado el pensamiento causal como la “proxima frontera”, y “el tema más importante por venir”</p>
+<p><br> El enorme progreso realizado en las últimas décadas se debe en gran parte al desarrollo de un lenguaje apropiado para formalizar preguntas de tipo causal: resultados potenciales (<em>potential outcomes</em>) y el modelo causal estructural (<em>scm</em>)</p>
 </section>
-<section id="what-are-we-not-covering-today" class="slide level2">
-<h2>What are we not covering today?</h2>
-<p>There is a lot of stuff out there! Some areas that you might be interested in but we don’t have enough time to review today:</p>
-<p><br></p>
-<ul>
-<li><p>Sequential estimation for time-varying treatments (g-methods)</p></li>
-<li><p>Estimation in general, including Targeted Maximum Likelihood</p></li>
-<li><p>Machine learning for heterogeneous treatment effects</p></li>
-<li><p>Do-calculus and PO-calculus for identification</p></li>
-<li><p>Causal mediation analysis, causal attribution</p></li>
-<li><p>Other graphical models (MCM, SWIGs, the Hypothetical Model)</p></li>
-<li><p>Selection diagrams for missing data</p></li>
-<li><p>Data fusion (generalization, external validity)</p></li>
-<li><p>Causal discovery (going from the data to the DAG)</p></li>
-</ul>
-</section>
-<section id="intuitions-about-causality" class="slide level2">
-<h2>Intuitions about causality</h2>
-<h3 id="have-you-heard-any-of-these-before">Have you heard any of these before?</h3>
-<p><br></p>
-<p>“Correlation does not imply causation”</p>
-<p>–</p>
-<p>.center[But can we go from one to the other?]</p>
-<p>–</p>
-<p>“No causation without manipulation”</p>
-<p>–</p>
-<p>.center[Then what about race or gender?]</p>
-<p>–</p>
-<p>“Causal inference is a missing data problem”</p>
-<p>–</p>
-<p>.center[Or is it the other way around?]</p>
-<p>–</p>
-<p>“For causal inference, design trumps analysis”</p>
-<p>–</p>
-<p>.center[But what do we mean by design? And analysis?]</p>
-</section>
-<section id="statisticsml-vs-causal-inference" class="slide level2">
-<h2>Statistics/ML vs Causal Inference</h2>
+<section class="slide level2">
+
 <div class="columns">
-<div class="colum" width="50%">
-<p>### Statistics/ML</p>
+<div class="column" style="width:50%;">
+<h3 id="estadísticaml">Estadística/ML</h3>
 <ul>
-<li>Passive observation of the data generating process</li>
-<li>Estimand: Joint probabilities, CEF <span class="math display">\[P(X,Y)\]</span> <span class="math display">\[E(Y|X)\]</span></li>
-<li>Focus on asymptotics / out of sample prediction</li>
-<li>Estimation problem: variance-bias tradeoff</li>
-<li>Pearl: “deep learning is just curve fitting”</li>
+<li><p>Observación pasiva del proceso generador de datos</p></li>
+<li><p>Estimando probabilidades conjuntas y esperanzas condicionales <span class="math display">\[P[Y,X]\]</span> <span class="math display">\[E[Y\mid X]\]</span></p></li>
+<li><p>Problema de <strong>estimación</strong>: dicotomía entre sesgo y varianza</p></li>
+<li><p>Foco en teoría asintótica y predicción fuera de la muestra</p></li>
 </ul>
-</div><div class="colum" width="50%">
-<p>### Causal Inference</p>
+</div><div class="column" style="width:50%;">
+<h3 id="inferencia-causal">Inferencia causal</h3>
 <ul>
-<li>Prediction <strong>under interventions</strong> on the data generating process</li>
-<li>Estimand: interventional quantities <span class="math display">\[P(Y|do(x))\]</span> <span class="math display">\[E(Y|do(x)) - E(Y|do(x'))\]</span> <span class="math display">\[= E(Y_x) - E(Y_{x'})\]</span></li>
-<li>Identification problem: consistency (infinite sample)</li>
-<li>Estimation problem: in general, focus on bias over variance (but changing)</li>
+<li><p>Predicción de resultados <strong>bajo intervenciones</strong></p></li>
+<li><p>Estimando probabilidades inducidas por una intervencion y diferencias entre resultados potenciales <span class="math display">\[P[Y \mid do(x)]\]</span> <span class="math display">\[E[Y_x - Y_{x'}]\]</span></p></li>
+<li><p>Problema de <strong>identificación</strong>: consistencia en “muestras infinitas”</p></li>
+<li><p>Foco en sesgo sobre varianza</p></li>
 </ul>
 </div>
 </div>
 </section>
-<section id="the-ladder-of-causality" class="slide level2">
-<h2>The ladder of causality</h2>
-<table>
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Level</th>
-<th>Estimand</th>
-<th>Activity</th>
-<th>Field/Discipline</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Association</td>
-<td><span class="math inline">\(\mathbf{P(Y \vert X)}\)</span></td>
-<td>Seeing, Observing</td>
-<td>Stats, Machine Learning</td>
-<td><em>What would I believe about Y if I see X?</em> <br> What is the expected income of a college graduate?</td>
-</tr>
-<tr class="even">
-<td>Intervention</td>
-<td><span class="math inline">\(\mathbf{P(Y \vert do(x))}\)</span></td>
-<td>Doing, Intervening</td>
-<td>Experiments, Policy evaluation</td>
-<td><em>What would happen with Y if I do X?</em> <br> What would be my income if I graduate from college?</td>
-</tr>
-<tr class="odd">
-<td>Counterfactual</td>
-<td><span class="math inline">\(\mathbf{P(Y_x \vert x',y')}\)</span></td>
-<td>Imagining, Retrospecting</td>
-<td>Structural Models</td>
-<td><em>What would have happened with Y have I done X instead of X’? Why?</em> <br> What would have been my parents’ income have they graduated from college, given that they didn’t attend?</td>
-</tr>
-</tbody>
-</table>
-<p>.footnote[Pearl and Mackenzie (2018)]</p>
-<p>??? In PO, generally the interventional and the counterfactual level are treated as equivalent. But you will never get an unbiased estimation of counterfactual quantities using experiments!</p>
+<section id="other-title" class="slide level2">
+<h2>Other title</h2>
+</section></section>
+<section>
+<section id="resultados-potenciales" class="title-slide slide level1 center">
+<h1>Resultados Potenciales</h1>
+
+</section>
+<section id="imagina-una-intervención" class="slide level2">
+<h2>Imagina una intervención</h2>
+</section></section>
+<section>
+<section id="modelos-gráficos" class="title-slide slide level1 center">
+<h1>Modelos Gráficos</h1>
+
+</section>
+<section id="construir-un-modelo" class="slide level2">
+<h2>Construir un modelo</h2>
 <div class="footer footer-default">
 
 </div>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -509,7 +437,7 @@
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
         showSlideNumber: 'all',
@@ -614,7 +542,7 @@
         previewLinks: false,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'none',
+        transition: 'slide',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
@@ -634,9 +562,9 @@
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1600,
 
-        height: 700,
+        height: 900,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,
