@@ -97,6 +97,8 @@
   <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -401,6 +403,7 @@
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
+<p><span class="math display">\[\newcommand\indep{\perp\!\!\!\perp}\]</span> <span class="math display">\[\newcommand\nindep{\not\!\perp\!\!\!\perp}\]</span></p>
 <h3 id="sesión-1">Sesión 1</h3>
 <ul>
 <li>Introducción a los lenguajes de inferencia causal
@@ -533,11 +536,11 @@
 <div id="tabset-1-1">
 <table>
 <colgroup>
-<col style="width: 22%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 16%">
-<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 19%">
+<col style="width: 19%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -563,9 +566,9 @@
 <table>
 <colgroup>
 <col style="width: 20%">
-<col style="width: 22%">
-<col style="width: 22%">
-<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 <col style="width: 20%">
 </colgroup>
 <thead>
@@ -591,11 +594,11 @@
 <div id="tabset-1-3">
 <table>
 <colgroup>
-<col style="width: 22%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 16%">
-<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 19%">
+<col style="width: 19%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -800,13 +803,973 @@ Coefficients:
 <li>¿Puedes formularla utilizando resultados potenciales?</li>
 <li>¿Qué supuestos están implicados en esta formalización?</li>
 </ul>
+</section>
+<section id="la-tabla-de-la-ciencia" class="slide level2">
+<h2>La tabla de la ciencia</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>Una de las ventajas de utilizar el marco de resultados potenciales es que podemos tratarlos directamente como variables aleatorias.</p>
+<p>Es decir, todas las reglas de probabilidad siguen aplicando en este contexto.</p>
+<p>La herramienta de cálculo, usualmente implícita, es la “tabla de la ciencia” (Rubin).</p>
+<p>Basicamente, pretendemos que somos capaces de observar todos los resultados potenciales de interés, bajo distintos tratamientos.</p>
+</div>
+</div>
+</section>
+<section id="effecto-causal-promedio-ate" class="slide level2">
+<h2>Effecto Causal Promedio (ATE)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p><span class="math display">\[ATE = E[Y_{ai}] - E[Y_{bi}]\]</span></p>
+<p><span class="math display">\[(6/10) - (5/10) = \color{blue}{0.1}\]</span></p>
+</div>
+</div>
+</section>
+<section id="diferencia-de-medias" class="slide level2">
+<h2>Diferencia de medias</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p><span class="math display">\[ATE = E[Y_{ai}] - E[Y_{bi}]\]</span></p>
+<p><span class="math display">\[(6/10) - (5/10) = \color{blue}{0.1}\]</span></p>
+<p><span class="math display">\[E[Y_i \mid X_i = a] - E[Y_i \mid X_i = b]\]</span> <span class="math display">\[(3/5) - (2/5) = \color{red}{0.2}\]</span></p>
+<p><strong>diferencia de medias <span class="math inline">\(\neq\)</span> ATE</strong></p>
+<p>¿Por qué?</p>
+</div>
+</div>
+</section>
+<section id="fuentes-de-sesgo" class="slide level2">
+<h2>Fuentes de sesgo</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p><span class="math display">\[E[\text{delta medias}]\]</span> <span class="math display">\[= E[Y_i \mid X_i = a] - E[Y_i \mid X_i = b]\]</span> <span class="math display">\[= E[Y_{ai} \mid X_i = a] - E[Y_{bi} \mid X_i = b]\]</span> <span class="math display">\[= ATE  +\]</span> <span class="math display">\[(E[Y_{bi} \mid X_i = a] - E[Y_{bi} \mid X_i = b]) +\]</span> <span class="math display">\[(1 - P[X])(ATT - ATC)\]</span> <span class="math display">\[= \color{blue}{\textbf{0.1}} + \color{red}{0.2} + \color{red}{(0.5)(-0.2)} = \color{red}{\textbf{0.2}}\]</span></p>
+</div>
+</div>
+</section>
+<section id="supuestos-de-identificación" class="slide level2">
+<h2>Supuestos de identificación</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>Para que la diferencia de medias estimara sin sesgo el efecto causal de interés, necesitaríamos la siguiente condición (<em>ignorabilidad condicional</em> o <em>selección basada en observables</em>):</p>
+<p><span class="math display">\[Y_x \indep X\]</span></p>
+<p>¿Se cumple dicha condición aquí? ¡No!</p>
+<p><span class="math display">\[\{Y_{ai}, Y_{bi} \nindep X\}\]</span></p>
+<p>Porque</p>
+<p><span class="math display">\[P(Y_a = y \mid X=a) \neq P(Y_a = y)\]</span></p>
+<p><span class="math display">\[P(Y_b = y \mid X=b) \neq P(Y_b = y)\]</span></p>
+</div>
+</div>
+</section>
+<section id="ignorabilidad-condicional" class="slide level2">
+<h2>Ignorabilidad condicional</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+<th><span class="math inline">\(W_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuanti</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuali</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuanti</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Cuali</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>¿Qué ocurre si incluimos una nueva variable, <span class="math inline">\(W_i\)</span>?</p>
+<p>¿Se cumple la siguiente condición? <span class="math display">\[
+Y_x \indep X | W
+\]</span></p>
+<p>No en realidad… Pero aún así parece ser mejor que antes, ¿correcto? Definamos:</p>
+<p><span class="math display">\[\text{ATE}_{W} = E(Y_a-Y_b|W=w)\]</span></p>
+<p>y su estimador</p>
+<p><span class="math display">\[\widehat{\text{ATE}}_{W} =\]</span> <span class="math display">\[E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)\]</span></p>
+</div>
+</div>
+</section>
+<section id="ignorabilidad-condicional-1" class="slide level2">
+<h2>Ignorabilidad condicional</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+<th><span class="math inline">\(W_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuanti</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuali</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuanti</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Cuali</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>Tendríamos</p>
+<p><span class="math display">\[\widehat{\text{ATE}}_{W=quant} = 0.16\]</span> <span class="math display">\[\widehat{\text{ATE}}_{W=qual} = 0.16\]</span> <span class="math display">\[\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16\]</span></p>
+<p>Sin embargo, el verdadero <span class="math inline">\(\text{ATE}_W\)</span> es <span class="math display">\[\text{ATE}_{W=quant} = -0.2\]</span> <span class="math display">\[\text{ATE}_{W=qual} = 0.4\]</span> <span class="math display">\[\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}\]</span></p>
+</div>
+</div>
+</section>
+<section id="cómo-evaluar-los-supuestos" class="slide level2">
+<h2>¿Cómo evaluar los supuestos?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unidad</th>
+<th><span class="math inline">\(X_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+<th><span class="math inline">\(W_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuanti</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuali</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Cuanti</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Cuali</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Cuali</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Cuanti</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>En general, debemos sostenernos en <strong>supuestos extra-estadísticos</strong> acerca del proceso generador de datos para afirmar relaciones causales.</p>
+<p><br> <strong>“No causes in, no cases out”</strong></p>
+<p>(Nancy Cartwright)</p>
+<p><br></p>
+<p>¿Existe algún modo de diseñar un estudio en el cual sabríamos, <strong>por diseño</strong>, que los supuestos necesarios se cumplen?</p>
+</div>
+</div>
 </section></section>
+<section>
+<section id="experimentos-aleatorios" class="title-slide slide level1 center" data-background-color="aquamarine">
+<h1>Experimentos Aleatorios</h1>
+
+</section>
+<section id="por-qué-aleatorizar" class="slide level2">
+<h2>¿Por qué aleatorizar?</h2>
+<p>Si lo que buscamos es <strong>predecir que ocurriría si intervenimos</strong>, entonces la mejor manera de saberlo es <strong>interviniendo</strong></p>
+<div class="fragment">
+<p>A la asignación aleatoria (o más específicamente, los experimentos controlados aleatorios) se le denomina el <strong>gold standard</strong> de la inferencia causal, pues garantiza que los supuestos necesarios se cumplen por diseño</p>
+</div>
+<div class="fragment">
+<p>Cuando no pueden realizarse en la práctica, sigue siendo útil imaginar un experimento hipotético, con el cual contrastar la validez de afirmaciones causales, e incluso para clarificar a qué nos referimos con el <em>“efecto causal de X”</em></p>
+</div>
+<div class="fragment">
+<p>Los experimentos vienen en muchos sabores: de laboratorio, de campo, de encuestas, e incluso cuasi-experimentos</p>
+</div>
+<div class="fragment">
+<p>Aquí solo mencionaré algunos puntos generales sobre la experimentación en ciencias sociales. La idea es que se interesen y tal vez podrían incluso diseñar su propio experimento (¿por qué no?)</p>
+</div>
+</section>
+<section id="actividad-breve-5-minutos" class="slide level2">
+<h2>Actividad breve (5 minutos)</h2>
+<p>A veces resulta difícil imaginar un experimento que fuese relevante para el tipo de preguntas de investigación que nos interesan</p>
+<p>Algunes incluso afirman (y yo concuerdo parcialmente) que los experimentos tienden a enfatizar preguntas “pequeñas” en lugar de “grandes”, promoviendo el diseño de políticas incrementales y testeables</p>
+<p><strong>¿Están de acuerdo?</strong></p>
+<div class="fragment">
+<p>Por otro lado, existen muchos ejemplos de investigaciones que utilizan métodos experimentales para hacerse cargo de preguntas grandes y difíciles.</p>
+<p><strong>¿Conocen algún ejemplo?</strong></p>
+</div>
+</section>
+<section id="por-qué-funciona-la-aleatorización" class="slide level2">
+<h2>¿Por qué funciona la aleatorización?</h2>
+<p>Previamente indiqué que es posible identificar el efecto causal de <span class="math inline">\(X\)</span> sobre <span class="math inline">\(Y\)</span> si el tratamiento es asignado con independencia de los resultados potenciales. Formalmente <span class="math display">\[(Y_x,Y_{x^*}) \indep X\]</span></p>
+<p>Recordemos la descomposición de la diferencia de medias que revisamos anteriormente.</p>
+<p>Usando el supuesto de <strong>consistencia</strong>, podemos escribir</p>
+<p><span class="math display">\[E(Y_i|X=x) - E(Y_i|X=x^*) = E(Y_x|X=x) - E(Y_{x^*}|X=x^*)\]</span></p>
+<p>Luego, con algo de álgebra, nos queda</p>
+<p><span class="math display">\[= E(Y_x - Y_{x^*}) + (E[Y_{x^*}|X=x] - E[Y_{x^*}|X=x^*])+(1-P[X])(ATT-ATC)\]</span></p>
+<p>Finalmente, dada la <strong>ignorabilidad</strong> del tratamiento, se simplifica a</p>
+<p><span class="math display">\[E(Y_x - Y_{x^*}) = ATE\]</span></p>
+</section>
+<section id="formas-de-validez" class="slide level2">
+<h2>Formas de validez</h2>
+<p>Tradicionalmente, se habla de la validez de las conclusiones causales de un estudio (y, más en general, de la validez de diferentes diseños de investigación) basándonos en las potenciales <strong>amenazas a la validez</strong> de los estudios<sup>1</sup></p>
+<p>En el caso de los resultados potenciales, vimos (con el ejemplo de la diferencia de medias) las posibles fuentes de sesgo: <em>diferencias de base</em> (es decir, bajo la condición de control), y <em>respuestas diferenciales al tratamiento</em></p>
+<p>Pero bajo asignación aleatoria, sabemos que las unidades (o participantes) que terminan a cada lado del experimento (tratados/controles) ¡no tiene nada que ver con sus resultados potenciales!</p>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://pubmed.ncbi.nlm.nih.gov/31977593/">Este</a> artículo de Matthay y Glymour ofrece una revisión desde un punto de vista actual</p></li></ol></aside></section>
+<section id="formas-de-validez-1" class="slide level2">
+<h2>Formas de validez</h2>
+<p>Por eso podemos sostener que los experimentos son robustos en términos de su <strong>validez interna</strong>: entre los participantes de un estudio, podemos descartar fuentes sistemáticas de sesgo</p>
+<p>Por otor lado, esto no implica necesariamente que los resultados tengan <strong>validez externa</strong>, es decir, que sus resultados apliquen fuera del estudio mismo. ¡Necesitamos supuestos adicionales para extrapolar!</p>
+</section>
+<section id="cómo-aleatorizar" class="slide level2">
+<h2>¿Cómo aleatorizar?</h2>
+<p>La asignación aleatoria tiene importancia no solo en términos de identificación (garantizando la <strong>ignorabilidad</strong>), sino también en términos de estimación</p>
+<p>Si asumimos por un momento que los resultados potenciales son fijos, entonces lo único que varía (y por ende, la fuente de incertidumbre) es el esquema de asignación (qué unidad está en qué lado del experimento)</p>
+<p>En base a lo anterior, podemos derivar la <strong>distribución de permutaciones</strong> y utilizarla como base para la inferencia estadística</p>
+<p>La variabilidad implicada por el esquema de asignación depende del <strong>nivel de agregación</strong> de las unidades (<em>clustering</em>) así como de los <strong>grupos de asignación</strong> (<em>blocking</em>)</p>
+</section>
+<section id="tipos-de-experimentos" class="slide level2">
+<h2>Tipos de experimentos</h2>
+<ul>
+<li><p><strong>Experimentos de laboratorio</strong>: Usualmente se realizan con grupos pequeños de participantes, que tienden a ser altamente seleccionados (por ejemplo, estudiantes de pregrado). Útiles para estudios cognitivos y de comportamiento</p></li>
+<li><p><strong>Experimentos de campo</strong>: En búsqueda de resultados con mayor validez <em>externa</em>, los experimentos de campo se aplican en condiciones reales. Su costo es generalmente mayor (con excepciones como los estudios de auditoría)</p></li>
+<li><p><strong>Experimentos de encuesta</strong>: Se utilizan para estudiar como los participantes en una encuesta cambian su respuesta según los estímulos recibidos (que se asignan aleatoriamente). Estudios de viñeta y experimentos de lista caen en esta categoría</p></li>
+<li><p><strong>Cuasi-experimentos</strong>: Se llaman cuasi-experimentos a situaciones que ocurren naturalmente (sin control de los investigadores) y que proveen variación cuasi-aleatoria en el tratamiento recibido. Por ejemplo, terremotos, ataques terroristas, fecha de nacimiento, cambio en ciertas leyes, etc.</p></li>
+</ul>
+</section></section>
+<section id="continuará" class="title-slide slide level1 center" data-background-color="aquamarine">
+<h1>Continuará</h1>
+
+</section>
+
 <section id="modelos-gráficos" class="title-slide slide level1 center" data-background-color="aquamarine">
 <h1>Modelos Gráficos</h1>
 <div class="footer footer-default">
 
 </div>
 </section>
+
+
     </div>
   </div>
 
@@ -817,6 +1780,7 @@ Coefficients:
   <script src="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -838,7 +1802,8 @@ Coefficients:
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -1009,7 +1974,7 @@ Coefficients:
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,
