@@ -16,10 +16,12 @@ editor: visual
 
 # Plan de sesiones {background-color="aquamarine"}
 
-## 
+## {visibility="hidden"}
 
 $$\newcommand\indep{\perp\!\!\!\perp}$$
 $$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$
+
+## 
 
 ### Sesión 1
 
