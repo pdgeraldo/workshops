@@ -5,7 +5,7 @@ date: "15/11/2022"
 author: "Pablo Geraldo"
 format: 
   revealjs:
-    #theme: dark
+    #theme: simple
     width: 1600
     height: 900
     transition: slide
@@ -13,18 +13,138 @@ format:
 editor: visual
 ---
 
-# Causalidad
+# Plan de sesiones {background-color="aquamarine"}
+
+##
+
+### Sesión 1
+
+* Introducción a los lenguajes de inferencia causal
+  * Resultados potenciales (Potential Outcomes)
+  * Modelos gráficos (Directed Acyclic Graphs)
+
+
+### Sesión 2
+
+* Experimentos y cuasi experimentos
+  * ¿Por qué aleatorizar?
+  * ¿Qué hacer cuando no es posible aleatorizar? Diseños cuasi-experimentales
+
+
+### Sesión 3
+
+* Ejercicios prácticos
+  * Replicación conceptual y de resultados
+  * Discusión de propuestas de investigación
+
+
+
+# Causalidad {background-color="aquamarine"}
 
 ## ¿Por qué estudiar inferencia causal?
 
-<br>
+<br> 
 "Revolución de credibilidad" en las ciencias sociales (Angrist and Pischke, 2010), "revolución de identificación" (Morgan, 2016), o simplemente "revolucion causal" (Pearl y MacKenzie, 2018)
 
-<br>
-En inteligencia artificial, diversos autores han declarado el pensamiento causal como la "proxima frontera", y "el tema más importante por venir"
+<br> En inteligencia artificial, diversos autores han declarado el pensamiento causal como la "proxima frontera", y "el tema más importante por venir"
+
+<br> El enorme progreso realizado en las últimas décadas se debe en gran parte al desarrollo de un lenguaje apropiado para formalizar preguntas de tipo causal: **resultados potenciales** (*potential outcomes*) y el **modelo causal estructural** (*structural causal model*)
+
+
+## ¿Qué esperar de la sesión  de hoy?
+
+<br>Dadas las restricciones de tiempo, en este intensivo podremos enfocarnos solo en algunos aspectos relacionados a la inferencia causal:
+
+* Familiarizarse con los marcos conceptuales más comunmente utilizados en inferencia causal
+
+* Utilizar resultados potenciales y do-operator para formalizar cantidades causales
+
+* Comprender el rol de la aleatorización para responder preguntas causales
+
+* Utilizar modelos gráficos (DAGs) para expresar supuestos cualitativos
+
+* Derivar resultados de identificación a partir de supuestos
+
+* Evaluar la plausibilidad de distintos supuestos y estrategias de identificación.
+
+<br>Al finalizar las tres sesiones, espero que se sientan mejor equipados para leer y evaluar la literatura aplicada, así como para diseñar sus propios estudios con las estrategias adecuadas.
+
+
+## ¿Qué no cubriremos hoy?
+
+<br>La inferencia causal es un area activa de investigación y de contornos difusos. Temas que podrían interesarles pero no cubriremos en este taller:
+
+* Estimación secuencial para tratamientos que varían en el tiempo
+
+* Problemas de estimación, incluyendo ML methods
+
+* Métodos para estudiar efectos heterogéneos
+
+* Cálculos de identificación (do-calculus y po-calculus)
+
+* Mediación y atribución causal 
+
+* Otros modelos gráficos (MCM, SWIGs, Hypothetical Model)
+
+* Modelos gráficos de selección para tratar datos pérdidos
+
+* Fusión de datos (generalización y validez externa)
+
+* Descubrimiento causal (partir de los datos y llegar al modelo)
+
+## Intuiciones causales
 
 <br>
-El enorme progreso realizado en las últimas décadas se debe en gran parte al desarrollo de un lenguaje apropiado para formalizar preguntas de tipo causal: resultados potenciales (*potential outcomes*) y el modelo causal estructural (*scm*)
+
+::: columns
+
+::: {.column width="50%"}
+
+:::{.fragment}
+"Correlación no implica causalidad"
+:::
+
+:::{.fragment}
+"No hay causalidad sin manipulación"
+:::
+
+:::{.fragment}
+"La inferencia causal es un problema de datos perdidos"
+:::
+
+:::{.fragment}
+"En inferencia causal, el diseño vence al análisis"
+:::
+
+:::
+
+::: {.column width="50%"}
+
+:::{.fragment}
+¿Pero podemos ir de una a otra?
+:::
+
+:::{.fragment}
+¿Qué ocurre con raza y género?
+:::
+
+
+:::{.fragment}
+¿O viceversa?
+:::
+
+
+:::{.fragment}
+¿Pero qué queremos decir con "diseño" o "análisis"?
+:::
+
+
+:::
+
+:::
+
+ 
+# ¿De qué se trata esto? {background-color="aquamarine"}
 
 ---
 
@@ -34,8 +154,7 @@ El enorme progreso realizado en las últimas décadas se debe en gran parte al d
 
 -   Observación pasiva del proceso generador de datos
 
--   Estimando probabilidades conjuntas y esperanzas condicionales 
-$$P[Y,X]$$ $$E[Y\mid X]$$
+-   Estimando probabilidades conjuntas y esperanzas condicionales $$P[Y,X]$$ $$E[Y\mid X]$$
 
 -   Problema de **estimación**: dicotomía entre sesgo y varianza
 
@@ -47,8 +166,7 @@ $$P[Y,X]$$ $$E[Y\mid X]$$
 
 -   Predicción de resultados **bajo intervenciones**
 
--   Estimando probabilidades inducidas por una intervencion y diferencias entre resultados potenciales 
-$$P[Y \mid do(x)]$$ $$E[Y_x - Y_{x'}]$$
+-   Estimando probabilidades inducidas por una intervencion y diferencias entre resultados potenciales $$P[Y \mid do(x)]$$ $$E[Y_x - Y_{x'}]$$
 
 -   Problema de **identificación**: consistencia en "muestras infinitas"
 
@@ -56,15 +174,204 @@ $$P[Y \mid do(x)]$$ $$E[Y_x - Y_{x'}]$$
 :::
 :::
 
----
+## La escalera de la causalidad
 
-## Other title
+::: {.panel-tabset}
+
+### Asociación
+
+Estimando | Actividad | Disciplina | Pregunta | Ejemplo |
+|-------| -------- | -------- | ----- | --- |
+$\mathbf{P(Y \vert X)}$ | Ver, Observar | Estadística, ML | *¿Cómo afecta X mi creencia sobre Y* | ¿Cual es el ingreso esperado de un profesional? |
+
+### Intervención
+
+Estimando | Actividad | Disciplina | Pregunta |Ejemplo |
+|-------| -------- | -------- | ----- | ------- |
+ $\mathbf{P(Y \vert do(x))}$ | Hacer, Intervenir | Experimentos | *¿Qué ocurre con Y si hago X?* | ¿Cual sería mi ingreso si decido ir a la universidad? |
+
+### Contrafactual
+
+Estimando | Actividad | Disciplina | Pregunta | Ejemplo |
+|-------| -------- | -------- | ----- | ---|
+ $\mathbf{P(Y_x \vert x',y')}$ | Imaginar, Retrospección | Modelos estructurales | *¿Que hubiese ocurrido con Y si hubiese hecho X en vez de X'? ¿ Por qué?* | ¿Cual sería el ingreso de mis padres si hubiesen ido a la universidad, dado que no fueron?| 
+:::
+
+:::aside
+Pearl and Mackenzie (2018)
+:::
+
+## ¿Es "hacer" realmente diferente de "observar"?
 
 
-# Resultados Potenciales
+<br>
 
-## Imagina una intervención
+![](cell_phones.png)
 
-# Modelos Gráficos 
 
-## Construir un modelo
+## ¿Es "hacer" realmente diferente de "observar"?
+
+Imaginemos un ejemplo: ¿Cual es el efecto de tu programa de estudios en la calidad de tu primer trabajo?
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "11"
+
+library(ggplot2)
+
+set.seed(1988)
+# muestra
+N <- 10000
+# selecitividad estudiantes
+W <- rnorm(N, mean=250, sd=50) 
+# "calidad" del programa
+X <- 0.6*W + rnorm(N, mean=0, sd=10)
+# calidad del trabajo
+Y <- 0.3*W - 0.2*X + rnorm(N)
+data <- data.frame(Y=Y, X=X, W=W)
+
+ggplot(data, aes(x=X, y=Y)) +
+  geom_point(alpha=0.3) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Calidad del programa",
+       y = "Calidad del trabajo") +
+  scale_x_continuous(limits = c(0,320)) +
+  scale_y_continuous(limits = c(-40,120)) +
+  theme_bw()
+```
+
+## ¿Es "hacer" realmente diferente de "observar"?
+
+¿Qué nos diría una regresión lineal?
+
+```{r}
+#| output-location: fragment
+#| echo: true
+
+lm(Y~X, data=data)
+```
+
+## ¿Es "hacer" realmente diferente de "observar"?
+
+¿Qué ocurre si los estudiantes son asignados aleatoriamente a cada programa?
+
+```{r}
+#| output-location: fragment
+#| echo: true
+#| code-line-numbers: "2"
+
+# Asignación aleatoria de estudiantes!
+X <- sample(min(X):max(X),
+            N, replace=TRUE)
+# Calidad del trabajo
+Y <- 0.3*W - 0.2*X + rnorm(N)
+data$Xrand <- X
+data$Ytrue <- Y
+
+lm(Ytrue~Xrand, data=data)
+```
+
+
+
+## ¿Es "hacer" realmente diferente de "observar"?
+
+¿Podemos solucionar el problema ajustando por selectividad?
+
+```{r}
+#| output-location: fragment
+#| echo: true
+
+# Misma regresión
+# Agregando W como control
+lm(Y~X+W, data=data)
+```
+
+
+## ¿Es "hacer" realmente diferente de "observar"?
+
+Finalmente, ¿de dónde estamos obteniendo los datos?
+
+
+```{r}
+#| output-location: fragment
+#| echo: true
+
+# Registro de trabajos
+prob <- 1/(1+exp(-(X-Y*2)))
+data$C <- rbinom(N, 1, prob=prob)
+
+# Regresión en datos filtrados
+lm(Ytrue~Xrand, data=data |>
+     dplyr::filter(C==1))
+```
+
+# Resultados Potenciales {background-color="aquamarine"}
+
+## Resultados potenciales
+
+Marco ideado por Neyman (1923) en el contexto de diseño experimental en agricultura. 
+
+Por décadas su uso permaneció en ese contexto.
+
+* Importados y desarrollados por Donald Rubin, aplicándolos a estudios observacionales (c. 1974)
+
+* Son de gran utilidad para clarificar *qué queremos saber* (**estimand**)
+
+* Esto incluye identificar las razones de la discrepancia entre lo que observamos y la cantidad de interés (**sesgo**)
+
+* Utiles para formalizar lo que *debe sostenerse* para identificar un efecto de interés (**supuestos**)
+
+* Son algo menos útiles para evaluar si los supuestos invocados son creíbles en determinada aplicación
+
+## Definiciones y notación
+
+Comencemos con algunas definiciones
+
+$Y$ es la variable de resultado, tal como la observamos
+
+$X$ es la variable de interés (exposición, tratamiento)
+
+$Y_x$ es el resultado potencial cuando manipulamos el valor de $X$ para que sea $x$. Por ejemplo, con un tratamiento binario
+
+* $Y_1$ es el resultado potencial bajo tratamiento ($X=1$)
+
+* $Y_0$ es el resultado potencial bajo control ($X=0$)
+
+## Consistencia
+
+Existen diversas maneras, equivalentes entre sí, de denotar los resultados potenciales.
+
+Puede resultar confuso, pero es una buena práctica moverse entre variantes (necesario para conocer la literatura)
+
+$$Y(x) = Y_x = Y^x$$
+
+**Se lee así**: 
+El valor que la variable $Y$ tomaría si manipulamos el valor de la variable $X$ para que tome el valor $x$
+
+**Consistencia**: también conocido como SUTVA (Stable Unit Treatment Value Assumption)
+
+$$X=x \rightarrow Y = Y_x$$
+
+Para el caso binario: $Y = XY_1 + (1-X) Y_0$
+
+[¿Qué supuestos están implicados en esta notación? ¿Qué tipo de dependencias estamos descartando?]{.fragment .highlight-red}
+
+## Actividad breve (3-5 minutos)
+
+(Al menos) en sociología, existe la tendencia a formalizar los efectos de interés como **coeficientes de regresión** (en otras palabras, las hipótesis son formuladas dentro de un modelo estadístico)
+
+Los resultados potenciales son una manera de formalizar los efectos causales de interés **fuera** de cualquier modelo estadístico. 
+
+Esto nos permite separar claramente *aquello que queremos estimar* (**estimand**), la *maquinaria estadística* que utilizamos para responder nuestra pregunta (**estimator**), y la respuesta concreta que obtenemos de un modelo (**estimate**)
+
+Lundberg, Johnson, y Stewart (2021) es una excelente referencia para discutir en detalle este punto.
+
+Dediquemos un momento para pensar en sus propias investigaciones:
+
+* ¿Qué pregunta **causal** es relevante en tu área de estudios?
+* ¿Puedes formularla utilizando resultados potenciales?
+* ¿Qué supuestos están implicados en esta formalización?
+
+# Modelos Gráficos {background-color="aquamarine"}
+

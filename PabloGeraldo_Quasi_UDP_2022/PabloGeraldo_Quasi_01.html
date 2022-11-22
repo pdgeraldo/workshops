@@ -28,6 +28,70 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="PabloGeraldo_Quasi_01_files/libs/revealjs/dist/theme/quarto.css" id="theme">
   <link href="PabloGeraldo_Quasi_01_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -331,7 +395,39 @@
 </section>
 
 <section>
-<section id="causalidad" class="title-slide slide level1 center">
+<section id="plan-de-sesiones" class="title-slide slide level1 center" data-background-color="aquamarine">
+<h1>Plan de sesiones</h1>
+
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<h3 id="sesión-1">Sesión 1</h3>
+<ul>
+<li>Introducción a los lenguajes de inferencia causal
+<ul>
+<li>Resultados potenciales (Potential Outcomes)</li>
+<li>Modelos gráficos (Directed Acyclic Graphs)</li>
+</ul></li>
+</ul>
+<h3 id="sesión-2">Sesión 2</h3>
+<ul>
+<li>Experimentos y cuasi experimentos
+<ul>
+<li>¿Por qué aleatorizar?</li>
+<li>¿Qué hacer cuando no es posible aleatorizar? Diseños cuasi-experimentales</li>
+</ul></li>
+</ul>
+<h3 id="sesión-3">Sesión 3</h3>
+<ul>
+<li>Ejercicios prácticos
+<ul>
+<li>Replicación conceptual y de resultados</li>
+<li>Discusión de propuestas de investigación</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="causalidad" class="title-slide slide level1 center" data-background-color="aquamarine">
 <h1>Causalidad</h1>
 
 </section>
@@ -339,7 +435,73 @@
 <h2>¿Por qué estudiar inferencia causal?</h2>
 <p><br> “Revolución de credibilidad” en las ciencias sociales (Angrist and Pischke, 2010), “revolución de identificación” (Morgan, 2016), o simplemente “revolucion causal” (Pearl y MacKenzie, 2018)</p>
 <p><br> En inteligencia artificial, diversos autores han declarado el pensamiento causal como la “proxima frontera”, y “el tema más importante por venir”</p>
-<p><br> El enorme progreso realizado en las últimas décadas se debe en gran parte al desarrollo de un lenguaje apropiado para formalizar preguntas de tipo causal: resultados potenciales (<em>potential outcomes</em>) y el modelo causal estructural (<em>scm</em>)</p>
+<p><br> El enorme progreso realizado en las últimas décadas se debe en gran parte al desarrollo de un lenguaje apropiado para formalizar preguntas de tipo causal: <strong>resultados potenciales</strong> (<em>potential outcomes</em>) y el <strong>modelo causal estructural</strong> (<em>structural causal model</em>)</p>
+</section>
+<section id="qué-esperar-de-la-sesión-de-hoy" class="slide level2">
+<h2>¿Qué esperar de la sesión de hoy?</h2>
+<p><br>Dadas las restricciones de tiempo, en este intensivo podremos enfocarnos solo en algunos aspectos relacionados a la inferencia causal:</p>
+<ul>
+<li><p>Familiarizarse con los marcos conceptuales más comunmente utilizados en inferencia causal</p></li>
+<li><p>Utilizar resultados potenciales y do-operator para formalizar cantidades causales</p></li>
+<li><p>Comprender el rol de la aleatorización para responder preguntas causales</p></li>
+<li><p>Utilizar modelos gráficos (DAGs) para expresar supuestos cualitativos</p></li>
+<li><p>Derivar resultados de identificación a partir de supuestos</p></li>
+<li><p>Evaluar la plausibilidad de distintos supuestos y estrategias de identificación.</p></li>
+</ul>
+<p><br>Al finalizar las tres sesiones, espero que se sientan mejor equipados para leer y evaluar la literatura aplicada, así como para diseñar sus propios estudios con las estrategias adecuadas.</p>
+</section>
+<section id="qué-no-cubriremos-hoy" class="slide level2">
+<h2>¿Qué no cubriremos hoy?</h2>
+<p><br>La inferencia causal es un area activa de investigación y de contornos difusos. Temas que podrían interesarles pero no cubriremos en este taller:</p>
+<ul>
+<li><p>Estimación secuencial para tratamientos que varían en el tiempo</p></li>
+<li><p>Problemas de estimación, incluyendo ML methods</p></li>
+<li><p>Métodos para estudiar efectos heterogéneos</p></li>
+<li><p>Cálculos de identificación (do-calculus y po-calculus)</p></li>
+<li><p>Mediación y atribución causal</p></li>
+<li><p>Otros modelos gráficos (MCM, SWIGs, Hypothetical Model)</p></li>
+<li><p>Modelos gráficos de selección para tratar datos pérdidos</p></li>
+<li><p>Fusión de datos (generalización y validez externa)</p></li>
+<li><p>Descubrimiento causal (partir de los datos y llegar al modelo)</p></li>
+</ul>
+</section>
+<section id="intuiciones-causales" class="slide level2">
+<h2>Intuiciones causales</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<p>“Correlación no implica causalidad”</p>
+</div>
+<div class="fragment">
+<p>“No hay causalidad sin manipulación”</p>
+</div>
+<div class="fragment">
+<p>“La inferencia causal es un problema de datos perdidos”</p>
+</div>
+<div class="fragment">
+<p>“En inferencia causal, el diseño vence al análisis”</p>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>¿Pero podemos ir de una a otra?</p>
+</div>
+<div class="fragment">
+<p>¿Qué ocurre con raza y género?</p>
+</div>
+<div class="fragment">
+<p>¿O viceversa?</p>
+</div>
+<div class="fragment">
+<p>¿Pero qué queremos decir con “diseño” o “análisis”?</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="de-qué-se-trata-esto" class="title-slide slide level1 center" data-background-color="aquamarine">
+<h1>¿De qué se trata esto?</h1>
+
 </section>
 <section class="slide level2">
 
@@ -363,28 +525,288 @@
 </div>
 </div>
 </section>
-<section id="other-title" class="slide level2">
-<h2>Other title</h2>
+<section id="la-escalera-de-la-causalidad" class="slide level2">
+<h2>La escalera de la causalidad</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Asociación</a></li><li><a href="#tabset-1-2">Intervención</a></li><li><a href="#tabset-1-3">Contrafactual</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<table>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 16%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimando</th>
+<th>Actividad</th>
+<th>Disciplina</th>
+<th>Pregunta</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mathbf{P(Y \vert X)}\)</span></td>
+<td>Ver, Observar</td>
+<td>Estadística, ML</td>
+<td><em>¿Cómo afecta X mi creencia sobre Y</em></td>
+<td>¿Cual es el ingreso esperado de un profesional?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-2">
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 14%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimando</th>
+<th>Actividad</th>
+<th>Disciplina</th>
+<th>Pregunta</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mathbf{P(Y \vert do(x))}\)</span></td>
+<td>Hacer, Intervenir</td>
+<td>Experimentos</td>
+<td><em>¿Qué ocurre con Y si hago X?</em></td>
+<td>¿Cual sería mi ingreso si decido ir a la universidad?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-3">
+<table>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 16%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimando</th>
+<th>Actividad</th>
+<th>Disciplina</th>
+<th>Pregunta</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mathbf{P(Y_x \vert x',y')}\)</span></td>
+<td>Imaginar, Retrospección</td>
+<td>Modelos estructurales</td>
+<td><em>¿Que hubiese ocurrido con Y si hubiese hecho X en vez de X’? ¿ Por qué?</em></td>
+<td>¿Cual sería el ingreso de mis padres si hubiesen ido a la universidad, dado que no fueron?</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<aside><div>
+<p>Pearl and Mackenzie (2018)</p>
+</div></aside></section>
+<section id="es-hacer-realmente-diferente-de-observar" class="slide level2">
+<h2>¿Es “hacer” realmente diferente de “observar”?</h2>
+<p><br></p>
+
+<img data-src="cell_phones.png" class="r-stretch"></section>
+<section id="es-hacer-realmente-diferente-de-observar-1" class="slide level2">
+<h2>¿Es “hacer” realmente diferente de “observar”?</h2>
+<p>Imaginemos un ejemplo: ¿Cual es el efecto de tu programa de estudios en la calidad de tu primer trabajo?</p>
+<div class="cell columns column-output-location">
+<div class="column">
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">set.seed</span>(<span class="dv">1988</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># muestra</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>N <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># selecitividad estudiantes</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>W <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean=</span><span class="dv">250</span>, <span class="at">sd=</span><span class="dv">50</span>) </span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># "calidad" del programa</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>X <span class="ot">&lt;-</span> <span class="fl">0.6</span><span class="sc">*</span>W <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">10</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># calidad del trabajo</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>Y <span class="ot">&lt;-</span> <span class="fl">0.3</span><span class="sc">*</span>W <span class="sc">-</span> <span class="fl">0.2</span><span class="sc">*</span>X <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb1-12"><a href="#cb1-12"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Y=</span>Y, <span class="at">X=</span>X, <span class="at">W=</span>W)</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x=</span>X, <span class="at">y=</span>Y)) <span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">"lm"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb1-17"><a href="#cb1-17"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Calidad del programa"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18"></a>       <span class="at">y =</span> <span class="st">"Calidad del trabajo"</span>) <span class="sc">+</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">320</span>)) <span class="sc">+</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">40</span>,<span class="dv">120</span>)) <span class="sc">+</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column fragment">
+<div class="cell-output-display">
+<p><img data-src="PabloGeraldo_Quasi_01_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="es-hacer-realmente-diferente-de-observar-2" class="slide level2">
+<h2>¿Es “hacer” realmente diferente de “observar”?</h2>
+<p>¿Qué nos diría una regresión lineal?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">lm</span>(Y<span class="sc">~</span>X, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ X, data = data)
+
+Coefficients:
+(Intercept)            X  
+     7.8506       0.2476  </code></pre>
+</div>
+</div>
+</section>
+<section id="es-hacer-realmente-diferente-de-observar-3" class="slide level2">
+<h2>¿Es “hacer” realmente diferente de “observar”?</h2>
+<p>¿Qué ocurre si los estudiantes son asignados aleatoriamente a cada programa?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Asignación aleatoria de estudiantes!</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>X <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">min</span>(X)<span class="sc">:</span><span class="fu">max</span>(X),</span>
+<span id="cb4-3"><a href="#cb4-3"></a>            N, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Calidad del trabajo</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>Y <span class="ot">&lt;-</span> <span class="fl">0.3</span><span class="sc">*</span>W <span class="sc">-</span> <span class="fl">0.2</span><span class="sc">*</span>X <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>data<span class="sc">$</span>Xrand <span class="ot">&lt;-</span> X</span>
+<span id="cb4-7"><a href="#cb4-7"></a>data<span class="sc">$</span>Ytrue <span class="ot">&lt;-</span> Y</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="fu">lm</span>(Ytrue<span class="sc">~</span>Xrand, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Ytrue ~ Xrand, data = data)
+
+Coefficients:
+(Intercept)        Xrand  
+     75.262       -0.202  </code></pre>
+</div>
+</div>
+</section>
+<section id="es-hacer-realmente-diferente-de-observar-4" class="slide level2">
+<h2>¿Es “hacer” realmente diferente de “observar”?</h2>
+<p>¿Podemos solucionar el problema ajustando por selectividad?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Misma regresión</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># Agregando W como control</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">lm</span>(Y<span class="sc">~</span>X<span class="sc">+</span>W, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ X + W, data = data)
+
+Coefficients:
+(Intercept)            X            W  
+    0.02049     -0.20011      0.29996  </code></pre>
+</div>
+</div>
+</section>
+<section id="es-hacer-realmente-diferente-de-observar-5" class="slide level2">
+<h2>¿Es “hacer” realmente diferente de “observar”?</h2>
+<p>Finalmente, ¿de dónde estamos obteniendo los datos?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Registro de trabajos</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>prob <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>(X<span class="sc">-</span>Y<span class="sc">*</span><span class="dv">2</span>)))</span>
+<span id="cb8-3"><a href="#cb8-3"></a>data<span class="sc">$</span>C <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, <span class="at">prob=</span>prob)</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co"># Regresión en datos filtrados</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">lm</span>(Ytrue<span class="sc">~</span>Xrand, <span class="at">data=</span>data <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>     dplyr<span class="sc">::</span><span class="fu">filter</span>(C<span class="sc">==</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Ytrue ~ Xrand, data = dplyr::filter(data, C == 1))
+
+Coefficients:
+(Intercept)        Xrand  
+    64.6809      -0.1581  </code></pre>
+</div>
+</div>
 </section></section>
 <section>
-<section id="resultados-potenciales" class="title-slide slide level1 center">
+<section id="resultados-potenciales" class="title-slide slide level1 center" data-background-color="aquamarine">
 <h1>Resultados Potenciales</h1>
 
 </section>
-<section id="imagina-una-intervención" class="slide level2">
-<h2>Imagina una intervención</h2>
-</section></section>
-<section>
-<section id="modelos-gráficos" class="title-slide slide level1 center">
-<h1>Modelos Gráficos</h1>
-
+<section id="resultados-potenciales-1" class="slide level2">
+<h2>Resultados potenciales</h2>
+<p>Marco ideado por Neyman (1923) en el contexto de diseño experimental en agricultura.</p>
+<p>Por décadas su uso permaneció en ese contexto.</p>
+<ul>
+<li><p>Importados y desarrollados por Donald Rubin, aplicándolos a estudios observacionales (c.&nbsp;1974)</p></li>
+<li><p>Son de gran utilidad para clarificar <em>qué queremos saber</em> (<strong>estimand</strong>)</p></li>
+<li><p>Esto incluye identificar las razones de la discrepancia entre lo que observamos y la cantidad de interés (<strong>sesgo</strong>)</p></li>
+<li><p>Utiles para formalizar lo que <em>debe sostenerse</em> para identificar un efecto de interés (<strong>supuestos</strong>)</p></li>
+<li><p>Son algo menos útiles para evaluar si los supuestos invocados son creíbles en determinada aplicación</p></li>
+</ul>
 </section>
-<section id="construir-un-modelo" class="slide level2">
-<h2>Construir un modelo</h2>
+<section id="definiciones-y-notación" class="slide level2">
+<h2>Definiciones y notación</h2>
+<p>Comencemos con algunas definiciones</p>
+<p><span class="math inline">\(Y\)</span> es la variable de resultado, tal como la observamos</p>
+<p><span class="math inline">\(X\)</span> es la variable de interés (exposición, tratamiento)</p>
+<p><span class="math inline">\(Y_x\)</span> es el resultado potencial cuando manipulamos el valor de <span class="math inline">\(X\)</span> para que sea <span class="math inline">\(x\)</span>. Por ejemplo, con un tratamiento binario</p>
+<ul>
+<li><p><span class="math inline">\(Y_1\)</span> es el resultado potencial bajo tratamiento (<span class="math inline">\(X=1\)</span>)</p></li>
+<li><p><span class="math inline">\(Y_0\)</span> es el resultado potencial bajo control (<span class="math inline">\(X=0\)</span>)</p></li>
+</ul>
+</section>
+<section id="consistencia" class="slide level2">
+<h2>Consistencia</h2>
+<p>Existen diversas maneras, equivalentes entre sí, de denotar los resultados potenciales.</p>
+<p>Puede resultar confuso, pero es una buena práctica moverse entre variantes (necesario para conocer la literatura)</p>
+<p><span class="math display">\[Y(x) = Y_x = Y^x\]</span></p>
+<p><strong>Se lee así</strong>: El valor que la variable <span class="math inline">\(Y\)</span> tomaría si manipulamos el valor de la variable <span class="math inline">\(X\)</span> para que tome el valor <span class="math inline">\(x\)</span></p>
+<p><strong>Consistencia</strong>: también conocido como SUTVA (Stable Unit Treatment Value Assumption)</p>
+<p><span class="math display">\[X=x \rightarrow Y = Y_x\]</span></p>
+<p>Para el caso binario: <span class="math inline">\(Y = XY_1 + (1-X) Y_0\)</span></p>
+<p><span class="fragment highlight-red">¿Qué supuestos están implicados en esta notación? ¿Qué tipo de dependencias estamos descartando?</span></p>
+</section>
+<section id="actividad-breve-3-5-minutos" class="slide level2">
+<h2>Actividad breve (3-5 minutos)</h2>
+<p>(Al menos) en sociología, existe la tendencia a formalizar los efectos de interés como <strong>coeficientes de regresión</strong> (en otras palabras, las hipótesis son formuladas dentro de un modelo estadístico)</p>
+<p>Los resultados potenciales son una manera de formalizar los efectos causales de interés <strong>fuera</strong> de cualquier modelo estadístico.</p>
+<p>Esto nos permite separar claramente <em>aquello que queremos estimar</em> (<strong>estimand</strong>), la <em>maquinaria estadística</em> que utilizamos para responder nuestra pregunta (<strong>estimator</strong>), y la respuesta concreta que obtenemos de un modelo (<strong>estimate</strong>)</p>
+<p>Lundberg, Johnson, y Stewart (2021) es una excelente referencia para discutir en detalle este punto.</p>
+<p>Dediquemos un momento para pensar en sus propias investigaciones:</p>
+<ul>
+<li>¿Qué pregunta <strong>causal</strong> es relevante en tu área de estudios?</li>
+<li>¿Puedes formularla utilizando resultados potenciales?</li>
+<li>¿Qué supuestos están implicados en esta formalización?</li>
+</ul>
+</section></section>
+<section id="modelos-gráficos" class="title-slide slide level1 center" data-background-color="aquamarine">
+<h1>Modelos Gráficos</h1>
 <div class="footer footer-default">
 
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
@@ -596,6 +1018,48 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          // dispatch for htmlwidgets
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for reveal
+        if (window.Reveal) {
+          window.Reveal.addEventListener("slidechanged", function(event) {
+            fireSlideChanged(event.previousSlide, event.currentSlide);
+          });
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
