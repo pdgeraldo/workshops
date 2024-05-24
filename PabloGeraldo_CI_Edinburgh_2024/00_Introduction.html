@@ -346,8 +346,8 @@ Pablo Geraldo Bastías
   <p class="date">May 28, 2024</p>
 </section>
 <section>
-<section id="introduction" class="title-slide slide level1 center" data-background-color="aquamarine">
-<h1>Introduction</h1>
+<section id="motivation" class="title-slide slide level1 center" data-background-color="aquamarine">
+<h1>Motivation</h1>
 
 </section>
 <section id="why-should-we-study-causal-inference" class="slide level2">
@@ -425,20 +425,10 @@ Pablo Geraldo Bastías
 <h2>Statistics/ML vs Causal Inference</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p>PICHULA</p>
-</div><div class="column" style="width:50%;">
-<p>SAPOLIO</p>
-</div>
-</div>
-</section>
-<section id="statisticsml-vs-causal-inference-1" class="slide level2">
-<h2>Statistics/ML vs Causal Inference</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
 <p><strong><em>Statistics/ML</em></strong></p>
 <ul>
 <li>Passive observation of the data generating process</li>
-<li>Estimand: Joint probabilities, CEF <span class="math display">\[P(X,Y)\]</span> <span class="math display">\[E(Y|X)\]</span></li>
+<li>Estimand: Joint probabilities, CEF <span class="math display">\[P(Y,X)\]</span> <span class="math display">\[E(Y|X=x)\]</span></li>
 <li>Focus on asymptotics / out of sample prediction</li>
 <li>Estimation problem: variance-bias tradeoff</li>
 <li>Pearl: “deep learning is just curve fitting”</li>
@@ -446,7 +436,7 @@ Pablo Geraldo Bastías
 </div><div class="column" style="width:50%;">
 <p><strong><em>Causal Inference</em></strong></p>
 <ul>
-<li>Prediction <strong>under interventions</strong> on the data generating process</li>
+<li>Prediction <strong>under interventions</strong> on the DGP</li>
 <li>Estimand: interventional quantities <span class="math display">\[P(Y|do(x))\]</span> <span class="math display">\[E(Y|do(x)) - E(Y|do(x'))\]</span> <span class="math display">\[= E(Y_x) - E(Y_{x'})\]</span></li>
 <li>Identification problem: consistency (infinite sample)</li>
 <li>Estimation problem: in general, focus on bias over variance (but changing)</li>
@@ -456,58 +446,112 @@ Pablo Geraldo Bastías
 </section>
 <section id="the-ladder-of-causality" class="slide level2">
 <h2>The ladder of causality</h2>
-<table>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Association</a></li><li><a href="#tabset-1-2">Interventions</a></li><li><a href="#tabset-1-3">Counterfactuals</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<table style="width:100%;">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 22%">
-<col style="width: 22%">
+<col style="width: 19%">
 <col style="width: 14%">
-<col style="width: 20%">
+<col style="width: 14%">
+<col style="width: 23%">
+<col style="width: 28%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Level</th>
 <th>Estimand</th>
 <th>Activity</th>
 <th>Field/Discipline</th>
+<th>Questions</th>
 <th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Association</td>
 <td><span class="math inline">\(\mathbf{P(Y \vert X)}\)</span></td>
 <td>Seeing, Observing</td>
 <td>Stats, Machine Learning</td>
-<td><em>What would I believe about Y if I see X?</em> <br> What is the expected income of a college graduate?</td>
-</tr>
-<tr class="even">
-<td>Intervention</td>
-<td><span class="math inline">\(\mathbf{P(Y \vert do(x))}\)</span></td>
-<td>Doing, Intervening</td>
-<td>Experiments, Policy evaluation</td>
-<td><em>What would happen with Y if I do X?</em> <br> What would be my income if I graduate from college?</td>
-</tr>
-<tr class="odd">
-<td>Counterfactual</td>
-<td><span class="math inline">\(\mathbf{P(Y_x \vert x',y')}\)</span></td>
-<td>Imagining, Retrospecting</td>
-<td>Structural Models</td>
-<td><em>What would have happened with Y have I done X instead of X’? Why?</em> <br> What would have been my parents’ income have they graduated from college, given that they didn’t attend?</td>
+<td><em>What would I believe about Y if I see X?</em></td>
+<td>What is the expected income of a college graduate in a given field?</td>
 </tr>
 </tbody>
 </table>
-<p>.footnote[Pearl and Mackenzie (2018)]</p>
-<p>??? In PO, generally the interventional and the counterfactual level are treated as equivalent. But you will never get an unbiased estimation of counterfactual quantities using experiments!</p>
+</div>
+<div id="tabset-1-2">
+<table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 25%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimand</th>
+<th>Activity</th>
+<th>Field/Discipline</th>
+<th>Questions</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mathbf{P(Y \vert do(x))}\)</span></td>
+<td>Doing, Intervening</td>
+<td>Experiments, Policy evaluation</td>
+<td><em>What would happen with Y if I change X?</em></td>
+<td>How would income levels change in response to college expansion?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-3">
+<table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 25%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimand</th>
+<th>Activity</th>
+<th>Field/Discipline</th>
+<th>Questions</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mathbf{P(Y_x \vert x',y')}\)</span></td>
+<td>Imagining, Retrospecting</td>
+<td>Structural Models</td>
+<td><em>What would have happened with Y have I done X instead of X’? Why?</em></td>
+<td>What would have been my parents’ income have they graduated from college, given that they didn’t attend?</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<aside><div>
+<p>Pearl and Mackenzie (2018)</p>
+</div></aside></section>
+<section id="but-is-doing-really-that-different-from-seeing" class="slide level2">
+<h2>But, is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
+
+<img data-src="https://imgs.xkcd.com/comics/correlation.png" class="r-stretch"></section>
+<section class="slide level2">
+
+<p><img data-src="https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png"></p>
+<p><img data-src="https://imgs.xkcd.com/comics/cell_phones.png"></p>
 </section>
 <section id="is-doing-really-that-different-from-seeing" class="slide level2">
-<h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
-<p><br></p>
-<p align="center">
-<img src="https://imgs.xkcd.com/comics/cell_phones.png">
-</p>
-</section>
-<section id="is-doing-really-that-different-from-seeing-1" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>Let’s imagine an example: the effect of the graduate program attended on the quality of your first job after graduation</p>
 <p>.pull-left[</p>
@@ -519,7 +563,7 @@ Pablo Geraldo Bastías
 
 <img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-2-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
 </section>
-<section id="is-doing-really-that-different-from-seeing-2" class="slide level2">
+<section id="is-doing-really-that-different-from-seeing-1" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>Let’s imagine an example: the effect of the graduate program attended on the quality of your first job after graduation</p>
 <p>.pull-left[ Let’s see what a linear regression would tell</p>
@@ -539,7 +583,7 @@ Coefficients:
 
 <img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
 </section>
-<section id="is-doing-really-that-different-from-seeing-3" class="slide level2">
+<section id="is-doing-really-that-different-from-seeing-2" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>.pull-left[ What if we instead randomize students to different programs?</p>
 <div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-5_eb6af730211cb14e1ec78a370f2b41f5">
@@ -558,7 +602,7 @@ Coefficients:
 
 <img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
 </section>
-<section id="is-doing-really-that-different-from-seeing-4" class="slide level2">
+<section id="is-doing-really-that-different-from-seeing-3" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>.pull-left[ Can we fix the observational data by adjusting for <span class="math inline">\(W\)</span>?</p>
 <div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-7_3d7d2090632cc13ab1f55c9a03054e58">
@@ -577,7 +621,7 @@ Coefficients:
 
 <img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-8-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
 </section>
-<section id="is-doing-really-that-different-from-seeing-5" class="slide level2">
+<section id="is-doing-really-that-different-from-seeing-4" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>.pull-left[ Where are we getting the data from?</p>
 <div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-9_474687e7e00c2b9e6acd94b6b6d27ee8">

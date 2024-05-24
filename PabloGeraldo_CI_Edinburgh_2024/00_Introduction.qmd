@@ -24,7 +24,7 @@ format:
 #callout-appearance: minimal
 ---
 
-# Introduction {background-color="aquamarine"}
+# Motivation {background-color="aquamarine"}
 
 
 ## Why should we study causal inference?
@@ -141,21 +141,6 @@ There is a lot of stuff out there! Some areas that you might be interested in bu
 
 ## Statistics/ML vs Causal Inference
 
-
-:::{.columns}
-
-:::{.column width="50%"}
-PICHULA
-:::
-
-:::{.column width="50%"}
-SAPOLIO
-:::
-
-:::
-
-## Statistics/ML vs Causal Inference
-
 ::: {.columns}
 
 ::: {.column width="50%"}
@@ -163,8 +148,8 @@ SAPOLIO
   
 + Passive observation of the data generating process
 + Estimand: Joint probabilities, CEF
- $$P(X,Y)$$
- $$E(Y|X)$$
+ $$P(Y,X)$$
+ $$E(Y|X=x)$$
 + Focus on asymptotics / out of sample prediction
 + Estimation problem: variance-bias tradeoff
 + Pearl: "deep learning is just curve fitting"
@@ -173,7 +158,7 @@ SAPOLIO
 ::: {.column width="50%"}
 ***Causal Inference***
 
-+ Prediction **under interventions** on the data generating process
++ Prediction **under interventions** on the DGP
 + Estimand: interventional quantities
 $$P(Y|do(x))$$ 
 $$E(Y|do(x)) - E(Y|do(x'))$$ 
@@ -186,29 +171,46 @@ $$= E(Y_x) - E(Y_{x'})$$
 ---
 
 
-
 ## The ladder of causality 
 
-| Level | Estimand | Activity | Field/Discipline | Example |
-|-------| -------- | -------- | ----- | ------- |
-| Association | $\mathbf{P(Y \vert X)}$ | Seeing, Observing | Stats, Machine Learning | *What would I believe about Y if I see X?* <br> What is the expected income of a college graduate? |
-| Intervention | $\mathbf{P(Y \vert do(x))}$ | Doing, Intervening | Experiments, Policy evaluation | *What would happen with Y if I do X?* <br> What would be my income if I graduate from college? |
-| Counterfactual | $\mathbf{P(Y_x \vert x',y')}$ | Imagining, Retrospecting | Structural Models | *What would have happened with Y have I done X instead of X'? Why?* <br> What would have been my parents' income have they graduated from college, given that they didn't attend?| 
+:::{.panel-tabset}
 
-.footnote[Pearl and Mackenzie (2018)]
+## Association
 
-???
-In PO, generally the interventional and the counterfactual level are treated as equivalent. But you will never get an unbiased estimation of counterfactual quantities using experiments!
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| ---- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y \vert X)}$ | Seeing, Observing | Stats, Machine Learning | *What would I believe about Y if I see X?* | What is the expected income of a college graduate in a given field? |
+
+## Interventions
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| --- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y \vert do(x))}$ | Doing, Intervening | Experiments, Policy evaluation | *What would happen with Y if I change X?* | How would income levels change in response to college expansion? |
+
+## Counterfactuals
+
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| --- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y_x \vert x',y')}$ | Imagining, Retrospecting | Structural Models | *What would have happened with Y have I done X instead of X'? Why?* | What would have been my parents' income have they graduated from college, given that they didn't attend?| 
+:::
+
+::: aside
+Pearl and Mackenzie (2018)
+:::
 
 ---
 
-## Is **doing** *really* that different from **seeing**?
+## But, is **doing** *really* that different from **seeing**?
 
-<br>
 
-<p align="center">
-  <img src="https://imgs.xkcd.com/comics/cell_phones.png">
-</p>
+![](https://imgs.xkcd.com/comics/correlation.png)
+
+---
+
+![](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png)
+
+![](https://imgs.xkcd.com/comics/cell_phones.png)
+
+![](https://imgs.xkcd.com/comics/confounding_variables.png)
 
 ---
 
