@@ -11,15 +11,14 @@ format:
     transition: slide
     slide-number: true
     chalkboard: true
-editor: visual
+#editor: visual
 ---
 
 # Plan de sesiones {background-color="aquamarine"}
 
-## {visibility="hidden"}
+##  {visibility="hidden"}
 
-$$\newcommand\indep{\perp\!\!\!\perp}$$
-$$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$
+$$\newcommand\indep{\perp\!\!\!\perp}$$ $$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$
 
 ## 
 
@@ -169,7 +168,7 @@ $$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$
 ### Asociación
 
 | Estimando               | Actividad     | Disciplina      | Pregunta                             | Ejemplo                                         |
-|--------------|---------------|---------------|--------------|--------------|
+|---------------|---------------|---------------|---------------|---------------|
 | $\mathbf{P(Y \vert X)}$ | Ver, Observar | Estadística, ML | *¿Cómo afecta X mi creencia sobre Y* | ¿Cual es el ingreso esperado de un profesional? |
 
 ### Intervención
@@ -181,7 +180,7 @@ $$\newcommand\nindep{\not\!\perp\!\!\!\perp}$$
 ### Contrafactual
 
 | Estimando                     | Actividad               | Disciplina            | Pregunta                                                                  | Ejemplo                                                                                    |
-|--------------|---------------|---------------|--------------|--------------|
+|---------------|---------------|---------------|---------------|---------------|
 | $\mathbf{P(Y_x \vert x',y')}$ | Imaginar, Retrospección | Modelos estructurales | *¿Que hubiese ocurrido con Y si hubiese hecho X en vez de X'? ¿ Por qué?* | ¿Cual sería el ingreso de mis padres si hubiesen ido a la universidad, dado que no fueron? |
 :::
 
@@ -358,27 +357,26 @@ Dediquemos un momento para pensar en sus propias investigaciones:
 
 ::: columns
 ::: {.column width="50%"}
-
 | Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
-
+|--------|-------|-------|----------|----------|----------|
+| 1      | A     | 1     | 1        | 1        | 0        |
+| 2      | A     | 0     | 0        | 0        | 0        |
+| 3      | A     | 0     | 0        | 1        | -1       |
+| 4      | A     | 1     | 1        | 0        | 1        |
+| 5      | A     | 1     | 1        | 1        | 0        |
+| 6      | B     | 0     | 1        | 0        | 1        |
+| 7      | B     | 0     | 1        | 0        | 1        |
+| 8      | B     | 0     | 0        | 0        | 0        |
+| 9      | B     | 1     | 0        | 1        | -1       |
+| 10     | B     | 1     | 1        | 1        | 0        |
 :::
+
 ::: {.column width="50%"}
-Una de las ventajas de utilizar el marco de resultados potenciales es que podemos tratarlos directamente como variables aleatorias. 
+Una de las ventajas de utilizar el marco de resultados potenciales es que podemos tratarlos directamente como variables aleatorias.
 
 Es decir, todas las reglas de probabilidad siguen aplicando en este contexto.
 
-La herramienta de cálculo, usualmente implícita, es la "tabla de la ciencia" (Rubin). 
+La herramienta de cálculo, usualmente implícita, es la "tabla de la ciencia" (Rubin).
 
 Basicamente, pretendemos que somos capaces de observar todos los resultados potenciales de interés, bajo distintos tratamientos.
 :::
@@ -388,21 +386,20 @@ Basicamente, pretendemos que somos capaces de observar todos los resultados pote
 
 ::: columns
 ::: {.column width="50%"}
-
 | Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
-
+|--------|-------|-------|----------|----------|----------|
+| 1      | A     | 1     | 1        | 1        | 0        |
+| 2      | A     | 0     | 0        | 0        | 0        |
+| 3      | A     | 0     | 0        | 1        | -1       |
+| 4      | A     | 1     | 1        | 0        | 1        |
+| 5      | A     | 1     | 1        | 1        | 0        |
+| 6      | B     | 0     | 1        | 0        | 1        |
+| 7      | B     | 0     | 1        | 0        | 1        |
+| 8      | B     | 0     | 0        | 0        | 0        |
+| 9      | B     | 1     | 0        | 1        | -1       |
+| 10     | B     | 1     | 1        | 1        | 0        |
 :::
+
 ::: {.column width="50%"}
 $$ATE = E[Y_{ai}] - E[Y_{bi}]$$
 
@@ -414,30 +411,28 @@ $$(6/10) - (5/10) = \color{blue}{0.1}$$
 
 ::: columns
 ::: {.column width="50%"}
-
 | Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
-
+|--------|-------|-------|----------|----------|----------|
+| 1      | A     | 1     | 1        | 1        | 0        |
+| 2      | A     | 0     | 0        | 0        | 0        |
+| 3      | A     | 0     | 0        | 1        | -1       |
+| 4      | A     | 1     | 1        | 0        | 1        |
+| 5      | A     | 1     | 1        | 1        | 0        |
+| 6      | B     | 0     | 1        | 0        | 1        |
+| 7      | B     | 0     | 1        | 0        | 1        |
+| 8      | B     | 0     | 0        | 0        | 0        |
+| 9      | B     | 1     | 0        | 1        | -1       |
+| 10     | B     | 1     | 1        | 1        | 0        |
 :::
+
 ::: {.column width="50%"}
 $$ATE = E[Y_{ai}] - E[Y_{bi}]$$
 
 $$(6/10) - (5/10) = \color{blue}{0.1}$$
 
-$$E[Y_i \mid X_i = a] - E[Y_i \mid X_i = b]$$
-$$(3/5) - (2/5) = \color{red}{0.2}$$
+$$E[Y_i \mid X_i = a] - E[Y_i \mid X_i = b]$$ $$(3/5) - (2/5) = \color{red}{0.2}$$
 
-**diferencia de medias $\neq$ ATE**
+**diferencia de medias** $\neq$ ATE
 
 ¿Por qué?
 :::
@@ -447,29 +442,22 @@ $$(3/5) - (2/5) = \color{red}{0.2}$$
 
 ::: columns
 ::: {.column width="50%"}
-
 | Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
-
+|--------|-------|-------|----------|----------|----------|
+| 1      | A     | 1     | 1        | 1        | 0        |
+| 2      | A     | 0     | 0        | 0        | 0        |
+| 3      | A     | 0     | 0        | 1        | -1       |
+| 4      | A     | 1     | 1        | 0        | 1        |
+| 5      | A     | 1     | 1        | 1        | 0        |
+| 6      | B     | 0     | 1        | 0        | 1        |
+| 7      | B     | 0     | 1        | 0        | 1        |
+| 8      | B     | 0     | 0        | 0        | 0        |
+| 9      | B     | 1     | 0        | 1        | -1       |
+| 10     | B     | 1     | 1        | 1        | 0        |
 :::
+
 ::: {.column width="50%"}
-$$E[\text{delta medias}]$$
-$$= E[Y_i \mid X_i = a] - E[Y_i \mid X_i = b]$$
-$$= E[Y_{ai} \mid X_i = a] - E[Y_{bi} \mid X_i = b]$$
-$$= ATE  +$$
-$$(E[Y_{bi} \mid X_i = a] - E[Y_{bi} \mid X_i = b]) +$$
-$$(1 - P[X])(ATT - ATC)$$
-$$= \color{blue}{\textbf{0.1}} + \color{red}{0.2} + \color{red}{(0.5)(-0.2)} = \color{red}{\textbf{0.2}}$$
+$$E[\text{delta medias}]$$ $$= E[Y_i \mid X_i = a] - E[Y_i \mid X_i = b]$$ $$= E[Y_{ai} \mid X_i = a] - E[Y_{bi} \mid X_i = b]$$ $$= ATE  +$$ $$(E[Y_{bi} \mid X_i = a] - E[Y_{bi} \mid X_i = b]) +$$ $$(1 - P[X])(ATT - ATC)$$ $$= \color{blue}{\textbf{0.1}} + \color{red}{0.2} + \color{red}{(0.5)(-0.2)} = \color{red}{\textbf{0.2}}$$
 :::
 :::
 
@@ -477,28 +465,26 @@ $$= \color{blue}{\textbf{0.1}} + \color{red}{0.2} + \color{red}{(0.5)(-0.2)} = \
 
 ::: columns
 ::: {.column width="50%"}
-
 | Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
-
+|--------|-------|-------|----------|----------|----------|
+| 1      | A     | 1     | 1        | 1        | 0        |
+| 2      | A     | 0     | 0        | 0        | 0        |
+| 3      | A     | 0     | 0        | 1        | -1       |
+| 4      | A     | 1     | 1        | 0        | 1        |
+| 5      | A     | 1     | 1        | 1        | 0        |
+| 6      | B     | 0     | 1        | 0        | 1        |
+| 7      | B     | 0     | 1        | 0        | 1        |
+| 8      | B     | 0     | 0        | 0        | 0        |
+| 9      | B     | 1     | 0        | 1        | -1       |
+| 10     | B     | 1     | 1        | 1        | 0        |
 :::
+
 ::: {.column width="50%"}
 Para que la diferencia de medias estimara sin sesgo el efecto causal de interés, necesitaríamos la siguiente condición (*ignorabilidad condicional* o *selección basada en observables*):
 
 $$Y_x \indep X$$
 
-¿Se cumple dicha condición aquí?
-¡No!
+¿Se cumple dicha condición aquí? ¡No!
 
 $$\{Y_{ai}, Y_{bi} \nindep X\}$$
 
@@ -512,29 +498,26 @@ $$P(Y_b = y \mid X=b) \neq P(Y_b = y)$$
 
 ## Ignorabilidad condicional
 
-
 ::: columns
 ::: {.column width="50%"}
-
-| Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$ |
-|----|---|---|-----|-------|-----|---| 
-| 1 | A | 1 | 1 | 1 | 0 | Cuanti |
-| 2 | A | 0 | 0 | 0 | 0 | Cuanti |
-| 3 | A | 0 | 0 | 1 |-1 | Cuali |
-| 4 | A | 1 | 1 | 0 | 1 | Cuanti |
-| 5 | A | 1 | 1 | 1 | 0 | Cuali |
-| 6 | B | 0 | 1 | 0 | 1 | Cuali |
-| 7 | B | 0 | 1 | 0 | 1 | Cuanti |
-| 8 | B | 0 | 0 | 0 | 0 | Cuali |
-| 9 | B | 1 | 0 | 1 |-1 | Cuali |
-| 10 |B | 1 | 1 | 1 | 0 | Cuanti |
-
+| Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$  |
+|--------|-------|-------|----------|----------|----------|--------|
+| 1      | A     | 1     | 1        | 1        | 0        | Cuanti |
+| 2      | A     | 0     | 0        | 0        | 0        | Cuanti |
+| 3      | A     | 0     | 0        | 1        | -1       | Cuali  |
+| 4      | A     | 1     | 1        | 0        | 1        | Cuanti |
+| 5      | A     | 1     | 1        | 1        | 0        | Cuali  |
+| 6      | B     | 0     | 1        | 0        | 1        | Cuali  |
+| 7      | B     | 0     | 1        | 0        | 1        | Cuanti |
+| 8      | B     | 0     | 0        | 0        | 0        | Cuali  |
+| 9      | B     | 1     | 0        | 1        | -1       | Cuali  |
+| 10     | B     | 1     | 1        | 1        | 0        | Cuanti |
 :::
+
 ::: {.column width="50%"}
 ¿Qué ocurre si incluimos una nueva variable, $W_i$?
 
-¿Se cumple la siguiente condición?
-$$
+¿Se cumple la siguiente condición? $$
 Y_x \indep X | W
 $$
 
@@ -542,84 +525,69 @@ No en realidad... Pero aún así parece ser mejor que antes, ¿correcto? Definam
 
 $$\text{ATE}_{W} = E(Y_a-Y_b|W=w)$$
 
-y su estimador 
+y su estimador
 
-$$\widehat{\text{ATE}}_{W} =$$ 
-$$E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)$$
+$$\widehat{\text{ATE}}_{W} =$$ $$E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)$$
 :::
 :::
-
 
 ## Ignorabilidad condicional
 
 ::: columns
 ::: {.column width="50%"}
-
-| Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$ |
-|----|---|---|-----|-------|-----|---| 
-| 1 | A | 1 | 1 | 1 | 0 | Cuanti |
-| 2 | A | 0 | 0 | 0 | 0 | Cuanti |
-| 3 | A | 0 | 0 | 1 |-1 | Cuali |
-| 4 | A | 1 | 1 | 0 | 1 | Cuanti |
-| 5 | A | 1 | 1 | 1 | 0 | Cuali |
-| 6 | B | 0 | 1 | 0 | 1 | Cuali |
-| 7 | B | 0 | 1 | 0 | 1 | Cuanti |
-| 8 | B | 0 | 0 | 0 | 0 | Cuali |
-| 9 | B | 1 | 0 | 1 |-1 | Cuali |
-| 10 |B | 1 | 1 | 1 | 0 | Cuanti |
-
+| Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$  |
+|--------|-------|-------|----------|----------|----------|--------|
+| 1      | A     | 1     | 1        | 1        | 0        | Cuanti |
+| 2      | A     | 0     | 0        | 0        | 0        | Cuanti |
+| 3      | A     | 0     | 0        | 1        | -1       | Cuali  |
+| 4      | A     | 1     | 1        | 0        | 1        | Cuanti |
+| 5      | A     | 1     | 1        | 1        | 0        | Cuali  |
+| 6      | B     | 0     | 1        | 0        | 1        | Cuali  |
+| 7      | B     | 0     | 1        | 0        | 1        | Cuanti |
+| 8      | B     | 0     | 0        | 0        | 0        | Cuali  |
+| 9      | B     | 1     | 0        | 1        | -1       | Cuali  |
+| 10     | B     | 1     | 1        | 1        | 0        | Cuanti |
 :::
+
 ::: {.column width="50%"}
 Tendríamos
 
-$$\widehat{\text{ATE}}_{W=quant} = 0.16$$
-$$\widehat{\text{ATE}}_{W=qual} = 0.16$$
-$$\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16$$
+$$\widehat{\text{ATE}}_{W=quant} = 0.16$$ $$\widehat{\text{ATE}}_{W=qual} = 0.16$$ $$\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16$$
 
-Sin embargo, el verdadero $\text{ATE}_W$ es
-$$\text{ATE}_{W=quant} = -0.2$$
-$$\text{ATE}_{W=qual} = 0.4$$
-$$\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}$$
+Sin embargo, el verdadero $\text{ATE}_W$ es $$\text{ATE}_{W=quant} = -0.2$$ $$\text{ATE}_{W=qual} = 0.4$$ $$\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}$$
 :::
 :::
-
 
 ## ¿Cómo evaluar los supuestos?
 
 ::: columns
 ::: {.column width="50%"}
-
-| Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$ |
-|----|---|---|-----|-------|-----|---| 
-| 1 | A | 1 | 1 | 1 | 0 | Cuanti |
-| 2 | A | 0 | 0 | 0 | 0 | Cuanti |
-| 3 | A | 0 | 0 | 1 |-1 | Cuali |
-| 4 | A | 1 | 1 | 0 | 1 | Cuanti |
-| 5 | A | 1 | 1 | 1 | 0 | Cuali |
-| 6 | B | 0 | 1 | 0 | 1 | Cuali |
-| 7 | B | 0 | 1 | 0 | 1 | Cuanti |
-| 8 | B | 0 | 0 | 0 | 0 | Cuali |
-| 9 | B | 1 | 0 | 1 |-1 | Cuali |
-| 10 |B | 1 | 1 | 1 | 0 | Cuanti |
-
+| Unidad | $X_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$  |
+|--------|-------|-------|----------|----------|----------|--------|
+| 1      | A     | 1     | 1        | 1        | 0        | Cuanti |
+| 2      | A     | 0     | 0        | 0        | 0        | Cuanti |
+| 3      | A     | 0     | 0        | 1        | -1       | Cuali  |
+| 4      | A     | 1     | 1        | 0        | 1        | Cuanti |
+| 5      | A     | 1     | 1        | 1        | 0        | Cuali  |
+| 6      | B     | 0     | 1        | 0        | 1        | Cuali  |
+| 7      | B     | 0     | 1        | 0        | 1        | Cuanti |
+| 8      | B     | 0     | 0        | 0        | 0        | Cuali  |
+| 9      | B     | 1     | 0        | 1        | -1       | Cuali  |
+| 10     | B     | 1     | 1        | 1        | 0        | Cuanti |
 :::
-::: {.column width="50%"}
 
+::: {.column width="50%"}
 En general, debemos sostenernos en **supuestos extra-estadísticos** acerca del proceso generador de datos para afirmar relaciones causales.
 
-<br>
-**"No causes in, no cases out"**
+<br> **"No causes in, no cases out"**
 
 (Nancy Cartwright)
 
 <br>
 
 ¿Existe algún modo de diseñar un estudio en el cual sabríamos, **por diseño**, que los supuestos necesarios se cumplen?
-
-
 :::
 :::
-
 
 # Experimentos Aleatorios {background-color="aquamarine"}
 
@@ -653,19 +621,17 @@ Algunes incluso afirman (y yo concuerdo parcialmente) que los experimentos tiend
 
 . . .
 
-
 Por otro lado, existen muchos ejemplos de investigaciones que utilizan métodos experimentales para hacerse cargo de preguntas grandes y difíciles.
 
 **¿Conocen algún ejemplo?**
 
 ## ¿Por qué funciona la aleatorización?
 
-Previamente indiqué que es posible identificar el efecto causal de $X$ sobre $Y$ si el tratamiento es asignado con independencia de los resultados potenciales. Formalmente 
-$$(Y_x,Y_{x^*}) \indep X$$
+Previamente indiqué que es posible identificar el efecto causal de $X$ sobre $Y$ si el tratamiento es asignado con independencia de los resultados potenciales. Formalmente $$(Y_x,Y_{x^*}) \indep X$$
 
 Recordemos la descomposición de la diferencia de medias que revisamos anteriormente.
 
-Usando el supuesto de **consistencia**, podemos escribir 
+Usando el supuesto de **consistencia**, podemos escribir
 
 $$E(Y_i|X=x) - E(Y_i|X=x^*) = E(Y_x|X=x) - E(Y_{x^*}|X=x^*)$$
 
@@ -679,7 +645,9 @@ $$E(Y_x - Y_{x^*}) = ATE$$
 
 ## Formas de validez
 
-Tradicionalmente, se habla de la validez de las conclusiones causales de un estudio (y, más en general, de la validez de diferentes diseños de investigación) basándonos en las potenciales **amenazas a la validez** de los estudios^[[Este](https://pubmed.ncbi.nlm.nih.gov/31977593/) artículo de Matthay y Glymour ofrece una revisión desde un punto de vista actual]
+Tradicionalmente, se habla de la validez de las conclusiones causales de un estudio (y, más en general, de la validez de diferentes diseños de investigación) basándonos en las potenciales **amenazas a la validez** de los estudios[^1]
+
+[^1]: [Este](https://pubmed.ncbi.nlm.nih.gov/31977593/) artículo de Matthay y Glymour ofrece una revisión desde un punto de vista actual
 
 En el caso de los resultados potenciales, vimos (con el ejemplo de la diferencia de medias) las posibles fuentes de sesgo: *diferencias de base* (es decir, bajo la condición de control), y *respuestas diferenciales al tratamiento*
 
@@ -697,22 +665,20 @@ La asignación aleatoria tiene importancia no solo en términos de identificaci�
 
 Si asumimos por un momento que los resultados potenciales son fijos, entonces lo único que varía (y por ende, la fuente de incertidumbre) es el esquema de asignación (qué unidad está en qué lado del experimento)
 
-En base a lo anterior, podemos derivar la **distribución de permutaciones**  y utilizarla como base para la inferencia estadística
+En base a lo anterior, podemos derivar la **distribución de permutaciones** y utilizarla como base para la inferencia estadística
 
 La variabilidad implicada por el esquema de asignación depende del **nivel de agregación** de las unidades (*clustering*) así como de los **grupos de asignación** (*blocking*)
 
 ## Tipos de experimentos
 
-+ **Experimentos de laboratorio**: Usualmente se realizan con grupos pequeños de participantes, que tienden a ser altamente seleccionados (por ejemplo, estudiantes de pregrado). Útiles para estudios cognitivos y de comportamiento
+-   **Experimentos de laboratorio**: Usualmente se realizan con grupos pequeños de participantes, que tienden a ser altamente seleccionados (por ejemplo, estudiantes de pregrado). Útiles para estudios cognitivos y de comportamiento
 
-+ **Experimentos de campo**: En búsqueda de resultados con mayor validez *externa*, los experimentos de campo se aplican en condiciones reales. Su costo es generalmente mayor (con excepciones como los estudios de auditoría)
+-   **Experimentos de campo**: En búsqueda de resultados con mayor validez *externa*, los experimentos de campo se aplican en condiciones reales. Su costo es generalmente mayor (con excepciones como los estudios de auditoría)
 
-+ **Experimentos de encuesta**: Se utilizan para estudiar como los participantes en una encuesta cambian su respuesta según los estímulos recibidos (que se asignan aleatoriamente). Estudios de viñeta y experimentos de lista caen en esta categoría
+-   **Experimentos de encuesta**: Se utilizan para estudiar como los participantes en una encuesta cambian su respuesta según los estímulos recibidos (que se asignan aleatoriamente). Estudios de viñeta y experimentos de lista caen en esta categoría
 
-+ **Cuasi-experimentos**: Se llaman cuasi-experimentos a situaciones que ocurren naturalmente (sin control de los investigadores) y que proveen variación cuasi-aleatoria en el tratamiento recibido. Por ejemplo, terremotos, ataques terroristas, fecha de nacimiento, cambio en ciertas leyes, etc.
+-   **Cuasi-experimentos**: Se llaman cuasi-experimentos a situaciones que ocurren naturalmente (sin control de los investigadores) y que proveen variación cuasi-aleatoria en el tratamiento recibido. Por ejemplo, terremotos, ataques terroristas, fecha de nacimiento, cambio en ciertas leyes, etc.
 
 # Continuará {background-color="aquamarine"}
 
 # Modelos Gráficos {background-color="aquamarine"}
-
-
