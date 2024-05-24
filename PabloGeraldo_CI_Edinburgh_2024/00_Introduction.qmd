@@ -1,40 +1,370 @@
 ---
 title: "Demystifying Causal Inference"
 author: "Pablo Geraldo Bastías"
-date: "28/05/2024"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference"
+date: 05/28/2024
+date-format: long
 format: 
   revealjs:
     #theme: simple
     width: 1600
     height: 900
     transition: slide
-    slide-number: true
+    slide-number: c/t
     chalkboard: true
+#callout-appearance: minimal
 ---
 
-# Potential Outcomes {background-color="#D8A745"}
-
-# Plan de sesiones {background-color="#003D70"}
+# Introduction {background-color="aquamarine"}
 
 
+## Why should we study causal inference?
 
-## Quarto
+. . .
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+<br>
+The social sciences are experimenting what some authors have called a "credibility revolution" (Angrist and Pischke, 2010), an "identification revolution" (Morgan, 2016), or simply a "causal revolution" (Pearl and MacKenzie, 2018)
 
-## Bullets
+. . .
 
-When you click the **Render** button a document will be generated that includes:
+In artificial intelligence/ML, causality have been deemed [**"the next frontier"**](https://phys.org/news/2019-02-causal-disentanglement-frontier-ai.html) and [**"the next most important thing"**](https://www.datasciencecentral.com/profiles/blogs/causality-the-next-most-important-thing-in-ai-ml)
 
--   Content authored with markdown
--   Output from executable code
+. . .
 
-## Code
+The enormous progress in the last decades has been facilitated by the development of mathematical frameworks that provide researchers with tools to handle causal questions: [Potential Outcomes]{.fragment .highlight-red} and the [Structural Causal Model]{.fragment .highlight-red}
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+---
 
+
+## What should you expect from this workshop?
+
+This workshop is designed as a "Crash Course", so we can obviously focus only on a few things:
+
+<br>
+
+* Familiarize yourself with the most widely used CI frameworks
+
+* Understand the role of randomization to tackle causal questions
+
+* Use potential outcomes and the do-operator to formalize causal estimands
+
+* Use directed acyclic graphs (DAGs) to encode qualitative assumptions
+
+* Derive identification results and testable implications from a DAG 
+
+* Assess the plausibility of different identification strategies applied to real problems
+
+<br>
+
+At the end of our two morning sessions, I hope you feel better equipped to read and evaluate the applied literature and to design your own studies using appropriate identification strategies (we are going to discuss two popular strategies this afternoon!).
+
+---
+
+
+## What are we not covering today?
+
+There is a lot of stuff out there! Some areas that you might be interested in but we don't have enough time to review today:
+
+<br>
+
+* Sequential estimation for time-varying treatments 
+
+* Estimation in general, including Targeted Maximum Likelihood
+
+* Machine learning for heterogeneous treatment effects
+
+* Do-calculus and PO-calculus for identification
+
+* Causal mediation analysis, causal attribution
+
+* Other graphical models (MCM, SWIGs, the Hypothetical Model)
+
+* Selection diagrams for missing data
+
+* Data fusion (generalization, external validity)
+
+* Causal discovery (going from the data to the DAG)
+
+---
+
+
+## Intuitions about causality
+### Have you heard any of these before?
+
+<br>
+
+. . .
+
+"Correlation does not imply causation"
+
+
+:::{.fragment .r-stack}
+*But can we go from one to the other?*
+:::
+
+
+"No causation without manipulation"
+
+
+:::{.fragment .r-stack}
+*Then what about race or gender?*
+:::
+
+
+"Causal inference is a missing data problem"
+
+
+:::{.fragment .r-stack}
+*Or is it the other way around?*
+:::
+
+
+"For causal inference, design trumps analysis"
+
+
+:::{.fragment .r-stack}
+*But what do we mean by design? And analysis?*
+:::
+
+
+
+# What is causal inference about? {background-color="aquamarine"}
+
+## Statistics/ML vs Causal Inference
+
+
+:::{.columns}
+
+:::{.column width="50%"}
+PICHULA
+:::
+
+:::{.column width="50%"}
+SAPOLIO
+:::
+
+:::
+
+## Statistics/ML vs Causal Inference
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Statistics/ML***
+  
++ Passive observation of the data generating process
++ Estimand: Joint probabilities, CEF
+ $$P(X,Y)$$
+ $$E(Y|X)$$
++ Focus on asymptotics / out of sample prediction
++ Estimation problem: variance-bias tradeoff
++ Pearl: "deep learning is just curve fitting"
+:::
+
+::: {.column width="50%"}
+***Causal Inference***
+
++ Prediction **under interventions** on the data generating process
++ Estimand: interventional quantities
+$$P(Y|do(x))$$ 
+$$E(Y|do(x)) - E(Y|do(x'))$$ 
+$$= E(Y_x) - E(Y_{x'})$$
++ Identification problem: consistency (infinite sample)
++ Estimation problem: in general, focus on bias over variance (but changing)
+:::
+
+:::
+---
+
+
+
+## The ladder of causality 
+
+| Level | Estimand | Activity | Field/Discipline | Example |
+|-------| -------- | -------- | ----- | ------- |
+| Association | $\mathbf{P(Y \vert X)}$ | Seeing, Observing | Stats, Machine Learning | *What would I believe about Y if I see X?* <br> What is the expected income of a college graduate? |
+| Intervention | $\mathbf{P(Y \vert do(x))}$ | Doing, Intervening | Experiments, Policy evaluation | *What would happen with Y if I do X?* <br> What would be my income if I graduate from college? |
+| Counterfactual | $\mathbf{P(Y_x \vert x',y')}$ | Imagining, Retrospecting | Structural Models | *What would have happened with Y have I done X instead of X'? Why?* <br> What would have been my parents' income have they graduated from college, given that they didn't attend?| 
+
+.footnote[Pearl and Mackenzie (2018)]
+
+???
+In PO, generally the interventional and the counterfactual level are treated as equivalent. But you will never get an unbiased estimation of counterfactual quantities using experiments!
+
+---
+
+## Is **doing** *really* that different from **seeing**?
+
+<br>
+
+<p align="center">
+  <img src="https://imgs.xkcd.com/comics/cell_phones.png">
+</p>
+
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Let's imagine an example: the effect of the graduate program attended on the quality of your first job after graduation
+
+.pull-left[
 ```{r}
-1 + 1
+set.seed(1988)
+# sample size
+N <- 10000
+# student selectivity
+W <- rnorm(N, mean=250, sd=50) 
+# program selectivity
+X <- 0.6*W + rnorm(N, mean=0, sd=10)
+# quality of first job
+Y <- 0.3*W - 0.2*X + rnorm(N) #<<
+data <- data.frame(Y=Y, X=X, W=W)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, out.width='80%', cache=TRUE}
+library(ggplot2)
+ggplot2::ggplot(data, aes(x=X, y=Y)) +
+  geom_point(alpha=0.3) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Graduate program quality index",
+       y = "First job quality index") +
+  scale_x_continuous(limits = c(0,320)) +
+  scale_y_continuous(limits = c(-40,120)) +
+  theme_bw()
+```
+]
+
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Let's imagine an example: the effect of the graduate program attended on the quality of your first job after graduation
+
+.pull-left[
+Let's see what a linear regression would tell
+```{r, cache = TRUE}
+lm(Y~X, data=data)
 ```
 
+However, we know that the effect is negative!
+]
 
+.pull-right[
+```{r, echo=FALSE, out.width='80%', cache= TRUE}
+ggplot2::ggplot(data, aes(x=X, y=Y)) +
+  geom_point(alpha=0.3) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Graduate program quality index",
+       y = "First job quality index") +
+  scale_x_continuous(limits = c(0,320)) +
+  scale_y_continuous(limits = c(-40,120)) +
+  theme_bw()
+```
+]
+
+---
+
+
+
+## Is **doing** *really* that different from **seeing**?
+
+.pull-left[
+What if we instead randomize students to different programs?
+```{r, cache = TRUE}
+# let's randomize students to programs!
+X <- sample(min(X):max(X), #<<
+            N, replace=TRUE)
+# quality of first job
+Y <- 0.3*W - 0.2*X + rnorm(N)
+data$Xrand <- X
+data$Ytrue <- Y
+
+lm(Ytrue~Xrand, data=data)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, out.width='80%', cache = TRUE}
+ggplot2::ggplot(data, aes(x=Xrand, y=Ytrue)) +
+  geom_point(alpha=0.3) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Graduate program quality index",
+       y = "First job quality index") +
+  scale_x_continuous(limits = c(0,320)) +
+  scale_y_continuous(limits = c(-40,120)) +
+  theme_bw()
+```
+]
+
+---
+
+
+
+
+## Is **doing** *really* that different from **seeing**?
+
+.pull-left[
+Can we fix the observational data by adjusting for $W$?
+```{r, cache = TRUE}
+# Same regression
+# Plus controls
+lm(Y~X+W, data=data)
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, out.width='80%', cache =TRUE}
+ggplot2::ggplot(data, aes(x=X, y=Y)) +
+  geom_point(alpha=0.3) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Graduate program quality index",
+       y = "First job quality index") +
+  scale_x_continuous(limits = c(0,320)) +
+  scale_y_continuous(limits = c(-40,120)) +
+  theme_bw()
+```
+]
+
+---
+
+## Is **doing** *really* that different from **seeing**?
+
+.pull-left[
+Where are we getting the data from?
+```{r, cache = TRUE}
+# Registry of JMC
+prob <- 1/(1+exp(-(X-Y*2)))
+data$C <- rbinom(N, 1, prob=prob)
+
+lm(Ytrue~Xrand, data=subset(data, C==1))
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, out.width='80%', cache = TRUE}
+ggplot2::ggplot(subset(data, C==1), 
+       aes(x=Xrand, y=Ytrue)) +
+  geom_point(alpha=0.3) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Graduate program quality index",
+       y = "First job quality index") +
+  scale_x_continuous(limits = c(0,320)) +
+  scale_y_continuous(limits = c(-40,120)) +
+  theme_bw()
+```
+]
+
+---
