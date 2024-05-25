@@ -21,7 +21,7 @@ format:
     transition: slide
     slide-number: c/t
     chalkboard: true
-#callout-appearance: minimal
+callout-appearance: minimal
 ---
 
 # Motivation {background-color="aquamarine"}
@@ -217,77 +217,97 @@ Pearl and Mackenzie (2018)
 
 ## Is **doing** *really* that different from **seeing**?
 
-Let's imagine an example: the effect of the graduate program attended on the quality of your first job after graduation
+Let's imagine an example: we want to know the effect of the selectivity of the graduate program a student attends on the quality of their first job after graduation
 
-.pull-left[
-```{r}
+. . .
+
+::: {.columns}
+
+::: {.column width="40%"}
+```{r, echo=TRUE}
 set.seed(1988)
+
 # sample size
-N <- 10000
-# student selectivity
-W <- rnorm(N, mean=250, sd=50) 
+N <- 1000
+
+# student "potential"
+W <- rnorm(N, mean=25, sd=50) 
+
 # program selectivity
-X <- 0.6*W + rnorm(N, mean=0, sd=10)
+X <- 0.6*W + rnorm(N, mean=0, sd=15)
+
 # quality of first job
-Y <- 0.3*W - 0.2*X + rnorm(N) #<<
+Y <- 0.4*W - 0.2*X + rnorm(N, mean = 0, sd = 25)
+
+# store everything
 data <- data.frame(Y=Y, X=X, W=W)
 ```
-]
+:::
 
-.pull-right[
-```{r, echo=FALSE, out.width='80%', cache=TRUE}
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache=FALSE}
 library(ggplot2)
 ggplot2::ggplot(data, aes(x=X, y=Y)) +
-  geom_point(alpha=0.3) +
-  geom_smooth(method="lm", color="red") +
-  labs(x = "Graduate program quality index",
-       y = "First job quality index") +
-  scale_x_continuous(limits = c(0,320)) +
-  scale_y_continuous(limits = c(-40,120)) +
+  geom_point(alpha=0.2) +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
   theme_bw()
 ```
-]
+:::
 
+:::
 ---
 
 
 ## Is **doing** *really* that different from **seeing**?
 
-Let's imagine an example: the effect of the graduate program attended on the quality of your first job after graduation
+Then, let's see what story a simple linear regression would tell
 
-.pull-left[
-Let's see what a linear regression would tell
-```{r, cache = TRUE}
+. . . 
+
+:::{.columns}
+
+:::{.column width="40%"}
+
+```{r, cache = FALSE}
 lm(Y~X, data=data)
 ```
 
-However, we know that the effect is negative!
-]
+:::{.callout-warning}
+However, we know that the true effect is negative!
+:::
 
-.pull-right[
-```{r, echo=FALSE, out.width='80%', cache= TRUE}
+:::
+
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache= FALSE}
 ggplot2::ggplot(data, aes(x=X, y=Y)) +
-  geom_point(alpha=0.3) +
+  geom_point(alpha=0.2) +
   geom_smooth(method="lm", color="red") +
-  labs(x = "Graduate program quality index",
-       y = "First job quality index") +
-  scale_x_continuous(limits = c(0,320)) +
-  scale_y_continuous(limits = c(-40,120)) +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
   theme_bw()
 ```
-]
+:::
 
+:::
 ---
 
 
 
 ## Is **doing** *really* that different from **seeing**?
 
-.pull-left[
+
 What if we instead randomize students to different programs?
-```{r, cache = TRUE}
-# let's randomize students to programs!
-X <- sample(min(X):max(X), #<<
+
+:::{.columns}
+
+:::{.column width="40%"}
+
+```{r, cache = FALSE, echo=TRUE}
+# let's simulate random assignment 
+# of students to programs!
+X <- sample(min(X):max(X),
             N, replace=TRUE)
 # quality of first job
 Y <- 0.3*W - 0.2*X + rnorm(N)
@@ -296,77 +316,92 @@ data$Ytrue <- Y
 
 lm(Ytrue~Xrand, data=data)
 ```
-]
+:::
 
-.pull-right[
-```{r, echo=FALSE, out.width='80%', cache = TRUE}
+:::{.column widht="60%"}
+```{r, echo=FALSE, out.width='120%', cache = FALSE}
 ggplot2::ggplot(data, aes(x=Xrand, y=Ytrue)) +
-  geom_point(alpha=0.3) +
+  geom_point(alpha=0.2) +
   geom_smooth(method="lm", color="red") +
-  labs(x = "Graduate program quality index",
-       y = "First job quality index") +
-  scale_x_continuous(limits = c(0,320)) +
-  scale_y_continuous(limits = c(-40,120)) +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
   theme_bw()
 ```
-]
+
+:::{.callout-note}
+Now we can see the true effect!
+:::
+
+:::
+
+:::
+
 
 ---
 
 
-
-
 ## Is **doing** *really* that different from **seeing**?
 
-.pull-left[
-Can we fix the observational data by adjusting for $W$?
-```{r, cache = TRUE}
+Can we fix the observational comparison by adjusting for $W$?
+
+. . . 
+
+:::{.columns}
+
+:::{.column width="40%"}
+```{r, cache = FALSE}
 # Same regression
 # Plus controls
-lm(Y~X+W, data=data)
+reg <- lm(Y~X+W, data=data)
 ```
-]
+:::
 
-.pull-right[
-```{r, echo=FALSE, out.width='80%', cache =TRUE}
-ggplot2::ggplot(data, aes(x=X, y=Y)) +
-  geom_point(alpha=0.3) +
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache =FALSE}
+ggplot2::ggplot(data, 
+                aes(x=X,
+                    y=predict(reg, type = "response"))) +
+  geom_point(alpha=0.2) +
   geom_smooth(method="lm", color="red") +
-  labs(x = "Graduate program quality index",
-       y = "First job quality index") +
-  scale_x_continuous(limits = c(0,320)) +
-  scale_y_continuous(limits = c(-40,120)) +
+  labs(x = "Selectivity of graduate program index (adjusting for student potential)",
+       y = "Quality of first job index (predicted)") +
   theme_bw()
 ```
-]
+:::
+
+:::
 
 ---
 
 ## Is **doing** *really* that different from **seeing**?
 
-.pull-left[
+:::{.columns}
+
+:::{.column width="40%"}
 Where are we getting the data from?
+
 ```{r, cache = TRUE}
-# Registry of JMC
+# Registry of job market candidates
 prob <- 1/(1+exp(-(X-Y*2)))
 data$C <- rbinom(N, 1, prob=prob)
 
 lm(Ytrue~Xrand, data=subset(data, C==1))
 ```
-]
+:::
 
-.pull-right[
-```{r, echo=FALSE, out.width='80%', cache = TRUE}
+
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache = FALSE}
 ggplot2::ggplot(subset(data, C==1), 
        aes(x=Xrand, y=Ytrue)) +
-  geom_point(alpha=0.3) +
+  geom_point(alpha=0.2) +
   geom_smooth(method="lm", color="red") +
-  labs(x = "Graduate program quality index",
-       y = "First job quality index") +
-  scale_x_continuous(limits = c(0,320)) +
-  scale_y_continuous(limits = c(-40,120)) +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
   theme_bw()
 ```
-]
+:::
+
+:::
 
 ---

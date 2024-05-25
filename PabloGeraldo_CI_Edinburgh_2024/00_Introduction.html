@@ -29,6 +29,70 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="00_Introduction_files/libs/revealjs/dist/theme/quarto.css" id="theme">
   <link href="00_Introduction_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -550,24 +614,49 @@ Pablo Geraldo Bastías
 
 <p><img data-src="https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png"></p>
 <p><img data-src="https://imgs.xkcd.com/comics/cell_phones.png"></p>
+<p><img data-src="https://imgs.xkcd.com/comics/confounding_variables.png"></p>
 </section>
 <section id="is-doing-really-that-different-from-seeing" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
-<p>Let’s imagine an example: the effect of the graduate program attended on the quality of your first job after graduation</p>
-<p>.pull-left[</p>
+<p>Let’s imagine an example: we want to know the effect of the selectivity of the graduate program a student attends on the quality of their first job after graduation</p>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:40%;">
 <div class="cell">
-
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">set.seed</span>(<span class="dv">1988</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># sample size</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># student "potential"</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>W <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="at">mean=</span><span class="dv">25</span>, <span class="at">sd=</span><span class="dv">50</span>) </span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># program selectivity</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>X <span class="ot">&lt;-</span> <span class="fl">0.6</span><span class="sc">*</span>W <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">15</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># quality of first job</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>Y <span class="ot">&lt;-</span> <span class="fl">0.4</span><span class="sc">*</span>W <span class="sc">-</span> <span class="fl">0.2</span><span class="sc">*</span>X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">25</span>)</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co"># store everything</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Y=</span>Y, <span class="at">X=</span>X, <span class="at">W=</span>W)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>]</p>
-<p>.pull-right[</p>
-
-<img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-2-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-2-1.png" style="width:120.0%"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="is-doing-really-that-different-from-seeing-1" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
-<p>Let’s imagine an example: the effect of the graduate program attended on the quality of your first job after graduation</p>
-<p>.pull-left[ Let’s see what a linear regression would tell</p>
-<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-3_42e1d871e7e4ac77c6e7982d9dfc7f3f">
+<p>Then, let’s see what story a simple linear regression would tell</p>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -575,18 +664,42 @@ lm(formula = Y ~ X, data = data)
 
 Coefficients:
 (Intercept)            X  
-     7.8506       0.2476  </code></pre>
+     2.0391       0.3565  </code></pre>
 </div>
 </div>
-<p>However, we know that the effect is negative! ]</p>
-<p>.pull-right[</p>
-
-<img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
+<div class="callout callout-warning no-icon callout-style-simple">
+<div class="callout-body">
+<div class="callout-content">
+<p>However, we know that the true effect is negative!</p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:120.0%"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="is-doing-really-that-different-from-seeing-2" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
-<p>.pull-left[ What if we instead randomize students to different programs?</p>
-<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-5_eb6af730211cb14e1ec78a370f2b41f5">
+<p>What if we instead randomize students to different programs?</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># let's simulate random assignment </span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># of students to programs!</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>X <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">min</span>(X)<span class="sc">:</span><span class="fu">max</span>(X),</span>
+<span id="cb3-4"><a href="#cb3-4"></a>            N, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># quality of first job</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>Y <span class="ot">&lt;-</span> <span class="fl">0.3</span><span class="sc">*</span>W <span class="sc">-</span> <span class="fl">0.2</span><span class="sc">*</span>X <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>data<span class="sc">$</span>Xrand <span class="ot">&lt;-</span> X</span>
+<span id="cb3-8"><a href="#cb3-8"></a>data<span class="sc">$</span>Ytrue <span class="ot">&lt;-</span> Y</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="fu">lm</span>(Ytrue<span class="sc">~</span>Xrand, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -594,37 +707,50 @@ lm(formula = Ytrue ~ Xrand, data = data)
 
 Coefficients:
 (Intercept)        Xrand  
-     75.262       -0.202  </code></pre>
+     8.2485      -0.2142  </code></pre>
 </div>
 </div>
-<p>]</p>
-<p>.pull-right[</p>
-
-<img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
+</div><div class="column" data-widht="60%">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:120.0%"></p>
+</div>
+</div>
+<div class="callout callout-note no-icon callout-style-simple">
+<div class="callout-body">
+<div class="callout-content">
+<p>Now we can see the true effect!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="is-doing-really-that-different-from-seeing-3" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
-<p>.pull-left[ Can we fix the observational data by adjusting for <span class="math inline">\(W\)</span>?</p>
-<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-7_3d7d2090632cc13ab1f55c9a03054e58">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = Y ~ X + W, data = data)
+<p>Can we fix the observational comparison by adjusting for <span class="math inline">\(W\)</span>?</p>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell">
 
-Coefficients:
-(Intercept)            X            W  
-    0.02049     -0.20011      0.29996  </code></pre>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-8-1.png" style="width:120.0%"></p>
 </div>
 </div>
-<p>]</p>
-<p>.pull-right[</p>
-
-<img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-8-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
+</div>
+</div>
+</div>
 </section>
 <section id="is-doing-really-that-different-from-seeing-4" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
-<p>.pull-left[ Where are we getting the data from?</p>
-<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-9_474687e7e00c2b9e6acd94b6b6d27ee8">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Where are we getting the data from?</p>
+<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-9_a4fcf7d0d5215e4574676f38f5f060fb">
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -632,13 +758,17 @@ lm(formula = Ytrue ~ Xrand, data = subset(data, C == 1))
 
 Coefficients:
 (Intercept)        Xrand  
-    64.6809      -0.1581  </code></pre>
+   -2.95009     -0.09895  </code></pre>
 </div>
 </div>
-<p>]</p>
-<p>.pull-right[</p>
-
-<img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-10-1.png" style="width:80.0%" class="r-stretch"><p>]</p>
+</div><div class="column" style="width:60%;">
+<div class="cell">
+<div class="cell-output-display">
+<p><img data-src="00_Introduction_files/figure-revealjs/unnamed-chunk-10-1.png" style="width:120.0%"></p>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section class="slide level2">
 
