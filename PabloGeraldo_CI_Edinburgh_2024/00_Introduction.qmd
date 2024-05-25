@@ -21,6 +21,7 @@ format:
     transition: slide
     slide-number: c/t
     chalkboard: true
+    auto-stretch: false
 callout-appearance: minimal
 ---
 
@@ -145,11 +146,11 @@ There is a lot of stuff out there! Some areas that you might be interested in bu
 
 ::: {.column width="50%"}
 ***Statistics/ML***
-  
+
 + Passive observation of the data generating process
 + Estimand: Joint probabilities, CEF
- $$P(Y,X)$$
- $$E(Y|X=x)$$
+$$P(Y,X)$$
+$$E(Y|X=x)$$
 + Focus on asymptotics / out of sample prediction
 + Estimation problem: variance-bias tradeoff
 + Pearl: "deep learning is just curve fitting"
@@ -201,16 +202,13 @@ Pearl and Mackenzie (2018)
 
 ## But, is **doing** *really* that different from **seeing**?
 
+<br>
 
-![](https://imgs.xkcd.com/comics/correlation.png)
+![](https://imgs.xkcd.com/comics/correlation.png){width="900" fig-align="center"}
 
----
-
-![](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png)
-
-![](https://imgs.xkcd.com/comics/cell_phones.png)
-
-![](https://imgs.xkcd.com/comics/confounding_variables.png)
+:::aside
+[causality](https://imgs.xkcd.com/comics/correlation.png)
+:::
 
 ---
 
@@ -251,6 +249,8 @@ ggplot2::ggplot(data, aes(x=X, y=Y)) +
   geom_point(alpha=0.2) +
   labs(x = "Selectivity of graduate program index",
        y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
   theme_bw()
 ```
 :::
@@ -270,6 +270,8 @@ Then, let's see what story a simple linear regression would tell
 :::{.column width="40%"}
 
 ```{r, cache = FALSE}
+# Bivariate regression
+
 lm(Y~X, data=data)
 ```
 
@@ -286,6 +288,8 @@ ggplot2::ggplot(data, aes(x=X, y=Y)) +
   geom_smooth(method="lm", color="red") +
   labs(x = "Selectivity of graduate program index",
        y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
   theme_bw()
 ```
 :::
@@ -300,6 +304,8 @@ ggplot2::ggplot(data, aes(x=X, y=Y)) +
 
 What if we instead randomize students to different programs?
 
+. . .
+
 :::{.columns}
 
 :::{.column width="40%"}
@@ -307,24 +313,27 @@ What if we instead randomize students to different programs?
 ```{r, cache = FALSE, echo=TRUE}
 # let's simulate random assignment 
 # of students to programs!
-X <- sample(min(X):max(X),
-            N, replace=TRUE)
-# quality of first job
-Y <- 0.3*W - 0.2*X + rnorm(N)
-data$Xrand <- X
-data$Ytrue <- Y
 
-lm(Ytrue~Xrand, data=data)
+data$Xrand <- sample(min(X):max(X),
+            N, replace=TRUE)
+
+# now add quality of first job
+
+data$Yexp <- 0.4*W - 0.2*data$Xrand + rnorm(N, mean = 0, sd = 25)
+
+lm(Yexp~Xrand, data=data)
 ```
 :::
 
 :::{.column widht="60%"}
 ```{r, echo=FALSE, out.width='120%', cache = FALSE}
-ggplot2::ggplot(data, aes(x=Xrand, y=Ytrue)) +
+ggplot2::ggplot(data, aes(x=Xrand, y=Yexp)) +
   geom_point(alpha=0.2) +
   geom_smooth(method="lm", color="red") +
   labs(x = "Selectivity of graduate program index",
        y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
   theme_bw()
 ```
 
@@ -349,23 +358,32 @@ Can we fix the observational comparison by adjusting for $W$?
 :::{.columns}
 
 :::{.column width="40%"}
-```{r, cache = FALSE}
+```{r, cache = FALSE, echo=TRUE}
 # Same regression
-# Plus controls
+# Plus "adjustment" for student potential
 reg <- lm(Y~X+W, data=data)
+
+# By FWL theorem, we can replicate
+# this results with bivariate regs
+# Run the bivariate regression and save the residuals
+regresids <- broom::augment(lm(X ~ W, data = data))
+
+reg
 ```
 :::
 
 :::{.column width="60%"}
 ```{r, echo=FALSE, out.width='120%', cache =FALSE}
-ggplot2::ggplot(data, 
-                aes(x=X,
-                    y=predict(reg, type = "response"))) +
-  geom_point(alpha=0.2) +
+# Plot
+ggplot(data = regresids, 
+       aes(y = data$Y, x = .resid)) +
+  geom_point(alpha = 0.2) + 
   geom_smooth(method="lm", color="red") +
+  theme_bw() + 
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
   labs(x = "Selectivity of graduate program index (adjusting for student potential)",
-       y = "Quality of first job index (predicted)") +
-  theme_bw()
+       y = "Quality of first job index (predicted)")
 ```
 :::
 
@@ -375,33 +393,82 @@ ggplot2::ggplot(data,
 
 ## Is **doing** *really* that different from **seeing**?
 
+Where are we getting the data from? 
+
+Imagine we collected the data by looking at programs' websites, where they post the job market outcomes but 
+
+* more selective programs tend to report more
+* students will report to their programs based partially on the quality of their job offers
+
+. . .
+
 :::{.columns}
 
 :::{.column width="40%"}
-Where are we getting the data from?
 
-```{r, cache = TRUE}
+```{r, cache = TRUE, echo = TRUE}
 # Registry of job market candidates
-prob <- 1/(1+exp(-(X-Y*2)))
+# As a function of selectivity and outcome
+prob <- 1/(1+exp(-(1.5*X+Y*2)))
 data$C <- rbinom(N, 1, prob=prob)
 
-lm(Ytrue~Xrand, data=subset(data, C==1))
+# What would happen if we change the probs?
+# prob <- 1/(1+exp(-(X-Y*2)))
+
+lm(Y ~ X + W, data=subset(data, C==1))
 ```
 :::
 
 
 :::{.column width="60%"}
 ```{r, echo=FALSE, out.width='120%', cache = FALSE}
-ggplot2::ggplot(subset(data, C==1), 
-       aes(x=Xrand, y=Ytrue)) +
+regresids <- broom::augment(lm(X ~ W, data = data))
+data$Xres <- regresids$.resid
+
+ggplot2::ggplot(data,
+                aes(x=Xres, y=Y, color = factor(C))) +
   geom_point(alpha=0.2) +
-  geom_smooth(method="lm", color="red") +
+  geom_smooth(method="lm", color="red",
+              data = subset(data, C==1),
+              aes(y = Y,
+                  x = Xres)) +
   labs(x = "Selectivity of graduate program index",
        y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
   theme_bw()
+
+#regresids <- broom::augment(lm(X ~ W, data = subset(data, C==1)))
+# ggplot2::ggplot(data, 
+#                 aes(x=X, y=Y, color = factor(C))) +
+#   geom_point(alpha=0.2) +
+#   geom_smooth(method="lm", color="red", 
+#               data = regresids,
+#               aes(y = data[data$C==1, "Y"], x = .resid)) +
+#   labs(x = "Selectivity of graduate program index",
+#        y = "Quality of first job index") +
+#   scale_y_continuous(limits = c(-100,150)) +
+#   #scale_x_continuous(limits = c(-100,150)) +
+#   theme_bw()
 ```
 :::
 
 :::
 
 ---
+
+The last piece was an example of so-called "selection bias".
+
+:::{.r-stack}
+![](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png){.fragment width="600"}
+
+![](https://imgs.xkcd.com/comics/confounding_variables.png){.fragment width="900"}
+:::
+
+
+:::aside
+[selection bias](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png)
+
+[confounding](https://imgs.xkcd.com/comics/confounding_variables.png)
+:::
+

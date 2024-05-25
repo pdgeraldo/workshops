@@ -608,14 +608,16 @@ Pablo Geraldo Bastías
 </div></aside></section>
 <section id="but-is-doing-really-that-different-from-seeing" class="slide level2">
 <h2>But, is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
+<p><br></p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="https://imgs.xkcd.com/comics/correlation.png" width="900"></p>
+</figure>
+</div>
 
-<img data-src="https://imgs.xkcd.com/comics/correlation.png" class="r-stretch"></section>
-<section class="slide level2">
-
-<p><img data-src="https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png"></p>
-<p><img data-src="https://imgs.xkcd.com/comics/cell_phones.png"></p>
-<p><img data-src="https://imgs.xkcd.com/comics/confounding_variables.png"></p>
-</section>
+<aside><div>
+<p><a href="https://imgs.xkcd.com/comics/correlation.png">causality</a></p>
+</div></aside></section>
 <section id="is-doing-really-that-different-from-seeing" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>Let’s imagine an example: we want to know the effect of the selectivity of the graduate program a student attends on the quality of their first job after graduation</p>
@@ -687,27 +689,29 @@ Coefficients:
 <section id="is-doing-really-that-different-from-seeing-2" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
 <p>What if we instead randomize students to different programs?</p>
+<div class="fragment">
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># let's simulate random assignment </span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="co"># of students to programs!</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>X <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">min</span>(X)<span class="sc">:</span><span class="fu">max</span>(X),</span>
-<span id="cb3-4"><a href="#cb3-4"></a>            N, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># quality of first job</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a>Y <span class="ot">&lt;-</span> <span class="fl">0.3</span><span class="sc">*</span>W <span class="sc">-</span> <span class="fl">0.2</span><span class="sc">*</span>X <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb3-7"><a href="#cb3-7"></a>data<span class="sc">$</span>Xrand <span class="ot">&lt;-</span> X</span>
-<span id="cb3-8"><a href="#cb3-8"></a>data<span class="sc">$</span>Ytrue <span class="ot">&lt;-</span> Y</span>
-<span id="cb3-9"><a href="#cb3-9"></a></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="fu">lm</span>(Ytrue<span class="sc">~</span>Xrand, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>data<span class="sc">$</span>Xrand <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">min</span>(X)<span class="sc">:</span><span class="fu">max</span>(X),</span>
+<span id="cb3-5"><a href="#cb3-5"></a>            N, <span class="at">replace=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># now add quality of first job</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a>data<span class="sc">$</span>Yexp <span class="ot">&lt;-</span> <span class="fl">0.4</span><span class="sc">*</span>W <span class="sc">-</span> <span class="fl">0.2</span><span class="sc">*</span>data<span class="sc">$</span>Xrand <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">25</span>)</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="fu">lm</span>(Yexp<span class="sc">~</span>Xrand, <span class="at">data=</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = Ytrue ~ Xrand, data = data)
+lm(formula = Yexp ~ Xrand, data = data)
 
 Coefficients:
 (Intercept)        Xrand  
-     8.2485      -0.2142  </code></pre>
+    10.6238      -0.2126  </code></pre>
 </div>
 </div>
 </div><div class="column" data-widht="60%">
@@ -725,6 +729,7 @@ Coefficients:
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="is-doing-really-that-different-from-seeing-3" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
@@ -733,7 +738,25 @@ Coefficients:
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Same regression</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># Plus "adjustment" for student potential</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y<span class="sc">~</span>X<span class="sc">+</span>W, <span class="at">data=</span>data)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># By FWL theorem, we can replicate</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co"># this results with bivariate regs</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># Run the bivariate regression and save the residuals</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>regresids <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">augment</span>(<span class="fu">lm</span>(X <span class="sc">~</span> W, <span class="at">data =</span> data))</span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a>reg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ X + W, data = data)
 
+Coefficients:
+(Intercept)            X            W  
+    0.07793     -0.20567      0.42104  </code></pre>
+</div>
 </div>
 </div><div class="column" style="width:60%;">
 <div class="cell">
@@ -747,18 +770,33 @@ Coefficients:
 </section>
 <section id="is-doing-really-that-different-from-seeing-4" class="slide level2">
 <h2>Is <strong>doing</strong> <em>really</em> that different from <strong>seeing</strong>?</h2>
+<p>Where are we getting the data from?</p>
+<p>Imagine we collected the data by looking at programs’ websites, where they post the job market outcomes but</p>
+<ul>
+<li>more selective programs tend to report more</li>
+<li>students will report to their programs based partially on the quality of their job offers</li>
+</ul>
+<div class="fragment">
 <div class="columns">
 <div class="column" style="width:40%;">
-<p>Where are we getting the data from?</p>
-<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-9_a4fcf7d0d5215e4574676f38f5f060fb">
+<div class="cell" data-hash="00_Introduction_cache/revealjs/unnamed-chunk-9_67675afac5880743d29276b905072755">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Registry of job market candidates</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># As a function of selectivity and outcome</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>prob <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">exp</span>(<span class="sc">-</span>(<span class="fl">1.5</span><span class="sc">*</span>X<span class="sc">+</span>Y<span class="sc">*</span><span class="dv">2</span>)))</span>
+<span id="cb7-4"><a href="#cb7-4"></a>data<span class="sc">$</span>C <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, <span class="at">prob=</span>prob)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co"># What would happen if we change the probs?</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co"># prob &lt;- 1/(1+exp(-(X-Y*2)))</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="fu">lm</span>(Y <span class="sc">~</span> X <span class="sc">+</span> W, <span class="at">data=</span><span class="fu">subset</span>(data, C<span class="sc">==</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = Ytrue ~ Xrand, data = subset(data, C == 1))
+lm(formula = Y ~ X + W, data = subset(data, C == 1))
 
 Coefficients:
-(Intercept)        Xrand  
-   -2.95009     -0.09895  </code></pre>
+(Intercept)            X            W  
+    16.6189      -0.3868       0.3539  </code></pre>
 </div>
 </div>
 </div><div class="column" style="width:60%;">
@@ -769,14 +807,24 @@ Coefficients:
 </div>
 </div>
 </div>
+</div>
 </section>
 <section class="slide level2">
 
+<p>The last piece was an example of so-called “selection bias”.</p>
+<div class="r-stack">
+<p><img data-src="https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png" class="fragment" width="600"></p>
+<p><img data-src="https://imgs.xkcd.com/comics/confounding_variables.png" class="fragment" width="900"></p>
+</div>
 
-<img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo r-stretch"><div class="footer footer-default">
+<p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
+<div class="footer footer-default">
 <p>Demystifying Causal Inference</p>
 </div>
-</section></section>
+<aside><div>
+<p><a href="https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png">selection bias</a></p>
+<p><a href="https://imgs.xkcd.com/comics/confounding_variables.png">confounding</a></p>
+</div></aside></section></section>
     </div>
   </div>
 
