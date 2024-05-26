@@ -53,7 +53,7 @@ But what do we do when we have *less than perfect* experiments?
 
 . . .
 
-And how to assess our assumptions with *observational data*?]
+And how to assess our assumptions with *observational data*?
 
 # Graphical models {background-color="#17a091"}
 
@@ -169,8 +169,627 @@ By adjusting for a variable (represented by a box in the graph), we can turn con
 * When you adjust for a collider variable $C$, the pair $X$ and $Y$ become conditionally associated: $$X \cdots \boxed{C} \cdots Y$$
 
 
-## Confounding
+## Confounding paths
+
+
+:::{.columns}
+
+:::{.column width=50%}
+
+
+| Structural Equations |
+|-----|
+| $W = f_w(U_w)$ |
+| $X = f_x(W, U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+:::
+
+:::{.column width=50%}
+
+
+![](img\confounder1.png){fig-align="center" width=70%}
+
+The DAG includes the following paths
+
+$$X \rightarrow Y$$
+
+$$X \leftarrow W \rightarrow Y$$
+:::
+
+:::
+
+## Confounding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $W = f_w(U_w)$ |
+| $X = f_x(W, U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+:::
+
+
+:::{.column width=50%}
+
+![](img\confounder3.png){fig-align="center" width=70%}
+
+The following path is open
+
+$$X \rightarrow Y$$
+
+But this is now closed
+
+$$X \leftarrow \boxed{W} \rightarrow Y$$
+:::
+
+:::
+
+
+## Confounding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $W = f_w(U_w)$ |
+| $X = f_x(W, U_x)$ |
+| $Y = f_y(W, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+
+:::{.column width=50%}
+
+![](img\confounder2.png){fig-align="center" width=70%}
+
+The DAG includes the following path
+
+$$X \leftarrow W \rightarrow Y$$
+:::
+
+:::
+---
+
+
+## Mediating paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $M = f_m(X, U_m)$ |
+| $Y = f_y(M, X, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\mediation1.png){fig-align="center" width=70%}
+
+The DAG includes the following paths
+
+$$X \rightarrow Y$$
+
+$$X \rightarrow M \rightarrow Y$$
+:::
+:::
+---
+
+
+## Mediating paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $M = f_m(X, U_m)$ |
+| $Y = f_y(M, X, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\mediation2.png){fig-align="center" width=70%}
+
+The DAG includes the following path
+
+$$X \rightarrow Y$$
+
+But this path is now closed
+
+$$X \rightarrow \boxed{M} \rightarrow Y$$
+:::
+
+:::
+
+
+## Colliding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+| $C = f_c(X, Y, U_c)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\collider1.png){fig-align="center" width=70%}
+
+The DAG includes the following paths
+
+$$X \rightarrow Y$$
+
+$$X \rightarrow C \leftarrow Y$$
+:::
+
+:::
+---
+
+## Colliding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $Y = f_y(W, U_y)$ |
+| $C = f_c(X, Y, U_c)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\collider2.png){fig-align="center" width=70%}
+
+The DAG includes the following path
+
+$$X \rightarrow C \leftarrow Y$$
+:::
+
+:::
+---
+
+## Colliding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+| $C = f_c(X, Y, U_c)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\collider3.png){fig-align="center" width=70%}
+
+The DAG includes the following (open) path
+
+$$X \rightarrow \boxed{C} \leftarrow Y$$
+:::
+
+:::
+
+
+## Side note: are colliders that important? {background-color="#dce0ca"}
+
+<br> 
+
+One common question (and an area of debate among practitioners) is if colliders are really that important *in applied settings*. This is a hard question to answer, because, you know... we just don't know. 
+
+But we know that they are **possible** and that their importance would depend on the structure of our causal graph.
+
+A few compelling examples of collider bias in recent social sciences are discussed by:
+
+* [Shalizi and Thomas (2011)](https://journals.sagepub.com/doi/abs/10.1177/0049124111404820) in the context of network homophily and contagion
+
+* [Breen (2018)](https://academic.oup.com/esr/article/34/6/603/5094485) in the context of intergenerational mobility
+
+* [Knox, Lowe and Mummolo (2020)](https://scholar.princeton.edu/jmummolo/publications/bias-built-how-administrative-records-mask-racially-biased-policing) in the context of police shootings
+
+A great general introduction to the topic is offered by [Elwert and Winship (2014)](https://www.annualreviews.org/doi/abs/10.1146/annurev-soc-071913-043455)
+
+---
+
+
+## Do-operator and interventions
+
+<br>
+
+Pearl introduced the $do-$operator to clearly distinguish between passive observations and interventions on the data generating process
+
+In other words, is a form to make explicit the gap between interventional quantities and out more familiar conditional expectations
+
+Causal identification corresponds to removing the $do-$operator from an expression, following the rules of $do-$calculus, reducing it to an observational quantity. If there is no equivalence, it means that the quantity of interest is not identified
+
+Given the correspondence between a system of non-parametric structural equations and a given DAG, we can express the operation of **doing** as a *minimal surgery on the structural equation defining the treatment*
+
+---
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$ |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+Let's start with the observational data generating process above
+
+:::
+
+:::{.column width=50%}
+![](img\intervention1.png){fig-align="center" width=50%}
+:::
+
+:::
+
+---
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = x$ |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+Intervening in the model to make $X=x$ creates an interventional graph $G_{\bar{X}}$, in which all the incoming arrows into $X$ have been removed
+
+:::
+
+:::{.column width=50%}
+![](img\intervention2.png){fig-align="center" width=50%}
+:::
+
+:::
+
+---
 
 
 
+## Interventional graphs
 
+:::{.columns}
+
+:::{.column width=50%}
+
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$ |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+
+:::
+
+:::{.column width=50%}
+![](img\intervention3.png){fig-align="center" width=50%}
+
+Adjusting for $W$ blocks a non-causal path, but opens a new one. 
+
+$P(Y|do(x))$ is not identified conditioning on $W$ alone
+
+:::
+
+:::
+
+---
+
+
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$  |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+:::
+
+:::{.column width=50%}
+![](img\intervention4.png){fig-align="center" width=50%}
+
+Adjusting for $(Z_1,W)$ blocks all non-causal paths
+
+$P(Y|do(x))$ is identified conditioning on $(Z_1,W)$
+:::
+
+:::
+
+---
+
+
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$  |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+:::
+
+:::{.column width=50%}
+
+![](img\intervention5.png){fig-align="center" width=50%}
+
+Adjusting for $(Z_2,W)$ also blocks all non-causal paths
+
+$P(Y|do(x))$ is identified conditioning on $(Z_2,W)$
+:::
+
+:::
+
+---
+
+## Back-door Criterion (Pearl) {background-color="#002f87"}
+
+<br>
+
+What we just did can be summarized by the back-door criterion
+
+A set of variables $W$ satisfied the back-door criterion relative to an ordered pair of variables $(X,Y)$ in a DAG $G$ if:
+
+  (i) no node in $W$ is a descendant of $X$; and
+  (ii) $W$ blocks every path between $X$ and $Y$ that contains an arrow into $X$
+
+$\color{red}{\text{Important:}}$ satifying the backdoor criterion implies the unconfoundedness assumption
+$$Y_x \indep X|W$$
+
+The **back-door adjustment** (aka **g-formula**) indicates that we can recover the effect of $X$ on $Y$ adjusting for any $W$ that satisfy the backdoor criterion
+
+$$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$
+
+:::aside
+Pearl, *Causality*, pp.79-81
+:::
+---
+
+
+## SCM: Key insights
+
+
+* Causal identification is contingent on a given model encoding our assumptions
+
+* Causal identification is finding an observational quantity that is equivalent to an interventional quantity
+
+* Confounding (and bias) is a property of paths in a graph, not variables
+
+* Confounding is relative to the pair $(X,Y)$, not just $X$
+
+* It is not necessary to adjust for all *parents* of the treatment to block all backdoor paths
+
+* Bias is not monotonically decreasing on the number of variables included
+
+* $do-$calculus can be used to identify the effect of multiple interventions, to recover from missingness data, and to generalize study results.
+
+
+## SCM: limitations
+
+. . . 
+
+Conditional on your model, most identification tasks are rather trivial (algorithmic). But before that you need to assume a certain DAG!
+
+. . .
+
+:::{.callout-warning}
+## "Causality is in the model"
+James Heckman (2005)
+:::
+
+. . . 
+
+However, this is something that we always do! The only matter is how transparent are we about the assumptions we are making anyway
+
+. . .
+
+Another problem, more important for issues like mediation analysis and counterfactuals in general, is that we are sometimes making more assumptions that we are willing to
+
+. . . 
+
+For these cases, other causal (and graphical) models, like the [Single World Intervention Graphs](https://www.csss.washington.edu/Papers/wp128.pdf) (Richardson and Robins, 2013) can help
+
+. . . 
+
+Being fully non-parametric, certain canonical models are not identified using DAGs (like IVs). 
+
+. . . 
+
+However, this only shows that they require parametric assumptions, no matter how weak!
+
+
+# Identification strategies {background-color="#00a191"}
+
+## Identification strategies: a short tour
+
+Identification strategies are well-known set of assumptions that are sufficient for the causal interpretation of certain estimators:
+
+* **Randomization** ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff in means estimator.
+
+* **Selection on Observables** (aka Conditional Ignorability, Unconfoundedness) for multiple regression, (propensity score) matching and (inverse probability) weighting.
+
+  * In FE confounders are assumed to be fully captured by constant characteristics of the individual, group, or time.
+  
+* **Parallel trends** for the difference-in-difference estimator (equivalent to a two-way fixed effects only in the two group, two periods case)
+
+  * Generalizations for multiple groups, multiple adoption periods, and synthetic controls
+  
+* **Instrumental Variables** and quasi-experiments (exogenous variation in the treatment assignment plus exclusion restriction) for the 2SLS and Wald estimator
+
+  * RDD can be interpreted as IVs or under continuity assumptions.
+  
+---
+
+
+## Is there a ladder of identification strategies?
+
+In general, it is assumed that the stronger the assumptions, the less credible an identification strategy would be
+
+We would prefere experiments (the so-called *gold standard*) and, in the lack of experiments, we would prefer strategies in which our assumptions hold **by design**
+
+Designs in which there is an **exogenous** source of variation in the treatment status (like IV, RDD, quasi-experiments in general) are considered more plausible
+
+However, is there a natural hierarchy of identification strategies that can tell us, *a priori*, which assumptions are more credible in empirical applications?
+
+Do empirical applications corresponds to the labels that we use to describe a given research design? Any thoughts?
+
+
+---
+
+## Debates in applied research
+
+*Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as* identification strategies
+>Guido Imbens (2019)
+
+*About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: 'Make your theories elaborate.' The reply puzzled me at first, since by Occam's razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.*
+>B. G. Cochran (cited in Rosenbaum, 1995)
+
+
+*No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g. IV!)*
+>Jason Abaluck (cited in Imbens, 2019)
+
+---
+
+## Where to go now?
+
+* Structural Causal Model
+  * The Book of Why (Pearl and MacKenzie)
+  * Causal Inference in Statistics. A Primer (Pearl, Glymour and Jewell)
+  * Causality (Pearl)
+  
+* Potential Outcomes
+  * Mostly Harmless Econometrics (Angrist and Pischke)
+  * Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction (Imbens and Rubin)
+  
+* General and integrative introductions
+  * Counterfactuals and Causal Inference (Morgan and Winship)
+  * Causal Inference (Hernan and Robins)
+  * Causal Inference: The Mixtape (Cunnigham)
+
+
+## Activity {background-color="#692044"}
+
+Open [www.dagitty.net](http://www.dagitty.net) and launch it. There, you can create a DAG, obtain a list of testable implications, and check if an effect is identified under the DAG.
+
+* Skim the following paper by [Sharkey et al.](https://www.rootcausecoalition.org/wp-content/uploads/2018/08/Community-and-the-Crime-Decline-The-Causal-Effect-of-Local-Nonprofits-on-Violent-Crime.pdf) (see Analytical Approach) and try to reconstruct the underlying DAG for the long-term model:
+
+  * Share your result
+  * Is the effect identified?
+  * Can you think in possible violations of their assumptions?
+  
+* Skim the following paper by [Doyle et al.](https://www.rootcausecoalition.org/wp-content/uploads/2018/08/Community-and-the-Crime-Decline-The-Causal-Effect-of-Local-Nonprofits-on-Violent-Crime.pdf) (see Section III. Empirical Strategy) and try to reconstruct the underlying DAG: 
+
+  * Share your result
+  * Is the effect identified?
+  * Can you think in possible violations of their assumptions?

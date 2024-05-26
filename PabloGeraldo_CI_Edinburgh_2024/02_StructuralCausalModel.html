@@ -369,7 +369,7 @@ Pablo Geraldo Bastías
 <p>But what do we do when we have <em>less than perfect</em> experiments?</p>
 </div>
 <div class="fragment">
-<p>And how to assess our assumptions with <em>observational data</em>?]</p>
+<p>And how to assess our assumptions with <em>observational data</em>?</p>
 </div>
 </section></section>
 <section>
@@ -470,11 +470,662 @@ Pablo Geraldo Bastías
 <li><p>When you adjust for a collider variable <span class="math inline">\(C\)</span>, the pair <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> become conditionally associated: <span class="math display">\[X \cdots \boxed{C} \cdots Y\]</span></p></li>
 </ul>
 </section>
-<section id="confounding" class="slide level2">
-<h2>Confounding</h2>
-<div class="cell">
-
+<section id="confounding-paths" class="slide level2">
+<h2>Confounding paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(W = f_w(U_w)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_x(W, U_x)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_y(W, X, U_y)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\confounder1.png" style="width:70.0%"></p>
+</figure>
 </div>
+<p>The DAG includes the following paths</p>
+<p><span class="math display">\[X \rightarrow Y\]</span></p>
+<p><span class="math display">\[X \leftarrow W \rightarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="confounding-paths-1" class="slide level2">
+<h2>Confounding paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(W = f_w(U_w)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_x(W, U_x)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_y(W, X, U_y)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\confounder3.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The following path is open</p>
+<p><span class="math display">\[X \rightarrow Y\]</span></p>
+<p>But this is now closed</p>
+<p><span class="math display">\[X \leftarrow \boxed{W} \rightarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="confounding-paths-2" class="slide level2">
+<h2>Confounding paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(W = f_w(U_w)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_x(W, U_x)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_y(W, U_y)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+<p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\confounder2.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The DAG includes the following path</p>
+<p><span class="math display">\[X \leftarrow W \rightarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="mediating-paths" class="slide level2">
+<h2>Mediating paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X = f_x(U_x)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(M = f_m(X, U_m)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_y(M, X, U_y)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+<p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\mediation1.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The DAG includes the following paths</p>
+<p><span class="math display">\[X \rightarrow Y\]</span></p>
+<p><span class="math display">\[X \rightarrow M \rightarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="mediating-paths-1" class="slide level2">
+<h2>Mediating paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X = f_x(U_x)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(M = f_m(X, U_m)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_y(M, X, U_y)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+<p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\mediation2.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The DAG includes the following path</p>
+<p><span class="math display">\[X \rightarrow Y\]</span></p>
+<p>But this path is now closed</p>
+<p><span class="math display">\[X \rightarrow \boxed{M} \rightarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="colliding-paths" class="slide level2">
+<h2>Colliding paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X = f_x(U_x)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Y = f_y(W, X, U_y)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(C = f_c(X, Y, U_c)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+<p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\collider1.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The DAG includes the following paths</p>
+<p><span class="math display">\[X \rightarrow Y\]</span></p>
+<p><span class="math display">\[X \rightarrow C \leftarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="colliding-paths-1" class="slide level2">
+<h2>Colliding paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X = f_x(U_x)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Y = f_y(W, U_y)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(C = f_c(X, Y, U_c)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+<p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\collider2.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The DAG includes the following path</p>
+<p><span class="math display">\[X \rightarrow C \leftarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="colliding-paths-2" class="slide level2">
+<h2>Colliding paths</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Equations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X = f_x(U_x)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Y = f_y(W, X, U_y)\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(C = f_c(X, Y, U_c)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
+<p>Are they conditionally independent?</p>
+<p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\collider3.png" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The DAG includes the following (open) path</p>
+<p><span class="math display">\[X \rightarrow \boxed{C} \leftarrow Y\]</span></p>
+</div>
+</div>
+</section>
+<section id="side-note-are-colliders-that-important" class="slide level2" data-background-color="#dce0ca">
+<h2>Side note: are colliders that important?</h2>
+<p><br></p>
+<p>One common question (and an area of debate among practitioners) is if colliders are really that important <em>in applied settings</em>. This is a hard question to answer, because, you know… we just don’t know.</p>
+<p>But we know that they are <strong>possible</strong> and that their importance would depend on the structure of our causal graph.</p>
+<p>A few compelling examples of collider bias in recent social sciences are discussed by:</p>
+<ul>
+<li><p><a href="https://journals.sagepub.com/doi/abs/10.1177/0049124111404820">Shalizi and Thomas (2011)</a> in the context of network homophily and contagion</p></li>
+<li><p><a href="https://academic.oup.com/esr/article/34/6/603/5094485">Breen (2018)</a> in the context of intergenerational mobility</p></li>
+<li><p><a href="https://scholar.princeton.edu/jmummolo/publications/bias-built-how-administrative-records-mask-racially-biased-policing">Knox, Lowe and Mummolo (2020)</a> in the context of police shootings</p></li>
+</ul>
+<p>A great general introduction to the topic is offered by <a href="https://www.annualreviews.org/doi/abs/10.1146/annurev-soc-071913-043455">Elwert and Winship (2014)</a></p>
+</section>
+<section id="do-operator-and-interventions" class="slide level2">
+<h2>Do-operator and interventions</h2>
+<p><br></p>
+<p>Pearl introduced the <span class="math inline">\(do-\)</span>operator to clearly distinguish between passive observations and interventions on the data generating process</p>
+<p>In other words, is a form to make explicit the gap between interventional quantities and out more familiar conditional expectations</p>
+<p>Causal identification corresponds to removing the <span class="math inline">\(do-\)</span>operator from an expression, following the rules of <span class="math inline">\(do-\)</span>calculus, reducing it to an observational quantity. If there is no equivalence, it means that the quantity of interest is not identified</p>
+<p>Given the correspondence between a system of non-parametric structural equations and a given DAG, we can express the operation of <strong>doing</strong> as a <em>minimal surgery on the structural equation defining the treatment</em></p>
+</section>
+<section id="interventional-graphs" class="slide level2">
+<h2>Interventional graphs</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Causal Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Z_1 = f_{z1}(U_{z1})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Z_2 = f_{z2}(U_{z2})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(W = f_{w}(Z_1, Z_2, U_{w})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_{z1}(Z_1, W, U_{x})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_{y}(Z_2, W, U_{y})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Let’s start with the observational data generating process above</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\intervention1.png" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interventional-graphs-1" class="slide level2">
+<h2>Interventional graphs</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Causal Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Z_1 = f_{z1}(U_{z1})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Z_2 = f_{z2}(U_{z2})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(W = f_{w}(Z_1, Z_2, U_{w})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = x\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_{y}(Z_2, W, U_{y})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Intervening in the model to make <span class="math inline">\(X=x\)</span> creates an interventional graph <span class="math inline">\(G_{\bar{X}}\)</span>, in which all the incoming arrows into <span class="math inline">\(X\)</span> have been removed</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\intervention2.png" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interventional-graphs-2" class="slide level2">
+<h2>Interventional graphs</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Causal Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Z_1 = f_{z1}(U_{z1})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Z_2 = f_{z2}(U_{z2})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(W = f_{w}(Z_1, Z_2, U_{w})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_{z1}(Z_1, W, U_{x})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_{y}(Z_2, W, U_{y})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The purpose of an observational study is to allow only <strong>causal paths</strong> between the treatment <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span>, and block all the <strong>non causal paths</strong></p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\intervention3.png" style="width:50.0%"></p>
+</figure>
+</div>
+<p>Adjusting for <span class="math inline">\(W\)</span> blocks a non-causal path, but opens a new one.</p>
+<p><span class="math inline">\(P(Y|do(x))\)</span> is not identified conditioning on <span class="math inline">\(W\)</span> alone</p>
+</div>
+</div>
+</section>
+<section id="interventional-graphs-3" class="slide level2">
+<h2>Interventional graphs</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Causal Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Z_1 = f_{z1}(U_{z1})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Z_2 = f_{z2}(U_{z2})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(W = f_{w}(Z_1, Z_2, U_{w})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_{z1}(Z_1, W, U_{x})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_{y}(Z_2, W, U_{y})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The purpose of an observational study is to allow only <strong>causal paths</strong> between the treatment <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span>, and block all the <strong>non causal paths</strong></p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\intervention4.png" style="width:50.0%"></p>
+</figure>
+</div>
+<p>Adjusting for <span class="math inline">\((Z_1,W)\)</span> blocks all non-causal paths</p>
+<p><span class="math inline">\(P(Y|do(x))\)</span> is identified conditioning on <span class="math inline">\((Z_1,W)\)</span></p>
+</div>
+</div>
+</section>
+<section id="interventional-graphs-4" class="slide level2">
+<h2>Interventional graphs</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Structural Causal Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Z_1 = f_{z1}(U_{z1})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(Z_2 = f_{z2}(U_{z2})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(W = f_{w}(Z_1, Z_2, U_{w})\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X = f_{z1}(Z_1, W, U_{x})\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(Y = f_{y}(Z_2, W, U_{y})\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The purpose of an observational study is to allow only <strong>causal paths</strong> between the treatment <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span>, and block all the <strong>non causal paths</strong></p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img\intervention5.png" style="width:50.0%"></p>
+</figure>
+</div>
+<p>Adjusting for <span class="math inline">\((Z_2,W)\)</span> also blocks all non-causal paths</p>
+<p><span class="math inline">\(P(Y|do(x))\)</span> is identified conditioning on <span class="math inline">\((Z_2,W)\)</span></p>
+</div>
+</div>
+</section>
+<section id="back-door-criterion-pearl" class="slide level2" data-background-color="#002f87">
+<h2>Back-door Criterion (Pearl)</h2>
+<p><br></p>
+<p>What we just did can be summarized by the back-door criterion</p>
+<p>A set of variables <span class="math inline">\(W\)</span> satisfied the back-door criterion relative to an ordered pair of variables <span class="math inline">\((X,Y)\)</span> in a DAG <span class="math inline">\(G\)</span> if:</p>
+<ol type="i">
+<li>no node in <span class="math inline">\(W\)</span> is a descendant of <span class="math inline">\(X\)</span>; and</li>
+<li><span class="math inline">\(W\)</span> blocks every path between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that contains an arrow into <span class="math inline">\(X\)</span></li>
+</ol>
+<p><span class="math inline">\(\color{red}{\text{Important:}}\)</span> satifying the backdoor criterion implies the unconfoundedness assumption <span class="math display">\[Y_x \perp\!\!\!\perp X|W\]</span></p>
+<p>The <strong>back-door adjustment</strong> (aka <strong>g-formula</strong>) indicates that we can recover the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> adjusting for any <span class="math inline">\(W\)</span> that satisfy the backdoor criterion</p>
+<p><span class="math display">\[P(Y|do(x)) = \sum_w P(Y|X,W)P(W)\]</span></p>
+
+<aside><div>
+<p>Pearl, <em>Causality</em>, pp.79-81</p>
+</div></aside></section>
+<section id="scm-key-insights" class="slide level2">
+<h2>SCM: Key insights</h2>
+<ul>
+<li><p>Causal identification is contingent on a given model encoding our assumptions</p></li>
+<li><p>Causal identification is finding an observational quantity that is equivalent to an interventional quantity</p></li>
+<li><p>Confounding (and bias) is a property of paths in a graph, not variables</p></li>
+<li><p>Confounding is relative to the pair <span class="math inline">\((X,Y)\)</span>, not just <span class="math inline">\(X\)</span></p></li>
+<li><p>It is not necessary to adjust for all <em>parents</em> of the treatment to block all backdoor paths</p></li>
+<li><p>Bias is not monotonically decreasing on the number of variables included</p></li>
+<li><p><span class="math inline">\(do-\)</span>calculus can be used to identify the effect of multiple interventions, to recover from missingness data, and to generalize study results.</p></li>
+</ul>
+</section>
+<section id="scm-limitations" class="slide level2">
+<h2>SCM: limitations</h2>
+<div class="fragment">
+<p>Conditional on your model, most identification tasks are rather trivial (algorithmic). But before that you need to assume a certain DAG!</p>
+</div>
+<div class="fragment">
+<div class="callout callout-warning no-icon callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<p><strong>“Causality is in the model”</strong></p>
+</div>
+<div class="callout-content">
+<p>James Heckman (2005)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>However, this is something that we always do! The only matter is how transparent are we about the assumptions we are making anyway</p>
+</div>
+<div class="fragment">
+<p>Another problem, more important for issues like mediation analysis and counterfactuals in general, is that we are sometimes making more assumptions that we are willing to</p>
+</div>
+<div class="fragment">
+<p>For these cases, other causal (and graphical) models, like the <a href="https://www.csss.washington.edu/Papers/wp128.pdf">Single World Intervention Graphs</a> (Richardson and Robins, 2013) can help</p>
+</div>
+<div class="fragment">
+<p>Being fully non-parametric, certain canonical models are not identified using DAGs (like IVs).</p>
+</div>
+<div class="fragment">
+<p>However, this only shows that they require parametric assumptions, no matter how weak!</p>
+</div>
+</section></section>
+<section>
+<section id="identification-strategies" class="title-slide slide level1 center" data-background-color="#00a191">
+<h1>Identification strategies</h1>
+
+</section>
+<section id="identification-strategies-a-short-tour" class="slide level2">
+<h2>Identification strategies: a short tour</h2>
+<p>Identification strategies are well-known set of assumptions that are sufficient for the causal interpretation of certain estimators:</p>
+<ul>
+<li><p><strong>Randomization</strong> ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff in means estimator.</p></li>
+<li><p><strong>Selection on Observables</strong> (aka Conditional Ignorability, Unconfoundedness) for multiple regression, (propensity score) matching and (inverse probability) weighting.</p>
+<ul>
+<li>In FE confounders are assumed to be fully captured by constant characteristics of the individual, group, or time.</li>
+</ul></li>
+<li><p><strong>Parallel trends</strong> for the difference-in-difference estimator (equivalent to a two-way fixed effects only in the two group, two periods case)</p>
+<ul>
+<li>Generalizations for multiple groups, multiple adoption periods, and synthetic controls</li>
+</ul></li>
+<li><p><strong>Instrumental Variables</strong> and quasi-experiments (exogenous variation in the treatment assignment plus exclusion restriction) for the 2SLS and Wald estimator</p>
+<ul>
+<li>RDD can be interpreted as IVs or under continuity assumptions.</li>
+</ul></li>
+</ul>
+</section>
+<section id="is-there-a-ladder-of-identification-strategies" class="slide level2">
+<h2>Is there a ladder of identification strategies?</h2>
+<p>In general, it is assumed that the stronger the assumptions, the less credible an identification strategy would be</p>
+<p>We would prefere experiments (the so-called <em>gold standard</em>) and, in the lack of experiments, we would prefer strategies in which our assumptions hold <strong>by design</strong></p>
+<p>Designs in which there is an <strong>exogenous</strong> source of variation in the treatment status (like IV, RDD, quasi-experiments in general) are considered more plausible</p>
+<p>However, is there a natural hierarchy of identification strategies that can tell us, <em>a priori</em>, which assumptions are more credible in empirical applications?</p>
+<p>Do empirical applications corresponds to the labels that we use to describe a given research design? Any thoughts?</p>
+</section>
+<section id="debates-in-applied-research" class="slide level2">
+<h2>Debates in applied research</h2>
+<p><em>Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as</em> identification strategies &gt;Guido Imbens (2019)</p>
+<p><em>About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: ‘Make your theories elaborate.’ The reply puzzled me at first, since by Occam’s razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.</em> &gt;B. G. Cochran (cited in Rosenbaum, 1995)</p>
+<p><em>No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g.&nbsp;IV!)</em> &gt;Jason Abaluck (cited in Imbens, 2019)</p>
+</section>
+<section id="where-to-go-now" class="slide level2">
+<h2>Where to go now?</h2>
+<ul>
+<li>Structural Causal Model
+<ul>
+<li>The Book of Why (Pearl and MacKenzie)</li>
+<li>Causal Inference in Statistics. A Primer (Pearl, Glymour and Jewell)</li>
+<li>Causality (Pearl)</li>
+</ul></li>
+<li>Potential Outcomes
+<ul>
+<li>Mostly Harmless Econometrics (Angrist and Pischke)</li>
+<li>Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction (Imbens and Rubin)</li>
+</ul></li>
+<li>General and integrative introductions
+<ul>
+<li>Counterfactuals and Causal Inference (Morgan and Winship)</li>
+<li>Causal Inference (Hernan and Robins)</li>
+<li>Causal Inference: The Mixtape (Cunnigham)</li>
+</ul></li>
+</ul>
+</section>
+<section id="activity" class="slide level2" data-background-color="#692044">
+<h2>Activity</h2>
+<p>Open <a href="http://www.dagitty.net">www.dagitty.net</a> and launch it. There, you can create a DAG, obtain a list of testable implications, and check if an effect is identified under the DAG.</p>
+<ul>
+<li><p>Skim the following paper by <a href="https://www.rootcausecoalition.org/wp-content/uploads/2018/08/Community-and-the-Crime-Decline-The-Causal-Effect-of-Local-Nonprofits-on-Violent-Crime.pdf">Sharkey et al.</a> (see Analytical Approach) and try to reconstruct the underlying DAG for the long-term model:</p>
+<ul>
+<li>Share your result</li>
+<li>Is the effect identified?</li>
+<li>Can you think in possible violations of their assumptions?</li>
+</ul></li>
+<li><p>Skim the following paper by <a href="https://www.rootcausecoalition.org/wp-content/uploads/2018/08/Community-and-the-Crime-Decline-The-Causal-Effect-of-Local-Nonprofits-on-Violent-Crime.pdf">Doyle et al.</a> (see Section III. Empirical Strategy) and try to reconstruct the underlying DAG:</p>
+<ul>
+<li>Share your result</li>
+<li>Is the effect identified?</li>
+<li>Can you think in possible violations of their assumptions?</li>
+</ul></li>
+</ul>
 <p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
 <div class="footer footer-default">
 <p>Demystifying Causal Inference - SCM</p>
@@ -693,44 +1344,6 @@ Pablo Geraldo Bastías
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
