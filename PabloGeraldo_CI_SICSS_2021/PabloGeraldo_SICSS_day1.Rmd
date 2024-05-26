@@ -505,8 +505,6 @@ The basic calculation device (usually implicit) for that matter is the **science
 ---
 
 
-
-
 ## Potential Outcomes: Average Treatment Effect
 
 One advantage of PO is that we can treat them directly as random variables! So, everything we already know related to probability manipulation still applies here.

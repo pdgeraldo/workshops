@@ -1,40 +1,110 @@
 ---
-title: "Demystifying Causal Inference"
+title: "Instrumental variables"
 author: "Pablo Geraldo Bastías"
-date: "28/05/2024"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference -  Lecture 4"
+date: 05/28/2024
+date-format: long
 format: 
   revealjs:
     #theme: simple
     width: 1600
     height: 900
     transition: slide
-    slide-number: true
+    slide-number: c/t
     chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
 ---
 
-# Potential Outcomes {background-color="#D8A745"}
+# Outline {background-color="aquamarine"}
 
-# Plan de sesiones {background-color="#003D70"}
+# Canonical setting {background-color="aquamarine"}
+
+## Graphical representation
+
+## Non-parametric asssumptions
+
+## IV bounds
+
+# Effect homogeneity {background-color="aquamarine"}
+
+## Assumptions
+
+## 2SLS
+
+## Wald estimator
+
+## Issues
+
+# Modern IV {background-color="aquamarine"}
+
+## LATE framework
+
+Assuming effect heterogeneity, the estimand of interest is not the "total effect" anymore, but a new quantity:
+
+. . . 
+
+The Local Average Treatment Effect (LATE). Formally:
+
+$$
+E[\underbrace{Y_{d=1,i} - Y_{d=0,i}}_{\text{treatment effect}} \vert \underbrace{D_{z=1,i} \gt D_{z=0,i}}_{\text{among compliers}}]
+$$
+
+## Assumptions
+
+### Relevance
+
+$$
+E[D_{z=1,i} - D_{z=0,i}] \neq 0
+$$
+
+## Assumptions
+
+### Unconfoundedness of the instrument
+
+$$
+Y_{(d,z),i} \perp Z_i \forall d,z
+$$
+
+$$
+D_{z,i} \perp Z_i \forall z
+$$
+
+## Assumptions
+
+### Exclusion restriction
+
+$$
+Y_{(d,z),i} = Y_{(d,z'),i} = Y_{d,i} \forall z, z', d, i
+$$
 
 
+. . . 
 
-## Quarto
+:::callout-note
+"Exclusion restriction" means that we can **exclude** the instrument $z$ from the outcome equation, once the treatment is accounted for
+:::
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+## Assumptions
+### Monotonicity
 
-## Bullets
+$$
+D_{z=1,i} \geq D_{z=0,i} \forall i
+$$
 
-When you click the **Render** button a document will be generated that includes:
+## Estimation
 
--   Content authored with markdown
--   Output from executable code
+## Issues
 
-## Code
-
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
+# IV in practice {background-color="aquamarine"}
 
 

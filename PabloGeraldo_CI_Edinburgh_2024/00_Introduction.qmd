@@ -10,12 +10,12 @@ include-in-header:
         height: 100px;
       }
       </style>
-footer: "Demystifying Causal Inference"
+footer: "Demystifying Causal Inference - Introduction"
 date: 05/28/2024
 date-format: long
 format: 
   revealjs:
-    #theme: simple
+    theme: simple
     width: 1600
     height: 900
     transition: slide
@@ -25,10 +25,13 @@ format:
 callout-appearance: minimal
 ---
 
-# Motivation {background-color="aquamarine"}
+# Motivation {background-color="#00a191"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
 
 
-## Why should we study causal inference?
+## Why should we care about causal inference?
 
 . . .
 
@@ -48,9 +51,9 @@ The enormous progress in the last decades has been facilitated by the developmen
 
 ## What should you expect from this workshop?
 
-This workshop is designed as a "Crash Course", so we can obviously focus only on a few things:
-
 <br>
+
+This workshop is designed as a "Crash Course", so we can focus only on a few things:
 
 * Familiarize yourself with the most widely used CI frameworks
 
@@ -64,22 +67,24 @@ This workshop is designed as a "Crash Course", so we can obviously focus only on
 
 * Assess the plausibility of different identification strategies applied to real problems
 
-<br>
+. . . 
 
-At the end of our two morning sessions, I hope you feel better equipped to read and evaluate the applied literature and to design your own studies using appropriate identification strategies (we are going to discuss two popular strategies this afternoon!).
+In the afternoon sessions, we will focus on two commonly invoked identification strategies:
+
+* Selection on observables
+
+* Instrumental variables
 
 ---
 
 
 ## What are we not covering today?
 
-There is a lot of stuff out there! Some areas that you might be interested in but we don't have enough time to review today:
-
 <br>
 
-* Sequential estimation for time-varying treatments 
+There is a lot of stuff out there! Some areas that you might be interested in but we don't have enough time to review today:
 
-* Estimation in general, including Targeted Maximum Likelihood
+* Sequential estimation for time-varying treatments 
 
 * Machine learning for heterogeneous treatment effects
 
@@ -138,7 +143,7 @@ There is a lot of stuff out there! Some areas that you might be interested in bu
 
 
 
-# What is causal inference about? {background-color="aquamarine"}
+# What is causal inference about? {background-color="#00a191"}
 
 ## Statistics/ML vs Causal Inference
 
@@ -172,7 +177,7 @@ $$= E(Y_x) - E(Y_{x'})$$
 ---
 
 
-## The ladder of causality 
+## The ladder of causality {background-color="#002F87"}
 
 :::{.panel-tabset}
 
@@ -200,7 +205,7 @@ Pearl and Mackenzie (2018)
 
 ---
 
-## But, is **doing** *really* that different from **seeing**?
+## But, is **doing** *really* that different from **seeing**? 
 
 <br>
 

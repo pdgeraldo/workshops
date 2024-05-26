@@ -10,7 +10,8 @@
   <meta name="generator" content="quarto-1.2.475">
 
   <meta name="author" content="Pablo Geraldo Bastías">
-  <title>Demystifying Causal Inference</title>
+  <meta name="dcterms.date" content="2024-05-28">
+  <title>Potential outcomes</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -320,14 +321,19 @@
       margin-right: 0; 
     }
   </style>
+  <style>
+  .reveal .slide-logo {
+    max-height: unset;
+    height: 100px;
+  }
+  </style>
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Demystifying Causal Inference</h1>
-  <p class="subtitle">Potential outcomes</p>
+  <h1 class="title">Potential outcomes</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -337,40 +343,1095 @@ Pablo Geraldo Bastías
 </div>
 </div>
 
-  <p class="date">4/5/26</p>
+  <p class="date">May 28, 2024</p>
 </section>
-<section id="plan-de-sesiones" class="title-slide slide level1 center" data-background-color="#003D70">
-<h1>Plan de sesiones</h1>
-
-</section>
-
 <section>
-<section id="plan-de-sesiones-1" class="title-slide slide level1 center" data-background-color="#D8A745">
-<h1>Plan de sesiones</h1>
+<section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Outline</h1>
 
 </section>
-<section id="quarto" class="slide level2">
-<h2>Quarto</h2>
-<p>Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <a href="https://quarto.org/docs/presentations/" class="uri">https://quarto.org/docs/presentations/</a>.</p>
+<section id="lecture-1-potential-outcomes" class="slide level2">
+<h2>Lecture 1: Potential Outcomes</h2>
+</section></section>
+<section>
+<section id="potential-outcomes" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Potential Outcomes</h1>
+
 </section>
-<section id="bullets" class="slide level2">
-<h2>Bullets</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes:</p>
+<section id="neyman-neyman-rubin-or-rubin-causal-model" class="slide level2">
+<h2>Neyman, Neyman-Rubin, or Rubin Causal Model?</h2>
+<p><br></p>
+<p>Introduced by Neyman (1923) in the context of experimental design. They remained only used in that context for decades!</p>
 <ul>
-<li>Content authored with markdown</li>
-<li>Output from executable code</li>
+<li><p>Imported and developed by Donald Rubin for observational studies (c.&nbsp;1974)</p></li>
+<li><p>They are really great to clarify <em>what do we want to know</em> (<span class="fragment fade-in"><a href=""><strong>estimand</strong></a></span>)</p></li>
+<li><p>This includes identifying <em>reasons for discrepancies</em> between what we observe and our estimand (<span class="fragment fade-in"><a href=""><strong>bias</strong></a></span>)</p></li>
+<li><p>They are great to formalize <em>what needs to be true</em> for our estimand to be identified with a given <em>estimator</em> (<span class="fragment fade-in"><a href=""><strong>assumptions</strong></a></span>)</p></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>They are not-so-great to assess if our assumptions are plausible or defensible (more on this soon!)</li>
+</ul>
+</div>
+</section>
+<section id="notation" class="slide level2">
+<h2>Notation</h2>
+<p><br></p>
+<p>Let’s start with some definitions:</p>
+<div class="fragment">
+<p><span class="math inline">\(Y\)</span> is the outcome variable <em>as we observe it</em></p>
+<p><span class="math inline">\(D\)</span> is the variable whose effect we want to study (treatment, exposure)</p>
+<p><span class="math inline">\(Y_d\)</span> is the potential outcome when we <span class="fragment highlight-red"><strong>set</strong></span> <span class="math inline">\(D=d\)</span>. For example, when <span class="math inline">\(D \in \{0,1\}\)</span>:</p>
+<ul>
+<li><p><span class="math inline">\(Y_1\)</span> is the potential outcome under “treatment”</p></li>
+<li><p><span class="math inline">\(Y_0\)</span> is the potential outcome under “control”</p></li>
+</ul>
+</div>
+</section>
+<section id="notation-1" class="slide level2">
+<h2>Notation</h2>
+<p>You will find a lot of equivalent notations for potential outcomes. It could be confusing, but it is good to get practice working with different variants</p>
+<p><span class="math display">\[Y(d) = Y_d = Y^d\]</span></p>
+<div class="fragment">
+<div class="callout callout-tip callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Read it like this:</strong></p>
+</div>
+<div class="callout-content">
+<p>The value that the variable <span class="math inline">\(Y\)</span> would take if we were to set/manipulate the variable <span class="math inline">\(D\)</span> to the value <span class="math inline">\(d\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="fragment r-stack">
+<p><em>Can you ever observe any of those potential outcomes?</em></p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Consistency</strong> (also known as SUTVA): <span class="math display">\[D = d \rightarrow Y = Y_d\]</span></p>
+<p>For the binary treatment case, we have: <span class="math inline">\(Y = DY_1 + (1-D)Y_0\)</span> (“switching equation”)</p>
+</div>
+<div class="fragment">
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>What are the assumptions built in this notation? What type of dependence are we ruling out?</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="causal-estimands" class="slide level2">
+<h2>Causal estimands</h2>
+<p>ITE</p>
+<p>ATE</p>
+<p>ATT</p>
+<p>ATC</p>
+<p>CATE</p>
+</section>
+<section id="short-activity-3-mins" class="slide level2" data-background-color="#692044">
+<h2>Short activity (3 mins)</h2>
+<p>Researchers, at least social scientists, tend to formalize their effect of interest as <strong>regression coefficients</strong> (i.e., their hypothesis are formulated within a statistical model)</p>
+<p>Potential outcomes offer a way to formalize what we mean by a <em>causal effect</em> outside any statistical model. This allows us to clearly separate <em>what do we want</em> (a certain <strong>estimand</strong>), the statistical machinery to answer our question (an <strong>estimator</strong>) and the particular answer we get (our empirical <strong>estimate</strong>).</p>
+<p>Lundberg, Johnson, and Stewart (2021) discuss this point in great detail. Absolutely worth reading! Ungated version <a href="https://osf.io/preprints/socarxiv/ba67n/">here</a>.</p>
+<div class="fragment">
+<p>Take a moment to think about your own research:</p>
+<ul>
+<li>What <strong>causal</strong> question is relevant for you to study?</li>
+<li>Can you formulate it using potential outcomes?</li>
+<li>What are the assumptions your are making in this formalization?</li>
+</ul>
+</div>
+</section>
+<section id="the-science-table" class="slide level2">
+<h2>The Science Table</h2>
+<div class="cell">
+
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>One advantage of PO is that we can treat them directly as random variables!</p>
+<p>So, everything we already know related to probability manipulation still applies here.</p>
+<p>The basic calculation device (usually implicit) for that matter is the <strong>science table</strong>.</p>
+<p>Basically, the full schedule response of the potential outcomes under different treatment conditions</p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="average-treatment-effect" class="slide level2">
+<h2>Average Treatment Effect</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Imagine we want to compare two educational programs, <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>.</p>
+<p>We are interested in the employment status of their graduates after a year (<span class="math inline">\(Y\)</span>)</p>
+<p>The causal effect of the program would be the comparison of the potential outcomes <span class="math inline">\(Y_{ai}\)</span> and <span class="math inline">\(Y_{bi}\)</span>, for all units <span class="math inline">\(i\)</span></p>
+<p><span class="math display">\[\text{ATE} = E(Y_{ai}) - E(Y_{bi})\]</span> <span class="math display">\[(6/10) - (5/10) = \mathbf{\color{blue}{0.1}}\]</span></p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="difference-in-means" class="slide level2">
+<h2>Difference-in-means</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>But we don’t observe all potential outcomes for all units!</p>
+<p>Can we use instead the observational comparison as a proxy?</p>
+<p>Let’s calculate the different in means across groups, based on the <em>actual</em> program each subject attended:</p>
+<p><span class="math display">\[\text{diff-in-means} = E(Y_i|X=a) - E(Y_i|X=b)\]</span> <span class="math display">\[(3/5)-(2/5) = \mathbf{\color{red}{0.2}}\]</span></p>
+<p><span class="math display">\[\color{red}{\text{diff-in-means} \neq \text{ATE}}\]</span></p>
+<p><span class="math inline">\(\color{red}{\text{But why???}}\)</span></p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>.</td>
+<td>1</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>.</td>
+<td>1</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="sources-of-bias" class="slide level2">
+<h2>Sources of bias</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span class="math display">\[E(\text{diff-in-means})\]</span> <span class="math display">\[= E(Y_i|X=a) - E(Y_i|X=b)\]</span> <span class="math display">\[= E(Y_a|X=a) - E(Y_b|X=b)\]</span> <span class="math display">\[= ATE +\]</span> <span class="math display">\[(E[Y_b|X=a] - E[Y_b|X=b])+\]</span> <span class="math display">\[(1-P[X])(ATT-ATC)\]</span> <span class="math display">\[= \mathbf{\color{blue}{0.1}} + \color{red}{0.2 + (0.5)(-0.2) = \mathbf{0.2}}\]</span></p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>.</td>
+<td>1</td>
+<td>.</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>.</td>
+<td>1</td>
+<td>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="identification-assumptions" class="slide level2">
+<h2>Identification assumptions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>We need the following condition to be true: <span class="math display">\[
+Y_d \perp\!\!\!\perp D
+\]</span></p>
+<p>Do we meet that condition here? No! <span class="math display">\[(Y_{ai},Y_{bi}) \not\!\perp\!\!\!\perp D\]</span></p>
+<p>Because: <span class="math display">\[P(Y_a = y | D=a) \neq P(Y_a = y)\]</span> <span class="math display">\[P(Y_b = y | D=b) \neq P(Y_b = y)\]</span></p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="identification-assumptions-1" class="slide level2">
+<h2>Identification assumptions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>What about including another covariate <span class="math inline">\(W\)</span>?</p>
+<p>Does the following condition holds? <span class="math display">\[
+Y_d \perp\!\!\!\perp D | W
+\]</span></p>
+<p>Not quite either! But still “better” than before, right? right?</p>
+<p>Let’s define: <span class="math display">\[\text{CATE}_{w} = E(Y_a-Y_b|W=w)\]</span></p>
+<p>and the estimator <span class="math inline">\(\widehat{\text{CATE}}_{w} =\)</span> <span class="math display">\[E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)\]</span></p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+<th><span class="math inline">\(W_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Quant</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Quant</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Quant</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Qual</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Quant</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Qual</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Quant</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="identification-assumptions-2" class="slide level2">
+<h2>Identification assumptions</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span class="math display">\[\widehat{\text{CATE}}_{Quant} = \widehat{\text{CATE}}_{Qual} = 0.16\]</span> <span class="math display">\[\text{ATE} = \sum_w\text{CATE}_w P(w)\]</span> <span class="math display">\[\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16\]</span></p>
+<p>However, look a the true <span class="math inline">\(\text{ATE}_W\)</span>: <span class="math display">\[\text{CATE}_{Quant} = -0.2\]</span> <span class="math display">\[\text{CATE}_{Qual} = 0.4\]</span> <span class="math display">\[\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}\]</span></p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+<th><span class="math inline">\(W_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Quant</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Quant</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Quant</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Qual</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>Quant</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>Qual</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>-1</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>Quant</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="so-how-do-we-know" class="slide level2">
+<h2>So, how do we know?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>In general, we rely on <strong>extra-statistical assumptions</strong> about the data generating process to claim causal identification.</p>
+<div class="callout callout-tip callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>“No causes in, no cases out”</strong></p>
+</div>
+<div class="callout-content">
+<p>Nancy Cartwright</p>
+</div>
+</div>
+</div>
+<p>Is there a way to design an study in which we know, <strong>by design</strong>, that the needed assumptions hold?</p>
+</div><div class="column" style="width:50%;">
+<table>
+<thead>
+<tr class="header">
+<th>Unit</th>
+<th><span class="math inline">\(D_i\)</span></th>
+<th><span class="math inline">\(Y_i\)</span></th>
+<th><span class="math inline">\(Y_{ai}\)</span></th>
+<th><span class="math inline">\(Y_{bi}\)</span></th>
+<th><span class="math inline">\(\tau_i\)</span></th>
+<th><span class="math inline">\(W_i\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+<td>Quant</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+<td>Quant</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>A</td>
+<td>0</td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+<td>Quant</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+<td>Qual</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+<td>Quant</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>B</td>
+<td>0</td>
+<td>.</td>
+<td>0</td>
+<td>.</td>
+<td>Qual</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>B</td>
+<td>1</td>
+<td>.</td>
+<td>1</td>
+<td>.</td>
+<td>Qual</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>B</td>
+<td>1</td>
+<td>.</td>
+<td>1</td>
+<td>.</td>
+<td>Quant</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section></section>
+<section>
+<section id="randomised-experiments" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Randomised Experiments</h1>
+
+</section>
+<section id="why-randomization" class="slide level2">
+<h2>Why randomization</h2>
+<p>If we want to <strong>predict under interventions</strong>, then the best way to do it is <strong>interveening</strong>!</p>
+<p><br> Random assignment (more specifically, RCTs) has been called the <strong>gold standard</strong> for causal inference: it guarantees the necessary assumptions for causal inference hold by design.</p>
+<p><br> When unfesible, imagining a hypothetical experiment still offers a useful benchmark to assess the validity of causal claims, and even to clarify what do we mean by a particular causal effect.</p>
+<p><br> Experiments come in many different flavours: lab, field, survey, and even quasi-experimentss!</p>
+<p><br> Here we will only scratch the surface of social science experiments: the idea is to get you interested and point you to the resources out there! Maybe sometime soon you will be running your own experiment! (Or at least someone else’s experiment)</p>
+</section>
+<section id="short-activity-3-mins-1" class="slide level2">
+<h2>Short activity (3 mins)</h2>
+<p>Sometimes it is hard to imagine an experiment that would be relevant for the type of questions we care about.</p>
+<p><br> Some people even say (and I for sure partially agree!) that experiments tend to emphasize “small” versus “big” questions, promoting incremental/testable policies.</p>
+<p><br> However, there are tons of examples of researchers using experiments to address important, <strong>big</strong> and difficult questions. <strong>Do you know of any example?</strong></p>
+<p><br> Take a moment to check the syllabus of UCLA professor Graeme Blair’s Experimental Design class <a href="https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf">here</a>. He put together a list of experiments conducted by UCLA faculty, and by graduate students.</p>
+<p>.center[<strong>Any comments?</strong>]</p>
+</section>
+<section id="why-randomization-1" class="slide level2">
+<h2>Why randomization</h2>
+<h3 id="more-formally">(more formally)</h3>
+<p>We already saw that we can identify the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> if the treatment assignment is independent of the potential outcomes. Formally <span class="math display">\[(Y_x,Y_{x^*}) \perp\!\!\!\perp X\]</span></p>
+<p>Recall the diff-in-means decomposition we review earlier. Given the <strong>ignorability</strong> of the treatment assignment, we have can further write it as:</p>
+<p>By consistency</p>
+<p><span class="math display">\[E(Y_i|X=x) - E(Y_i|X=x^*) = E(Y_x|X=x) - E(Y_{x^*}|X=x^*)\]</span> With some algebra</p>
+<p><span class="math display">\[= E(Y_x - Y_{x^*}) + (E[Y_{x^*}|X=x] - E[Y_{x^*}|X=x^*])+(1-P[X])(ATT-ATC)\]</span> By ignorability, this simplifies to</p>
+<p><span class="math display">\[E(Y_x - Y_{x^*}) = ATE\]</span></p>
+</section>
+<section id="forms-of-validity" class="slide level2">
+<h2>Forms of validity</h2>
+<p>Traditionally, researchers argue about the validity of a study’s causal conclusion (and, more generally, about the validity of different research designs) based on the potential biases that pose <strong>threats to validity</strong>. Check <a href="https://journals.lww.com/epidem/Fulltext/2020/05000/A_Graphical_Catalog_of_Threats_to_Validity_.11.aspx">this</a> amazing paper by Matthay and Glymour for a review.</p>
+<p><br> We reviewed the bias in the difference-in-means estimator: baseline differences (under the control condition), and differential response to the treatment (under the exposure condition).</p>
+<p><br> But when we randomize an exposure, we know that who ends up in each treatment arm has nothing to do with their potential outcomes!</p>
+<p><br> This is why we generally say that experiments are great for <strong>internal validity</strong>: among the people that participated in our study, we can rule out systematic sources of bias.</p>
+<p><br> However, this does not imply that our results are <strong>externally valid</strong>, i.e., that they apply to people outside our study! We need further assumptions to move from one to another.</p>
+</section>
+<section id="how-to-randomize" class="slide level2">
+<h2>How to randomize?</h2>
+<p>Many times, we use randomization not just for identification (<strong>ignorability</strong>), but also for estimation!</p>
+<p><br> If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a <strong>permutation distribution</strong> and use it for inference.</p>
+<p><br> How much dispersion (i.e.&nbsp;uncertainty) is in our distribution will be affected by <strong>the level</strong> at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?</p>
+<ul>
+<li>The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?</li>
+</ul>
+<p>Conditional randomization (i.e., blocking) increase efficiency, when we have variables that are highly predictive of the outcome of interest</p>
+<ul>
+<li>One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control.</li>
 </ul>
 </section>
-<section id="code" class="slide level2">
-<h2>Code</h2>
-<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
+<section id="types-of-experiments" class="slide level2">
+<h2>Types of experiments</h2>
+<ul>
+<li><p><strong>Laboratory experiments</strong>: Usually conducted with a small sample (of undergraduate psychology students), many times involving games in a computer. Helpful for cognitive/behavioral questions.</p></li>
+<li><p><strong>Field experiments</strong>: In order to obtain more <em>externally valid</em> results, experiments conducted in the field (i.e., under real-world conditions) are the way to go. Definitely more expensive though. Audit studies are a particular type of field experiment.</p></li>
+<li><p><strong>Survey experiments</strong>: One can randomize treatment conditions <em>in a survey</em> to evaluate how participants change their responses based on certain stimulus. Vignettes and list experiments are examples of this approach.</p></li>
+<li><p><strong>(Bonus) Quasi-experiments</strong>: Researchers usually call quasi-experiments to real-world situations that offer as-if random variation in a treatment of interest. For example, earthquakes, change in laws, date of birth, etc.</p></li>
+</ul>
+</section>
+<section id="additional-resources" class="slide level2">
+<h2>Additional Resources</h2>
+<p><br> ### Online learning</p>
+<ul>
+<li><p>A selected and annotated bibliography on causality <a href="https://www.pablogeraldo.com/pdf/GeraldoBrand_2020_Causality.pdf">here</a></p></li>
+<li><p>J-PAL research resources <a href="https://www.povertyactionlab.org/research-resources?view=toc">here</a></p></li>
+<li><p>EGAP methods guides <a href="https://egap.org/methods-guides/">here</a></p></li>
+</ul>
+<h3 id="textbooks">Textbooks</h3>
+<ul>
+<li>Gerber and Green (2012) Field Experiments: Design, Analysis, and Interpretation (check <a href="https://www.amazon.com/Field-Experiments-Design-Analysis-Interpretation/dp/0393979954/ref=sr_1_11?dchild=1&amp;keywords=gerber+green&amp;qid=1624466782&amp;sr=8-11">here</a>)</li>
+</ul>
+</section>
+<section id="short-activity" class="slide level2" data-background-color="#692044">
+<h2>Short activity</h2>
+<p>Meet with your project group, and think in a research question that you could possibly address using an experimental design:</p>
+<ul>
+<li><p>What is your research question?</p></li>
+<li><p>What is your <strong>estimand</strong>? (effect of what? among whom?)</p></li>
+<li><p>What type of experiment would you conduct? (lab? field? survey?)</p></li>
+<li><p>What would be the level of your randomization? (individual? cluster? why?)</p></li>
+</ul>
+<p>Using your answers to the question above, propose and design a (survey) experiment that could help answering your research questions.</p>
+<p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
 <div class="footer footer-default">
-
+<p>Demystifying Causal Inference - Potential Outcomes</p>
 </div>
 </section></section>
     </div>

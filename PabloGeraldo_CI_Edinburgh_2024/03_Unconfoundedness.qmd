@@ -1,40 +1,126 @@
 ---
-title: "Demystifying Causal Inference"
+title: "Selection on observables"
+title-block-banner: true
 author: "Pablo Geraldo Bastías"
-date: "28/05/2024"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference - Lecture 3"
+date: 05/28/2024
+date-format: long
 format: 
   revealjs:
-    #theme: simple
+    theme: simple
     width: 1600
     height: 900
     transition: slide
-    slide-number: true
+    slide-number: c/t
     chalkboard: true
+    auto-stretch: false
+callout-appearance: simple
 ---
 
-# Potential Outcomes {background-color="#D8A745"}
+# Outline {background-color="#17a091"}
 
-# Plan de sesiones {background-color="#003D70"}
+## Lecture 3: Selection on observables
+
+During this lecture, we will cover one of the most popular identification strategies: selection on observables, also known as conditional ignorability/independence (stats), unconfoundedness (econ), or conditional exchangeability (epi)
+
+* First, we will locate it under the general umbrella of [observational studies](). 
+
+* Then we will review the required assumptions and show the identication results
+
+* Finally, we will discuss common estimation methods: regression, subclassification and matching, weighting, and augmented estimators
+
+# Observational studies {background-color="#00a191"}
+
+## What is an observational study?
+
+We already discussed the importance of **random assignment** to justify drawing causal conclusions and conduct statistical inference
+
+. . .
+
+Observational data is generated when the treatment of interest is **not** in control of the researcher (e.g., survey data, administrative records, etc.)
+
+. . .
+
+An observational study is an attempt to use observational data to *approximate* causal conclusions (or, as some would say, "to approximate an experiment")
+
+. . .
+
+While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on assumptions
 
 
 
-## Quarto
+## The First Commandment of Causal Inference {background-color="#692044"}
+### (by Chad Hazlett)
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+:::{.callout-warning}
+Thou shalt not blindly apply identification strategies as if the *procedure* makes your results causal
+:::
 
-## Bullets
+. . .
 
-When you click the **Render** button a document will be generated that includes:
+Identification strategies are about assumptions, not tools:
 
--   Content authored with markdown
--   Output from executable code
+* learning tools is important, useful, and fun
 
-## Code
+* but the tool you use doesn't make your result causal, your assumptions do
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+* most of your effort should go into understanding and communicating wheather your assumptions are credible
 
-```{r}
-1 + 1
-```
+. . .
+
+:::{.callout-note}
+## Corolary: Never say "my estimate is causal because I used (.)"
+
+Where (.) = matching, IPW, IV, whatever
+:::
+
+
+## Credible observational studies
+
+# Unconfoundedness {background-color="#00a191"}
+
+## General setting
+
+## Assumptions
+
+## Identification of ATE/ATT
+
+# Estimation {background-color="#00a191"}
+
+## Estimation overview
+
+- Regression
+- Subclassification and Matching
+- Weighting
+- Augmented estimators
+
+# Modeling the outcome expectation {background-color="#00a191"}
+
+## Regression {background-color="#E9004C"}
+
+## Imputation {background-color="#E9004C"}
+
+# Modeling the treatment assignment {background-color="#00a191"}
+
+## Subclassification and Matching {background-color="#E9004C"}
+
+## Weighting {background-color="#E9004C"}
+
+# Augmented estimators {background-color="#00a191"}
+
+## Augmented IPW {background-color="#692044"}
+
+## TMLE {background-color="#E9004C"}
+
+## Double-ML {background-color="#002F87"}
 
 
