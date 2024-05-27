@@ -352,7 +352,7 @@ Pablo Geraldo Bastías
 </section>
 <section id="finding-as-if-random-variation" class="slide level2">
 <h2>Finding as-if random variation</h2>
-<p>Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even in a particular subpopulation</p>
+<p>Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even if only in a particular subpopulation</p>
 <p>We will discuss identification and estimation in the instrumental variable setting under two frameworks:</p>
 <div class="fragment">
 <ul>
@@ -368,6 +368,91 @@ Pablo Geraldo Bastías
 <p>Depending on the invoked assumptions, the quantity identified by the IV analysis is different</p>
 <p>We will discuss in certain detail the common issues faced by all IV analyses, and also some issues particular to each framework</p>
 </div>
+<div class="fragment">
+<div class="callout callout-warning no-icon callout-style-simple">
+<div class="callout-body">
+<div class="callout-content">
+<p>As described by Felton and Stewart (2024), IV is a powerful strategy, but a very fragile one that should be handled with care!</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="intuition-for-iv" class="slide level2">
+<h2>Intuition for IV</h2>
+<p>Originally, the IV analysis was developed to deal with endogenous systems in equilibrium: how to determine the effect of supply on demand (and vice versa!) if they always meet at a single point?</p>
+<p><strong>Solution</strong>: Find “exogeneous shifters” for one of them!</p>
+<div class="fragment">
+<p>In the modern IV setting, the intuition is a little simpler: if we cannot randomise the treatment of interest, can we find an (as-if) random variable that <em>encourages</em> treatment taking?</p>
+</div>
+<div class="fragment">
+<p>Imagine if we want to test the hypothesis: <a href="">Does attending this workshop improves your productivity in the long-term?</a></p>
+<ul>
+<li><p>Can we directly compare the ones who attended to the ones who didn’t attend?</p></li>
+<li><p>Can we randomise who <em>actually</em> attended the workshop?</p></li>
+<li><p>Can we randomise <em>invitations</em> to the workshop, or reminders?</p></li>
+<li><p>Can we construct a variable that predicts who attended, independent of potential productivity? (would schedule conflicts work?)</p></li>
+</ul>
+</div>
+</section>
+<section id="intuition-for-iv-1" class="slide level2">
+<h2>Intuition for IV</h2>
+<p>If we could actually randomise the reminders, then we would have an experiment!</p>
+<p>But remember, we want the effect of <em>attending</em> the workshop, not the effect of <em>being invited</em> to it!</p>
+<p><span class="math display">\[
+ATE_{\text{workshop}} = E[P_a - P_{\bar{a}}]
+\]</span> <span class="math display">\[
+ATE_{\text{reminder}} = E[P_r - P_{\bar{r}}]
+\]</span> The first one is the effect of interest, the second one is called the <em>intent to treat</em> (ITT) effect.</p>
+<div class="callout callout-note no-icon callout-style-simple">
+<div class="callout-body">
+<div class="callout-content">
+<p>Under which conditions would they be equivalent?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="from-itt-to-the-treatment-effect" class="slide level2">
+<h2>From ITT to the treatment effect</h2>
+<p>If our assumptions are true</p>
+<ul>
+<li>i.e., that receiving a reminder to attend the workshop only affects people’s productivity through the workshop itself</li>
+</ul>
+<p>then the ITT estimate comes only from the population that changed their attendance because of the invitation!</p>
+<ul>
+<li>So, the <span class="math inline">\(ATE_{\text{reminder}}\)</span> is an average of (a) the effect of the reminder sent on productivity among the switchers, and (b) the zero effect from non-switchers</li>
+</ul>
+<p>In other words, the ITT is a diluted version of the effect of interest. Can we work back to the quantity we want? Kind of</p>
+</section>
+<section id="complier-types" class="slide level2">
+<h2>Complier types</h2>
+<p>To re-scale the ITT, we need to estimate the probability of switching the attendance to the workshop due to the reminder –&gt; Randomisation!</p>
+<p>But in order to use that information, we need some further clarifications. Let’s divide the population in four latent subgroups:</p>
+<div class="fragment">
+<ul>
+<li><strong>Never-takers</strong> : those we don’t care about causal inference, or about workshops, so they won’t come anyways. What’s the effect of the reminder for them?</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Compliers</strong>: the forgetful (like me), so they will attend if reminded but not otherwise. What’s the effect of the reminder for them?</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Always-takers</strong>: the highly organized and quantitative geeks, that would attend under any circumstances. What’s the effect for this group?</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Defiers</strong>: those who were planned to attend, but when reminded (and after re-reading the workshop description), they would rather not! <em>We assume that this group does not exist</em></li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="general-setting" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>General setting</h1>
+
 </section>
 <section id="graphical-representation" class="slide level2">
 <h2>Graphical representation</h2>
@@ -390,18 +475,33 @@ Pablo Geraldo Bastías
 <p>Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect <strong>cannot</strong> be identified.</p>
 <p>However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect</p>
 </section></section>
-<section id="canonical-setting" class="title-slide slide level1 center" data-background-color="#17a091">
-<h1>Canonical setting</h1>
-
-</section>
-
 <section>
-<section id="effect-homogeneity" class="title-slide slide level1 center" data-background-color="#17a091">
-<h1>Effect homogeneity</h1>
+<section id="classical-iv" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Classical IV</h1>
 
 </section>
-<section id="assumptions" class="slide level2">
-<h2>Assumptions</h2>
+<section id="effect-homogeneity" class="slide level2">
+<h2>Effect homogeneity</h2>
+</section>
+<section id="identification" class="slide level2">
+<h2>Identification</h2>
+<p>Traditionally, the IV assumptions are described in terms of two linear model and their error terms:</p>
+<p><a href="">First stage</a>: <span class="math inline">\(D = \tau + \rho Z + \eta\)</span></p>
+<p><a href="">Second stage</a>: <span class="math inline">\(Y = \gamma + \alpha D + \epsilon\)</span></p>
+<div class="callout callout-tip no-icon callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<p><strong>IV identification assumptions</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><p><strong>Exogeneity and exclusion</strong>: <span class="math inline">\(C(Z,\eta)=0\)</span>, and <span class="math inline">\(C(Z,\epsilon) =0\)</span></p></li>
+<li><p><strong>Relevance of first stage</strong>: <span class="math inline">\(\rho \neq 0\)</span></p></li>
+<li><p><strong>Constant effect</strong>: <span class="math inline">\(\alpha = Y_{1i} - Y_{0i} ~ \forall i\)</span></p></li>
+</ul>
+</div>
+</div>
+</div>
 </section>
 <section id="sls" class="slide level2">
 <h2>2SLS</h2>
@@ -416,6 +516,9 @@ Pablo Geraldo Bastías
 <section id="modern-iv" class="title-slide slide level1 center" data-background-color="#17a091">
 <h1>Modern IV</h1>
 
+</section>
+<section id="effect-heterogeneity" class="slide level2">
+<h2>Effect heterogeneity</h2>
 </section>
 <section id="late-framework" class="slide level2">
 <h2>LATE framework</h2>
@@ -434,7 +537,7 @@ E[\underbrace{Y_{d=1,i} - Y_{d=0,i}}_{\text{treatment effect}} \vert \underbrace
 <p>The IV-LATE assumptions we are going to discuss now are embedded in this quantity formalization</p>
 </div>
 </section>
-<section id="assumptions-1" class="slide level2">
+<section id="assumptions" class="slide level2">
 <h2>Assumptions</h2>
 <h3 id="relevance">Relevance</h3>
 <p><span class="math display">\[
@@ -449,7 +552,7 @@ E[D_{z=1,i} - D_{z=0,i}] \neq 0
 <p>Is it necessary for the association between <span class="math inline">\(Z\)</span> and <span class="math inline">\(D\)</span> to be causal?</p>
 </div>
 </section>
-<section id="assumptions-2" class="slide level2">
+<section id="assumptions-1" class="slide level2">
 <h2>Assumptions</h2>
 <h3 id="unconfoundedness-of-the-instrument">Unconfoundedness of the instrument</h3>
 <p><span class="math display">\[
@@ -466,7 +569,7 @@ D_{z,i} \perp\!\!\!\perp Z_i \forall z
 <p>It reads: The potential <em>treatment</em> is independent of the instrument</p>
 </div>
 </section>
-<section id="assumptions-3" class="slide level2">
+<section id="assumptions-2" class="slide level2">
 <h2>Assumptions</h2>
 <h3 id="exclusion-restriction">Exclusion restriction</h3>
 <p><span class="math display">\[
@@ -488,7 +591,7 @@ Y_{(d,z),i} = Y_{(d,z'),i} = Y_{d,i} \forall z, z', d, i
 <p>Can this be tested?</p>
 </div>
 </section>
-<section id="assumptions-4" class="slide level2">
+<section id="assumptions-3" class="slide level2">
 <h2>Assumptions</h2>
 <h3 id="monotonicity">Monotonicity</h3>
 <p><span class="math display">\[
@@ -499,8 +602,38 @@ D_{z=1,i} \geq D_{z=0,i} \forall i
 <p>It implies that the instrument affects <em>everyone</em> in the same direction: an instrument cannot induce some people to receive the treatment, and discourage some other people to receive the treatment</p>
 </div>
 </section>
+<section id="assumptions-4" class="slide level2">
+<h2>Assumptions</h2>
+<h3 id="sutva-and-positivity">SUTVA and Positivity</h3>
+<p>Usually not discussed much in the context of IV, but remember that we are generally assuming <strong>SUTVA</strong> (consistency + non interference + no relevant versions of the treatment)</p>
+<p><strong>Positivity</strong> is required whenever we need to condition for certain covariates <span class="math inline">\(X\)</span>, like in the case of <em>conditional</em> IV analyses.</p>
+</section>
 <section id="estimation" class="slide level2">
 <h2>Estimation</h2>
+<p>There are several frameworks to conduct estimation in the IV settings. We are going to discuss two common ones:</p>
+<div class="fragment">
+<ul>
+<li><p>The 2SLS (Two-stages-least-squares)</p></li>
+<li><p>The Wald estimator (or ratio estimator)</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p>After showing how they work in practice, we are going to focus on best practices and potential issues to consider</p>
+</div>
+</section>
+<section id="estimation-1" class="slide level2">
+<h2>Estimation</h2>
+<p>We can estimate the ATE among complier (i.e., LATE):</p>
+<p><span class="math display">\[
+LATE = \frac{\text{Reduced Form}}{\text{Compliance Ratio}} = \frac{\text{ITT}}{\text{P(Complier)}}
+\]</span> <span class="math display">\[
+= \frac{Z \rightarrow Y}{Z \rightarrow D} = \frac{E[Y|Z=1] - E[Y|Z=0]}{E[D|Z=1] - E[D|Z=0]}
+\]</span> <span class="math display">\[
+= \frac{C(Z,Y)}{V(Z)}/\frac{C(Z,D)}{V(Z)}
+\]</span></p>
+<p><span class="math display">\[
+\frac{(Z'Z)^{-1}(Z'Y)}{(Z'Z)^{-1}(Z'D)} = (Z'D)^{-1}(Z'Y)
+\]</span></p>
 </section>
 <section id="issues-1" class="slide level2">
 <h2>Issues</h2>

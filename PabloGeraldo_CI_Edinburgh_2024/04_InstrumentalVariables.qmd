@@ -32,13 +32,13 @@ callout-appearance: minimal
 
 ## Finding as-if random variation
 
-Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even in a particular subpopulation
+Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even if only in a particular subpopulation
 
 We will discuss identification and estimation in the instrumental variable setting under two frameworks:
 
 . . . 
 
-* The canonical setting, where a constant treatment effect is assumed
+* The canonical setting, where a constant treatment effect is assumed 
 
 . . . 
 
@@ -49,6 +49,88 @@ We will discuss identification and estimation in the instrumental variable setti
 Depending on the invoked assumptions, the quantity identified by the IV analysis is different
 
 We will discuss in certain detail the common issues faced by all IV analyses, and also some issues particular to each framework
+
+. . .
+
+:::{.callout-warning}
+As described by Felton and Stewart (2024), IV is a powerful strategy, but a very fragile one that should be handled with care!
+:::
+
+## Intuition for IV
+
+Originally, the IV analysis was developed to deal with endogenous systems in equilibrium: how to determine the effect of supply on demand (and vice versa!) if they always meet at a single point?
+
+**Solution**: Find "exogeneous shifters" for one of them! 
+
+. . .
+
+In the modern IV setting, the intuition is a little simpler: if we cannot randomise the treatment of interest, can we find an (as-if) random variable that *encourages* treatment taking?
+
+. . .
+
+Imagine if we want to test the hypothesis: [Does attending this workshop improves your productivity in the long-term?]()
+
+* Can we directly compare the ones who attended to the ones who didn't attend?
+
+* Can we randomise who *actually* attended the workshop?
+
+* Can we randomise *invitations* to the workshop, or reminders?
+
+* Can we construct a variable that predicts who attended, independent of potential productivity? (would schedule conflicts work?)
+
+## Intuition for IV
+
+If we could actually randomise the reminders, then we would have an experiment!
+
+But remember, we want the effect of *attending* the workshop, not the effect of *being invited* to it!
+
+$$
+ATE_{\text{workshop}} = E[P_a - P_{\bar{a}}]
+$$
+$$
+ATE_{\text{reminder}} = E[P_r - P_{\bar{r}}]
+$$
+The first one is the effect of interest, the second one is called the *intent to treat* (ITT) effect.
+
+:::{.callout-note}
+Under which conditions would they be equivalent?
+:::
+
+## From ITT to the treatment effect
+
+If our assumptions are true 
+
+* i.e., that receiving a reminder to attend the workshop only affects people's productivity through the workshop itself
+
+then the ITT estimate comes only from the population that changed their attendance because of the invitation!
+
+* So, the $ATE_{\text{reminder}}$ is an average of (a) the effect of the reminder sent on productivity among the switchers, and (b) the zero effect from non-switchers
+
+In other words, the ITT is a diluted version of the effect of interest. Can we work back to the quantity we want? Kind of
+
+## Complier types
+
+To re-scale the ITT, we need to estimate the probability of switching the attendance to the workshop due to the reminder --> Randomisation!
+
+But in order to use that information, we need some further clarifications. Let's divide the population in four latent subgroups:
+
+. . .
+
+* **Never-takers** : those we don't care about causal inference, or about workshops, so they won't come anyways. What's the effect of the reminder for them?
+
+. . . 
+
+* **Compliers**: the forgetful (like me), so they will attend if reminded but not otherwise. What's the effect of the reminder for them?
+
+. . . 
+
+* **Always-takers**: the highly organized and quantitative geeks, that would attend under any circumstances. What's the effect for this group?
+
+. . .
+
+*  **Defiers**: those who were planned to attend, but when reminded (and after re-reading the workshop description), they would rather not! *We assume that this group does not exist*
+
+# General setting {background-color="#17a091"}
 
 ## Graphical representation
 
@@ -68,11 +150,28 @@ Under no additional restrictions, i.e., from the non-parametric assumptions enco
 
 However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect
 
-# Canonical setting {background-color="#17a091"}
 
-# Effect homogeneity {background-color="#17a091"}
+# Classical IV {background-color="#17a091"}
+## Effect homogeneity
 
-## Assumptions
+## Identification
+
+Traditionally, the IV assumptions are described in terms of two linear model and their error terms:
+
+[First stage](): $D = \tau + \rho Z + \eta$
+
+[Second stage](): $Y = \gamma + \alpha D + \epsilon$
+
+:::{.callout-tip}
+## IV identification assumptions
+
+* **Exogeneity and exclusion**: $C(Z,\eta)=0$, and $C(Z,\epsilon) =0$
+
+* **Relevance of first stage**: $\rho \neq 0$
+
+* **Constant effect**: $\alpha = Y_{1i} - Y_{0i} ~ \forall i$
+
+:::
 
 ## 2SLS
 
@@ -81,6 +180,7 @@ However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain b
 ## Issues
 
 # Modern IV {background-color="#17a091"}
+## Effect heterogeneity
 
 ## LATE framework
 
@@ -187,9 +287,40 @@ It implies that the instrument affects *everyone* in the same direction: an inst
 
 Usually not discussed much in the context of IV, but remember that we are generally assuming **SUTVA** (consistency + non interference + no relevant versions of the treatment)
 
-**Positivity** is required whenever we need to condition for certain covariates $X$, like in the case of 
+**Positivity** is required whenever we need to condition for certain covariates $X$, like in the case of *conditional* IV analyses.
 
 ## Estimation
+
+There are several frameworks to conduct estimation in the IV settings. We are going to discuss two common ones:
+
+. . .
+
+
+* The 2SLS (Two-stages-least-squares)
+
+* The Wald estimator (or ratio estimator)
+
+. . . 
+
+After showing how they work in practice, we are going to focus on best practices and potential issues to consider
+
+## Estimation
+
+We can estimate the ATE among complier (i.e., LATE):
+
+$$
+LATE = \frac{\text{Reduced Form}}{\text{Compliance Ratio}} = \frac{\text{ITT}}{\text{P(Complier)}}
+$$
+$$
+= \frac{Z \rightarrow Y}{Z \rightarrow D} = \frac{E[Y|Z=1] - E[Y|Z=0]}{E[D|Z=1] - E[D|Z=0]}
+$$
+$$
+= \frac{C(Z,Y)}{V(Z)}/\frac{C(Z,D)}{V(Z)}
+$$
+
+$$
+\frac{(Z'Z)^{-1}(Z'Y)}{(Z'Z)^{-1}(Z'D)} = (Z'D)^{-1}(Z'Y)
+$$
 
 ## Issues
 
