@@ -34,39 +34,42 @@ callout-appearance: simple
 
 It is common to hear the idea that some *methods* are inherently causal: propensity score matching, IPW, instrumental variables, panel methods, and even machine learning
 
-But there is nothing properly causal about a method (i.e, an estimator, an algorithm, a formula)! 
+But there is nothing properly causal about a method (i.e, an estimator, an algorithm, a formula)!
 
 What makes our conclusions causal is the assumptions we make, whose plausibility is justified on a given research design
 
 . . .
 
-In this first lecture, we are going to study the formal language that allows us to clearly and transparently state both our quantities of interest and our assumptions 
+In this first lecture, we are going to study the formal language that allows us to clearly and transparently state both our quantities of interest and our assumptions
 
 Then we will see this framework in action, to understand how does it work in the context on randomised studies
 
 We should be able to see why RCTs are often described as the "gold standard" for causal inference
 
-
 ## The First Commandment of Causal Inference {background-color="#692044"}
+
+:::{.fragment}
+
 ### (by Chad Hazlett)
 
-:::{.callout-warning}
+::: callout-warning
 Thou shalt not blindly apply identification strategies as if the *procedure* makes your results causal
 :::
 
+:::
 . . .
 
 Identification strategies are about assumptions, not tools:
 
-* learning tools is important, useful, and fun
+-   learning tools is important, useful, and fun
 
-* but the tool you use doesn't make your result causal, your assumptions do
+-   but the tool you use doesn't make your result causal, your assumptions do
 
-* most of your effort should go into understanding and communicating wheather your assumptions are credible
+-   most of your effort should go into understanding and communicating whether your assumptions are credible
 
 . . .
 
-:::{.callout-note}
+::: callout-note
 ## Corolary: Never say "my estimate is causal because I used (.)"
 
 Where (.) = matching, IPW, IV, whatever
@@ -81,25 +84,25 @@ Where (.) = matching, IPW, IV, whatever
 
 Introduced by Neyman (1923) in the context of experimental design. They remained only used in that context for decades!
 
-* Imported and developed by Donald Rubin for observational studies (c. 1974)
+-   Imported and developed by Donald Rubin for observational studies (c. 1974)
 
-* They are really great to clarify *what do we want to know* ([[**estimand**]()]{.fragment .fade-in})
+-   They are really great to clarify *what do we want to know* ([[**estimand**]()]{.fragment .fade-in})
 
-* This includes identifying *reasons for discrepancies* between what we observe and our estimand ([[**bias**]()]{.fragment .fade-in}) 
+-   This includes identifying *reasons for discrepancies* between what we observe and our estimand ([[**bias**]()]{.fragment .fade-in})
 
-* They are great to formalize *what needs to be true*  for our estimand to be identified with a given *estimator* ([[**assumptions**]()]{.fragment .fade-in})
+-   They are great to formalize *what needs to be true* for our estimand to be identified with a given *estimator* ([[**assumptions**]()]{.fragment .fade-in})
 
 . . .
 
-* They are not-so-great to assess if our assumptions are plausible or defensible (more on this soon!)
+-   They are not-so-great to assess if our assumptions are plausible or defensible (more on this soon!)
 
----
+------------------------------------------------------------------------
 
 ## Notation
 
 <br>
 
-Let's start with some definitions: 
+Let's start with some definitions:
 
 . . .
 
@@ -109,29 +112,27 @@ $D$ is the variable whose effect we want to study (treatment, exposure)
 
 $Y_d$ is the potential outcome when we [**set**]{.fragment .highlight-red} $D=d$. For example, when $D \in \{0,1\}$:
 
-* $Y_1$ is the potential outcome under "treatment"
+-   $Y_1$ is the potential outcome under "treatment"
 
-* $Y_0$ is the potential outcome under "control"
+-   $Y_0$ is the potential outcome under "control"
 
-
----
+------------------------------------------------------------------------
 
 ## Notation
 
-You will find a lot of equivalent notations for potential outcomes. It could be confusing, but it is good to get practice working with different variants 
+You will find a lot of equivalent notations for potential outcomes. It could be confusing, but it is good to get practice working with different variants
 
 $$Y(d) = Y_d = Y^d$$
 
 . . .
 
-:::{.callout-tip}
+::: callout-tip
 ## Read it like this:
 
 The value that the variable $Y$ would take if we were to set/manipulate the variable $D$ to the value $d$.
 :::
 
-
-:::{.fragment .r-stack}
+::: {.fragment .r-stack}
 *Can you ever observe any of those potential outcomes?*
 :::
 
@@ -143,19 +144,43 @@ For the binary treatment case, we have: $Y = DY_1 + (1-D)Y_0$ ("switching equati
 
 . . .
 
-:::{.callout-note}
-What are the assumptions built in this notation?
-What type of dependence are we ruling out?
+::: callout-note
+What are the assumptions built in this notation? What type of dependence are we ruling out?
 :::
 
----
+------------------------------------------------------------------------
+
+## Checking intuitions
+
+. . .
+
+* Is $E[Y_{1i} | D=_1] = E[Y_i | D_i=1]$?
+
+. . .
+
+* If we throw $D_i$ at random in this room:
+
+  + How would the observed $Y_{1i}$ (for those with $D_i=1$) compare to the $Y_{1i}$ you don't see?
+  
+  + What about the $Y_{0i}$?
+  
+  + Can we estimate $E[Y_1]$ and $E[Y_0]$?
+  
+. . .
+
+* Suppose $Y_{1i} = Y_{0i}$ for everyone, and I can see them all:
+
+  + What happens if I give $D_i=1$ more often to those with higher $Y_1$?
+  
+  + How would the $Y_1$ you see vs the $Y_1$ you don't see relate?
+  
+  + What would $E[Y_i|D_i=1] - E[Y_i | D_i=0]$ tell me?
 
 ## Causal estimands
 
 The first thing that potential outcomes allow us to do is to formalize the causal effects we may want to estimate.
 
 Some frequently invoked estimands are the following:
-
 
 [$$ITE = \tau_i = Y_{1i} - Y_{0i}$$]{.fragment .fade-in-then-out}
 
@@ -175,9 +200,9 @@ $$]{.fragment .fade-in-then-out}
 CATE = E[\tau_i|X_i=x] = E[Y_{1i} - Y_{0i}|X_i=x] = E[Y_{1i}|X_i=x] - E[Y_{0i}|X_i=x]
 $$]{.fragment .fade-in-then-out}
 
----
+------------------------------------------------------------------------
 
-## Short activity (3 mins) {background-color="#692044"}
+## What is your estimand?
 
 Researchers, at least social scientists, tend to formalize their effect of interest as **regression coefficients** (i.e., their hypothesis are formulated within a statistical model)
 
@@ -185,16 +210,26 @@ Potential outcomes offer a way to formalize what we mean by a *causal effect* ou
 
 Lundberg, Johnson, and Stewart (2021) discuss this point in great detail. Absolutely worth reading! Ungated version [here](https://osf.io/preprints/socarxiv/ba67n/).
 
-. . .
+
+## What is your estimand?
+
+
+
+![](img/Lundberg_estimand.jpeg){fig-align="center" width=70%}
+
+
+## Short activity (3 mins) {background-color="#692044"}
+
 
 Take a moment to think about your own research:
 
-* What **causal** question is relevant for you to study? 
-* Can you formulate it using potential outcomes? 
-* What are the assumptions your are making in this formalization?
+-   What **causal** question is relevant for you to study?
+-   Can you formulate it using potential outcomes?
+  + What is the contrast of interest?
+  + Averaging over which sub-population?
+-   What are the assumptions your are making in this formalization?
 
----
-
+------------------------------------------------------------------------
 
 ## The Science Table
 
@@ -222,301 +257,251 @@ weights_qual <- sum(data$W=="qual")/nrow(data)
 DIM_w <- DIM_quant*weights_quant + DIM_qual*weights_qual
 ```
 
-:::{.columns}
-
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 One advantage of PO is that we can treat them directly as random variables!
 
 So, everything we already know related to probability manipulation still applies here.
 
-The basic calculation device (usually implicit) for that matter is the **science table**. 
+The basic calculation device (usually implicit) for that matter is the **science table**.
 
 Basically, the full schedule response of the potential outcomes under different treatment conditions
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
+|------|-------|-------|----------|----------|----------|
+| 1    | A     | 1     | 1        | 1        | 0        |
+| 2    | A     | 0     | 0        | 0        | 0        |
+| 3    | A     | 0     | 0        | 1        | -1       |
+| 4    | A     | 1     | 1        | 0        | 1        |
+| 5    | A     | 1     | 1        | 1        | 0        |
+| 6    | B     | 0     | 1        | 0        | 1        |
+| 7    | B     | 0     | 1        | 0        | 1        |
+| 8    | B     | 0     | 0        | 0        | 0        |
+| 9    | B     | 1     | 0        | 1        | -1       |
+| 10   | B     | 1     | 1        | 1        | 0        |
 :::
-
 :::
-
 
 ## Average Treatment Effect
 
-:::{.columns}
-
-
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 Imagine we want to compare two educational programs, $a$ and $b$.
 
 We are interested in the employment status of their graduates after a year ($Y$)
 
 The causal effect of the program would be the comparison of the potential outcomes $Y_{ai}$ and $Y_{bi}$, for all units $i$
 
-$$\text{ATE} = E(Y_{ai}) - E(Y_{bi})$$
-$$(6/10) - (5/10) = \mathbf{\color{blue}{0.1}}$$
+$$\text{ATE} = E(Y_{ai}) - E(Y_{bi})$$ $$(6/10) - (5/10) = \mathbf{\color{blue}{0.1}}$$
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
+|------|-------|-------|----------|----------|----------|
+| 1    | A     | 1     | 1        | 1        | 0        |
+| 2    | A     | 0     | 0        | 0        | 0        |
+| 3    | A     | 0     | 0        | 1        | -1       |
+| 4    | A     | 1     | 1        | 0        | 1        |
+| 5    | A     | 1     | 1        | 1        | 0        |
+| 6    | B     | 0     | 1        | 0        | 1        |
+| 7    | B     | 0     | 1        | 0        | 1        |
+| 8    | B     | 0     | 0        | 0        | 0        |
+| 9    | B     | 1     | 0        | 1        | -1       |
+| 10   | B     | 1     | 1        | 1        | 0        |
+:::
 :::
 
-
-:::
----
-
+------------------------------------------------------------------------
 
 ## Difference-in-means
 
-:::{.columns}
-
-
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 But we don't observe all potential outcomes for all units!
 
-Can we use instead the observational comparison as a proxy? 
+Can we use instead the observational comparison as a proxy?
 
 Let's calculate the different in means across groups, based on the *actual* program each subject attended:
 
-$$\text{diff-in-means} = E(Y_i|X=a) - E(Y_i|X=b)$$
-$$(3/5)-(2/5) = \mathbf{\color{red}{0.2}}$$
+$$\text{diff-in-means} = E(Y_i|X=a) - E(Y_i|X=b)$$ $$(3/5)-(2/5) = \mathbf{\color{red}{0.2}}$$
 
 $$\color{red}{\text{diff-in-means} \neq \text{ATE}}$$
 
 $\color{red}{\text{But why???}}$
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | . | . |
-| 2 | A | 0 | 0 | . | . |
-| 3 | A | 0 | 0 | . | . |
-| 4 | A | 1 | 1 | . | . |
-| 5 | A | 1 | 1 | . | . |
-| 6 | B | 0 | . | 0 | . |
-| 7 | B | 0 | . | 0 | . |
-| 8 | B | 0 | . | 0 | . |
-| 9 | B | 1 | . | 1 | . |
-| 10 |B | 1 | . | 1 | . |
+|------|-------|-------|----------|----------|----------|
+| 1    | A     | 1     | 1        | .        | .        |
+| 2    | A     | 0     | 0        | .        | .        |
+| 3    | A     | 0     | 0        | .        | .        |
+| 4    | A     | 1     | 1        | .        | .        |
+| 5    | A     | 1     | 1        | .        | .        |
+| 6    | B     | 0     | .        | 0        | .        |
+| 7    | B     | 0     | .        | 0        | .        |
+| 8    | B     | 0     | .        | 0        | .        |
+| 9    | B     | 1     | .        | 1        | .        |
+| 10   | B     | 1     | .        | 1        | .        |
+:::
 :::
 
-:::
----
-
+------------------------------------------------------------------------
 
 ## Sources of bias
 
-:::{.columns}
-
-:::{.column width=50%}
-
-$$E(\text{diff-in-means})$$
-$$= E(Y_i|X=a) - E(Y_i|X=b)$$
-$$= E(Y_a|X=a) - E(Y_b|X=b)$$
-$$= ATE +$$
-$$(E[Y_b|X=a] - E[Y_b|X=b])+$$
-$$(1-P[X])(ATT-ATC)$$
-$$= \mathbf{\color{blue}{0.1}} + \color{red}{0.2 + (0.5)(-0.2) = \mathbf{0.2}}$$
+::: columns
+::: {.column width="50%"}
+$$E(\text{diff-in-means})$$ $$= E(Y_i|X=a) - E(Y_i|X=b)$$ $$= E(Y_a|X=a) - E(Y_b|X=b)$$ $$= ATE +$$ $$(E[Y_b|X=a] - E[Y_b|X=b])+$$ $$(1-P[X])(ATT-ATC)$$ $$= \mathbf{\color{blue}{0.1}} + \color{red}{0.2 + (0.5)(-0.2) = \mathbf{0.2}}$$
 :::
 
-
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | . | . |
-| 2 | A | 0 | 0 | . | . |
-| 3 | A | 0 | 0 | . | . |
-| 4 | A | 1 | 1 | . | . |
-| 5 | A | 1 | 1 | . | . |
-| 6 | B | 0 | . | 0 | . |
-| 7 | B | 0 | . | 0 | . |
-| 8 | B | 0 | . | 0 | . |
-| 9 | B | 1 | . | 1 | . |
-| 10 |B | 1 | . | 1 | . |
+|------|-------|-------|----------|----------|----------|
+| 1    | A     | 1     | 1        | .        | .        |
+| 2    | A     | 0     | 0        | .        | .        |
+| 3    | A     | 0     | 0        | .        | .        |
+| 4    | A     | 1     | 1        | .        | .        |
+| 5    | A     | 1     | 1        | .        | .        |
+| 6    | B     | 0     | .        | 0        | .        |
+| 7    | B     | 0     | .        | 0        | .        |
+| 8    | B     | 0     | .        | 0        | .        |
+| 9    | B     | 1     | .        | 1        | .        |
+| 10   | B     | 1     | .        | 1        | .        |
+:::
 :::
 
-:::
----
-
-
+------------------------------------------------------------------------
 
 ## Identification assumptions
 
-:::{.columns}
-
-
-:::{.column width=50%}
-We need the following condition to be true:
-$$
-Y_d \indep D 
+::: columns
+::: {.column width="50%"}
+We need the following condition to be true: $$
+Y_d \perp\!\!\!\perp D 
 $$
 
-Do we meet that condition here? No!
-$$(Y_{ai},Y_{bi}) \nindep D$$
+Do we meet that condition here? No! $$(Y_{ai},Y_{bi}) \not\!\perp\!\!\!\perp D$$
 
-Because: 
-$$P(Y_a = y | D=a) \neq P(Y_a = y)$$
-$$P(Y_b = y | D=b) \neq P(Y_b = y)$$
+Because: $$P(Y_a = y | D=a) \neq P(Y_a = y)$$ $$P(Y_b = y | D=b) \neq P(Y_b = y)$$
 :::
 
-
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ |
-|----|---|---|-----|-------|--------|
-| 1 | A | 1 | 1 | 1 | 0 |
-| 2 | A | 0 | 0 | 0 | 0 |
-| 3 | A | 0 | 0 | 1 |-1 |
-| 4 | A | 1 | 1 | 0 | 1 |
-| 5 | A | 1 | 1 | 1 | 0 |
-| 6 | B | 0 | 1 | 0 | 1 |
-| 7 | B | 0 | 1 | 0 | 1 |
-| 8 | B | 0 | 0 | 0 | 0 |
-| 9 | B | 1 | 0 | 1 |-1 |
-| 10 |B | 1 | 1 | 1 | 0 |
+|------|-------|-------|----------|----------|----------|
+| 1    | A     | 1     | 1        | 1        | 0        |
+| 2    | A     | 0     | 0        | 0        | 0        |
+| 3    | A     | 0     | 0        | 1        | -1       |
+| 4    | A     | 1     | 1        | 0        | 1        |
+| 5    | A     | 1     | 1        | 1        | 0        |
+| 6    | B     | 0     | 1        | 0        | 1        |
+| 7    | B     | 0     | 1        | 0        | 1        |
+| 8    | B     | 0     | 0        | 0        | 0        |
+| 9    | B     | 1     | 0        | 1        | -1       |
+| 10   | B     | 1     | 1        | 1        | 0        |
+:::
 :::
 
-:::
----
-
+------------------------------------------------------------------------
 
 ## Identification assumptions
 
-:::{.columns}
-
-
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 What about including another covariate $W$?
 
-Does the following condition holds?
-$$
-Y_d \indep D | W
+Does the following condition holds? $$
+Y_d \perp\!\!\!\perp D | W
 $$
 
 Not quite either! But still "better" than before, right? right?
 
 Let's define: $$\text{CATE}_{w} = E(Y_a-Y_b|W=w)$$
 
-and the estimator $\widehat{\text{CATE}}_{w} =$ 
-$$E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)$$
+and the estimator $\widehat{\text{CATE}}_{w} =$ $$E(Y_i|X=a,W=w) - E(Y_i|X=b,W=w)$$
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$ |
-|----|---|---|-----|-------|--------| --- |
-| 1 | A | 1 | 1 | 1 | 0 | Quant |
-| 2 | A | 0 | 0 | 0 | 0 | Quant |
-| 3 | A | 0 | 0 | 1 |-1 | Qual |
-| 4 | A | 1 | 1 | 0 | 1 | Quant |
-| 5 | A | 1 | 1 | 1 | 0 | Qual |
-| 6 | B | 0 | 1 | 0 | 1 | Qual |
-| 7 | B | 0 | 1 | 0 | 1 | Quant |
-| 8 | B | 0 | 0 | 0 | 0 | Qual |
-| 9 | B | 1 | 0 | 1 |-1 | Qual |
-| 10 |B | 1 | 1 | 1 | 0 | Quant |
+|------|-------|-------|----------|----------|----------|-------|
+| 1    | A     | 1     | 1        | 1        | 0        | Quant |
+| 2    | A     | 0     | 0        | 0        | 0        | Quant |
+| 3    | A     | 0     | 0        | 1        | -1       | Qual  |
+| 4    | A     | 1     | 1        | 0        | 1        | Quant |
+| 5    | A     | 1     | 1        | 1        | 0        | Qual  |
+| 6    | B     | 0     | 1        | 0        | 1        | Qual  |
+| 7    | B     | 0     | 1        | 0        | 1        | Quant |
+| 8    | B     | 0     | 0        | 0        | 0        | Qual  |
+| 9    | B     | 1     | 0        | 1        | -1       | Qual  |
+| 10   | B     | 1     | 1        | 1        | 0        | Quant |
+:::
 :::
 
-
-:::
----
-
-
+------------------------------------------------------------------------
 
 ## Identification assumptions
 
-:::{.columns}
+::: columns
+::: {.column width="50%"}
+$$\widehat{\text{CATE}}_{Quant} = \widehat{\text{CATE}}_{Qual} = 0.16$$ $$\text{ATE} = \sum_w\text{CATE}_w P(w)$$ $$\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16$$
 
-
-:::{.column width=50%}
-$$\widehat{\text{CATE}}_{Quant} = \widehat{\text{CATE}}_{Qual} = 0.16$$
-$$\text{ATE} = \sum_w\text{CATE}_w P(w)$$
-$$\widehat{\text{ATE}} = (0.5)(0.16) + (0.5)(0.16) = 0.16$$
-
-However, look a the true $\text{ATE}_W$:
-$$\text{CATE}_{Quant} = -0.2$$
-$$\text{CATE}_{Qual} = 0.4$$
-$$\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}$$
+However, look a the true $\text{ATE}_W$: $$\text{CATE}_{Quant} = -0.2$$ $$\text{CATE}_{Qual} = 0.4$$ $$\text{ATE} = (0.5)(-0.2) + (0.5)(0.4) = \color{blue}{\mathbf{0.1}}$$
 :::
 
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$ |
-|----|---|---|-----|-------|--------| --- |
-| 1 | A | 1 | 1 | 1 | 0 | Quant |
-| 2 | A | 0 | 0 | 0 | 0 | Quant |
-| 3 | A | 0 | 0 | 1 |-1 | Qual |
-| 4 | A | 1 | 1 | 0 | 1 | Quant |
-| 5 | A | 1 | 1 | 1 | 0 | Qual |
-| 6 | B | 0 | 1 | 0 | 1 | Qual |
-| 7 | B | 0 | 1 | 0 | 1 | Quant |
-| 8 | B | 0 | 0 | 0 | 0 | Qual |
-| 9 | B | 1 | 0 | 1 |-1 | Qual |
-| 10 |B | 1 | 1 | 1 | 0 | Quant |
+|------|-------|-------|----------|----------|----------|-------|
+| 1    | A     | 1     | 1        | 1        | 0        | Quant |
+| 2    | A     | 0     | 0        | 0        | 0        | Quant |
+| 3    | A     | 0     | 0        | 1        | -1       | Qual  |
+| 4    | A     | 1     | 1        | 0        | 1        | Quant |
+| 5    | A     | 1     | 1        | 1        | 0        | Qual  |
+| 6    | B     | 0     | 1        | 0        | 1        | Qual  |
+| 7    | B     | 0     | 1        | 0        | 1        | Quant |
+| 8    | B     | 0     | 0        | 0        | 0        | Qual  |
+| 9    | B     | 1     | 0        | 1        | -1       | Qual  |
+| 10   | B     | 1     | 1        | 1        | 0        | Quant |
+:::
 :::
 
-
-:::
----
+------------------------------------------------------------------------
 
 ## So, how do we know?
 
-:::{.columns}
-
-
-:::{.column width=50%}
+::: columns
+::: {.column width="50%"}
 In general, we rely on **extra-statistical assumptions** about the data generating process to claim causal identification.
 
-:::{.callout-tip}
+::: callout-tip
 ## "No causes in, no cases out"
+
 Nancy Cartwright
 :::
 
 Is there a way to design an study in which we know, **by design**, that the needed assumptions hold?
 :::
 
-
-:::{.column width=50%}
+::: {.column width="50%"}
 | Unit | $D_i$ | $Y_i$ | $Y_{ai}$ | $Y_{bi}$ | $\tau_i$ | $W_i$ |
-|----|---|---|-----|-------|--------| ---|
-| 1 | A | 1 | 1 | . | . | Quant |
-| 2 | A | 0 | 0 | . | . | Quant |
-| 3 | A | 0 | 0 | . | . | Qual |
-| 4 | A | 1 | 1 | . | . | Quant |
-| 5 | A | 1 | 1 | . | . | Qual |
-| 6 | B | 0 | . | 0 | . | Qual |
-| 7 | B | 0 | . | 0 | . | Quant |
-| 8 | B | 0 | . | 0 | . | Qual |
-| 9 | B | 1 | . | 1 | . | Qual |
-| 10 |B | 1 | . | 1 | . | Quant |
+|------|-------|-------|----------|----------|----------|-------|
+| 1    | A     | 1     | 1        | .        | .        | Quant |
+| 2    | A     | 0     | 0        | .        | .        | Quant |
+| 3    | A     | 0     | 0        | .        | .        | Qual  |
+| 4    | A     | 1     | 1        | .        | .        | Quant |
+| 5    | A     | 1     | 1        | .        | .        | Qual  |
+| 6    | B     | 0     | .        | 0        | .        | Qual  |
+| 7    | B     | 0     | .        | 0        | .        | Quant |
+| 8    | B     | 0     | .        | 0        | .        | Qual  |
+| 9    | B     | 1     | .        | 1        | .        | Qual  |
+| 10   | B     | 1     | .        | 1        | .        | Quant |
 :::
-
 :::
-
 
 # Randomised Experiments {background-color="#17a091"}
 
-## Why randomization
+## Why randomisation?
 
 If we want to **predict under interventions**, then the best way to do it is **interveening**!
 
@@ -528,25 +513,39 @@ Experiments come in many different flavors: lab, field, survey, and even quasi-e
 
 Here we will only scratch the surface of social science experiments: the idea is to get you interested and point you to the resources out there
 
+------------------------------------------------------------------------
 
----
 
-## Short activity (3 mins)
+## Why randomisation? Intuition
 
-Sometimes it is hard to imagine an experiment that would be relevant for the type of questions we care about. 
+Let's go back for a second to the switching equation introduced earlier: 
 
-Some people even say (and I for sure partially agree!) that experiments tend to emphasize "small" versus "big" questions, promoting incremental/testable policies. 
+. . .
 
-However, there are tons of examples of researchers using experiments to address important, **big** and difficult questions. **Do you know of any example?**
+$$
+Y = DY_1 + (1-D)Y_0
+$$
 
-Take a moment to check the syllabus of UCLA professor Graeme Blair's Experimental Design class [here](https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf). He put together a list of experiments conducted by UCLA faculty, and by graduate students.
+. . .
 
----
+Basically, the idea (somewhat counter-intuitive) is that:
 
-## Why randomization 
+* Potential outcomes are fixed ($Y_1$ and $Y_0$ just exists out there)
+
+* The treatment's $D$ sole function is to "reveal" one or another!
+
+Then, it is clear that, when $D$ is randomly assigned, we get a random sample of both $Y_1$ and $Y_0$, allowing us to estimate the ATE
+
+:::aside
+We won't discuss it here, but there are ways to conceptualize potential outcomes as random instead of fixed. This mostly affects estimation rather than identification
+:::
+
+
+## Why randomization
+
 ### (more formally)
 
-We already saw that we can identify the causal effect of $D$ on $Y$ if the treatment assignment is independent of the potential outcomes. Formally $$(Y_d,Y_{d^*}) \indep D$$
+We already saw that we can identify the causal effect of $D$ on $Y$ if the treatment assignment is independent of the potential outcomes. Formally $$(Y_d,Y_{d^*}) \perp\!\!\!\perp D$$
 
 Recall the diff-in-means decomposition we review earlier. Given the **ignorability** of the treatment assignment, we have can further write it as:
 
@@ -554,9 +553,8 @@ By consistency
 
 $$E(Y_i|D=d) - E(Y_i|D=d^*) = E(Y_d|D=d) - E(Y_{d^*}|D=d^*)$$
 
+## Why randomization
 
-
-## Why randomization 
 ### (more formally)
 
 With some algebra
@@ -567,8 +565,7 @@ And, by ignorability, this simplifies to
 
 $$E(Y_d - Y_{d^*}) = ATE$$
 
-
----
+------------------------------------------------------------------------
 
 ## Forms of validity
 
@@ -582,74 +579,79 @@ But when we randomize an exposure, we know that who ends up in each treatment ar
 
 . . .
 
-This is why we generally say that experiments are great for **internal validity**: among the people that participated in our study, we can rule out systematic sources of bias. 
+This is why we generally say that experiments are great for **internal validity**: among the people that participated in our study, we can rule out systematic sources of bias.
 
 However, this does not imply that our results are **externally valid**, i.e., that they apply to people outside our study! We need further assumptions to move from one to another.
 
-
 ## Types of experiments
 
+-   **Laboratory experiments**: Usually conducted with a small sample (of undergraduate psychology students), many times involving games in a computer. Helpful for cognitive/behavioral questions.
 
-* **Laboratory experiments**: Usually conducted with a small sample (of undergraduate psychology students), many times involving games in a computer. Helpful for cognitive/behavioral questions.
+-   **Field experiments**: In order to obtain more *externally valid* results, experiments conducted in the field (i.e., under real-world conditions) are the way to go. Definitely more expensive though. Audit studies are a particular type of field experiment.
 
-* **Field experiments**: In order to obtain more *externally valid* results, experiments conducted in the field (i.e., under real-world conditions) are the way to go. Definitely more expensive though. Audit studies are a particular type of field experiment.
+-   **Survey experiments**: One can randomize treatment conditions *in a survey* to evaluate how participants change their responses based on certain stimulus. Vignettes and list experiments are examples of this approach.
 
-* **Survey experiments**: One can randomize treatment conditions *in a survey* to evaluate how participants change their responses based on certain stimulus. Vignettes and list experiments are examples of this approach.
+-   **(Bonus) Quasi-experiments**: Researchers usually call quasi-experiments to real-world situations that offer as-if random variation in a treatment of interest. For example, earthquakes, change in laws, date of birth, etc.
 
-* **(Bonus) Quasi-experiments**: Researchers usually call quasi-experiments to real-world situations that offer as-if random variation in a treatment of interest. For example, earthquakes, change in laws, date of birth, etc. 
+------------------------------------------------------------------------
 
----
 
+## Short activity (3 mins) {background-color="#692044"}
+
+Sometimes it is hard to imagine an experiment that would be relevant for the type of questions we care about.
+
+Some people even say (and I for sure partially agree!) that experiments tend to emphasize "small" versus "big" questions, promoting incremental/testable policies.
+
+However, there are tons of examples of researchers using experiments to address important, **big** and difficult questions. **Do you know of any example?**
+
+Take a moment to check the syllabus of UCLA professor Graeme Blair's Experimental Design class [here](https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf). He put together a list of experiments conducted by UCLA faculty, and by graduate students.
+
+------------------------------------------------------------------------
 
 ## How to randomize?
 
-Many times, we use randomization not just for identification (**ignorability**), but also for estimation! 
+Many times, we use randomization not just for identification (**ignorability**), but also for estimation!
 
 If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a **permutation distribution** and use it for inference.
 
 How much dispersion (i.e. uncertainty) is in our distribution will be affected by **the level** at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?
 
-:::{.callout-note}
+::: callout-note
 The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?
 :::
 
 Conditional randomization (i.e., blocking) increase efficiency, when we have variables that are highly predictive of the outcome of interest
 
-:::{.callout-note}
+::: callout-note
 One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control
 :::
 
+------------------------------------------------------------------------
 
----
+## Additional Resources
 
-
-## Additional Resources 
 ### Online learning
 
-* A selected and annotated bibliography on causality [here](https://www.pablogeraldo.com/pdf/GeraldoBrand_2020_Causality.pdf)
+-   A selected and annotated bibliography on causality [here](https://www.pablogeraldo.com/pdf/GeraldoBrand_2020_Causality.pdf)
 
-* J-PAL research resources [here](https://www.povertyactionlab.org/research-resources?view=toc)
+-   J-PAL research resources [here](https://www.povertyactionlab.org/research-resources?view=toc)
 
-* EGAP methods guides [here](https://egap.org/methods-guides/)
+-   EGAP methods guides [here](https://egap.org/methods-guides/)
 
 ### Textbooks
 
-* Gerber and Green (2012) Field Experiments: Design, Analysis, and Interpretation (check [here](https://www.amazon.com/Field-Experiments-Design-Analysis-Interpretation/dp/0393979954/ref=sr_1_11?dchild=1&keywords=gerber+green&qid=1624466782&sr=8-11))
+-   Gerber and Green (2012) Field Experiments: Design, Analysis, and Interpretation (check [here](https://www.amazon.com/Field-Experiments-Design-Analysis-Interpretation/dp/0393979954/ref=sr_1_11?dchild=1&keywords=gerber+green&qid=1624466782&sr=8-11))
 
-
----
+------------------------------------------------------------------------
 
 ## Short activity {background-color="#692044"}
 
 Think in a research question that you could possibly address using an experimental design:
 
-* What is your research question?
+-   What is your research question?
 
-* What is your **estimand**? (effect of what? on what? among whom?)
+-   What is your **estimand**? (effect of what? on what? among whom?)
 
-* What type of experiment would you conduct? (lab? field? survey?)
+-   What type of experiment would you conduct? (lab? field? survey?)
 
-* What would be the level of your randomization? (individual? cluster? why?)
-
-
-
+-   What would be the level of your randomization? (individual? cluster? why?)

@@ -104,11 +104,10 @@ There is a lot of stuff out there! Some areas that you might be interested in bu
 
 
 ## Intuitions about causality
+
 ### Have you heard any of these before?
 
 <br>
-
-. . .
 
 "Correlation does not imply causation"
 
@@ -477,3 +476,5 @@ The last piece was an example of so-called "selection bias".
 [confounding](https://imgs.xkcd.com/comics/confounding_variables.png)
 :::
 
+
+# Let's move into substance! {background-color="#00a191"}
