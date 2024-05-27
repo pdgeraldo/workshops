@@ -220,6 +220,49 @@ In the simples case, $j$ is a single unit, without replacement. In more complica
 
 ## Weighting 
 
+The idea of weighting comes from survey research: how do we get a representative sample?
+
+It is similar, but kind of in the opposite direction, to the previous strategies:
+
+. . .
+
+* Instead of strata-specific effects that are then reweighted by $X$, make $X$ look similar across groups and then take a simple average!
+
+. . .
+
+Recall that the difference-in-means can be viewed as:
+
+$$
+\sum_x E[Y_i | D=1, X]\color{red}{P(X|D=1)} - \sum_x E[Y_i | D=1, X]\color{red}{P(X|D=0)}
+$$
+
+How to solve the discrepancy in the weights?
+
+. . .
+
+We want the weights of the diff-in-means to be $P(X)$ for everyone, so we can re-weight by $\frac{P(D_i)}{P(D_i|X_i)}$ (but, note that this requires a model for $P(D_i|X_i)$)
+
+## What about propensity scores?
+
+The weights just used above require estimating a model for the treatment assignment $P(D_i|X_i)$ 
+
+That's why those weights are usually referred as *stabilized propensity score weights*
+
+This will achieve balance in the variables used to estimate the propensity score, *in expectation*
+
+. . .
+
+But we can also bypass this step, and directly find weights that "balance" (some moments of) the covariates, through optimization approaches --> *calibration*
+
+
+This will usually give you balance *in the sample*, up to a tolerance level
+
+. . . 
+
+In both cases, it is crucial to check for extreme weights (sometimes a few units are doing all the heavy lifting!)
+
+## Remember: Propensity score is NOT an identification strategy either!
+
 
 ## Common ideas
 
@@ -243,14 +286,66 @@ Also, beware of residual imbalance! Modeling the outcome can come handy, as we w
 
 ## Regression
 
+We can also take a model-based approach to estimate the causal effect of interest
+
+Let's assume that the potential outcomes follow certain functional form:
+
+$$
+E[Y_i|D_i,X_i] = \beta_0 + \beta_1 D_i + \gamma^{\top}X_i
+$$
+
+Which means that $$E[Y_0|X] = E[Y|D=0,X] = \beta_0 + \gamma^{\top}X_i$$
+
+and $$E[Y_1|X] = E[Y|D=1,X] = \beta_0 + \beta_1 + \gamma^{\top}X_i$$
+
+. . .
+
+What are we assuming about the treatment effect? What are we assuming about the potential outcomes?
+
 ## Imputation
+
+One way of making use of models that is less sensitive to the specification of a single coefficient is to use the model for imputation
+
+* Use the model to predict the potential outcomes, and then calculate the difference of interest
+
+* For inference, use the bootstrap
+
+In epidemiology, this is known as g-computation ("g" stands for "generalized")
+
+This works incredibly well, above and beyond what looking at a single coefficient would give you
 
 # Augmented estimators {background-color="#E9004C"}
 
 ## Augmented IPW 
 
-## TMLE
+Can we get the best of both worlds? Yes, we can!
 
-## Double-ML
+. . .
+
+Combine balancing (weighting) with outcome modeling (regression) in a single estimator: augmented IPW
+
+This has the property of **doubly robustness**: the model with be consistent for the treatment effect if either (1) the outcome model or, (2) the treatment model, are well specified
+
+. . .
+
+:::{.callout-tip}
+## Important
+
+In terms of identification, the augmented estimator requires the same unconfoundedness assumption! No free lunch
+:::
+
+## What about machine learning?
+
+There are different ways of using machine learning for estimation
+
+* Flexible model of the outcome + imputation
+
+* Flexible model of the treatment + weighting
+
+Both have problems, so two frameworks have been proposed to incorporate ML methods in the estimation of treatment effects in a principled way:
+
+* Targeted Minimum Loss Estimation (TMLE)
+
+* Double/Debiased Machine Learning (DML)
 
 

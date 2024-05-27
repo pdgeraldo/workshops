@@ -538,6 +538,39 @@ ATE = E_x[\tau(x)] = E_x(E[Y_{1i} - Y_{0i}|X=x] )
 </section>
 <section id="weighting" class="slide level2">
 <h2>Weighting</h2>
+<p>The idea of weighting comes from survey research: how do we get a representative sample?</p>
+<p>It is similar, but kind of in the opposite direction, to the previous strategies:</p>
+<div class="fragment">
+<ul>
+<li>Instead of strata-specific effects that are then reweighted by <span class="math inline">\(X\)</span>, make <span class="math inline">\(X\)</span> look similar across groups and then take a simple average!</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Recall that the difference-in-means can be viewed as:</p>
+<p><span class="math display">\[
+\sum_x E[Y_i | D=1, X]\color{red}{P(X|D=1)} - \sum_x E[Y_i | D=1, X]\color{red}{P(X|D=0)}
+\]</span></p>
+<p>How to solve the discrepancy in the weights?</p>
+</div>
+<div class="fragment">
+<p>We want the weights of the diff-in-means to be <span class="math inline">\(P(X)\)</span> for everyone, so we can re-weight by <span class="math inline">\(\frac{P(D_i)}{P(D_i|X_i)}\)</span> (but, note that this requires a model for <span class="math inline">\(P(D_i|X_i)\)</span>)</p>
+</div>
+</section>
+<section id="what-about-propensity-scores" class="slide level2">
+<h2>What about propensity scores?</h2>
+<p>The weights just used above require estimating a model for the treatment assignment <span class="math inline">\(P(D_i|X_i)\)</span></p>
+<p>That’s why those weights are usually referred as <em>stabilized propensity score weights</em></p>
+<p>This will achieve balance in the variables used to estimate the propensity score, <em>in expectation</em></p>
+<div class="fragment">
+<p>But we can also bypass this step, and directly find weights that “balance” (some moments of) the covariates, through optimization approaches –&gt; <em>calibration</em></p>
+<p>This will usually give you balance <em>in the sample</em>, up to a tolerance level</p>
+</div>
+<div class="fragment">
+<p>In both cases, it is crucial to check for extreme weights (sometimes a few units are doing all the heavy lifting!)</p>
+</div>
+</section>
+<section id="remember-propensity-score-is-not-an-identification-strategy-either" class="slide level2">
+<h2>Remember: Propensity score is NOT an identification strategy either!</h2>
 </section>
 <section id="common-ideas" class="slide level2">
 <h2>Common ideas</h2>
@@ -561,9 +594,26 @@ ATE = E_x[\tau(x)] = E_x(E[Y_{1i} - Y_{0i}|X=x] )
 </section>
 <section id="regression" class="slide level2">
 <h2>Regression</h2>
+<p>We can also take a model-based approach to estimate the causal effect of interest</p>
+<p>Let’s assume that the potential outcomes follow certain functional form:</p>
+<p><span class="math display">\[
+E[Y_i|D_i,X_i] = \beta_0 + \beta_1 D_i + \gamma^{\top}X_i
+\]</span></p>
+<p>Which means that <span class="math display">\[E[Y_0|X] = E[Y|D=0,X] = \beta_0 + \gamma^{\top}X_i\]</span></p>
+<p>and <span class="math display">\[E[Y_1|X] = E[Y|D=1,X] = \beta_0 + \beta_1 + \gamma^{\top}X_i\]</span></p>
+<div class="fragment">
+<p>What are we assuming about the treatment effect? What are we assuming about the potential outcomes?</p>
+</div>
 </section>
 <section id="imputation" class="slide level2">
 <h2>Imputation</h2>
+<p>One way of making use of models that is less sensitive to the specification of a single coefficient is to use the model for imputation</p>
+<ul>
+<li><p>Use the model to predict the potential outcomes, and then calculate the difference of interest</p></li>
+<li><p>For inference, use the bootstrap</p></li>
+</ul>
+<p>In epidemiology, this is known as g-computation (“g” stands for “generalized”)</p>
+<p>This works incredibly well, above and beyond what looking at a single coefficient would give you</p>
 </section></section>
 <section>
 <section id="augmented-estimators" class="title-slide slide level1 center" data-background-color="#E9004C">
@@ -572,12 +622,39 @@ ATE = E_x[\tau(x)] = E_x(E[Y_{1i} - Y_{0i}|X=x] )
 </section>
 <section id="augmented-ipw" class="slide level2">
 <h2>Augmented IPW</h2>
+<p>Can we get the best of both worlds? Yes, we can!</p>
+<div class="fragment">
+<p>Combine balancing (weighting) with outcome modeling (regression) in a single estimator: augmented IPW</p>
+<p>This has the property of <strong>doubly robustness</strong>: the model with be consistent for the treatment effect if either (1) the outcome model or, (2) the treatment model, are well specified</p>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>In terms of identification, the augmented estimator requires the same unconfoundedness assumption! No free lunch</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="tmle" class="slide level2">
-<h2>TMLE</h2>
-</section>
-<section id="double-ml" class="slide level2">
-<h2>Double-ML</h2>
+<section id="what-about-machine-learning" class="slide level2">
+<h2>What about machine learning?</h2>
+<p>There are different ways of using machine learning for estimation</p>
+<ul>
+<li><p>Flexible model of the outcome + imputation</p></li>
+<li><p>Flexible model of the treatment + weighting</p></li>
+</ul>
+<p>Both have problems, so two frameworks have been proposed to incorporate ML methods in the estimation of treatment effects in a principled way:</p>
+<ul>
+<li><p>Targeted Minimum Loss Estimation (TMLE)</p></li>
+<li><p>Double/Debiased Machine Learning (DML)</p></li>
+</ul>
 <div class="quarto-auto-generated-content">
 <p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
 <div class="footer footer-default">
