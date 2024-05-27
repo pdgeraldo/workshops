@@ -129,35 +129,128 @@ To actually be able to condition by $X$, we also require positivity (or overlap)
 
 ## Identification of ATE/ATT
 
-On board
+**Intuition**: Within strata of X, we have an experiment
+
+**Proof**: Let's start with the strata effects $\tau(x)$
+
+$$
+E[Y_{1i} - Y_{0i}|X=x] = E[Y_{1i}|X=x] - E[Y_{0i}|X=x]  
+$$
+$$
+= E[Y_{1i}|X=x, D_i=1] - E[Y_{0i}|X=x, D_i=0] 
+$$
+
+$$
+= E[Y_{i}|X=x, D_i=1] - E[Y_{i}|X=x, D_i=0]
+$$
+Then, let's use the **positivity** assumption:
+
+$$
+ATE = E_x[\tau(x)] = E_x(E[Y_{1i} - Y_{0i}|X=x] )
+$$
+
+$$
+= \sum_x \tau(x) p(x)
+$$
 
 # Estimation {background-color="#00a191"}
 
 ## Estimation overview
 
-- Regression
+We have seen that, under our non-parametric assumptions, the ATE/ATT is identified by the adjustment formula
+
+In practice, there are several ways to implement these ideas, and different estimators incorporate further assumptions 
+
+The most widely used are
+
 - Subclassification and Matching
 - Weighting
+- Regression
 - Augmented estimators
 
-# Modeling the outcome expectation {background-color="#00a191"}
+Let's take a look at each in general, before we move into a practical application
 
-## Regression {background-color="#E9004C"}
 
-## Imputation {background-color="#E9004C"}
+# Modeling the treatment assignment {background-color="#E9004C"}
 
-# Modeling the treatment assignment {background-color="#00a191"}
+## Subclassification
 
-## Subclassification and Matching {background-color="#E9004C"}
+When $X$ is discrete, the subclassification estimator arises naturally, as seen before
 
-## Weighting {background-color="#E9004C"}
+We only need to estimate strata-specific effects ans average according to the reference population shares
 
-# Augmented estimators {background-color="#00a191"}
+Are we estimating any model? Are there "parameters" in the subclassification estimator?
 
-## Augmented IPW {background-color="#692044"}
+. . .
 
-## TMLE {background-color="#E9004C"}
+As the number of covariates increases, however, the estimator becomes unfeasible
 
-## Double-ML {background-color="#002F87"}
+This is why other estimators have become much more widely used
+
+## Matching
+
+For each treated unit $i$ with covariates $X_i$, we will estimate $\tau_i = Y_{1i} - Y_{0i}$
+
+. . .
+
+For treated units, we immediately have $Y_1$. But where do we get $Y_0$ from?
+
+* **Matching**: borrow the missing potential outcomes from control units with (nearly) the same $X_i$
+
+The estimator is then:
+
+$$
+\hat{\tau}_{ATT} = \frac{1}{N_t} \sum_{D=1}(Y_i - Y_{j(i)})
+$$
+
+Where $Y_{j(i)}$ is the outcome of unit $j$, which is closes to $i$ in terms of their covariates
+
+. . .
+
+In the simples case, $j$ is a single unit, without replacement. In more complicated versions, it can be an (weighted) average of units that are reused several times
+
+. . .
+
+:::{.callout-warning}
+## But beware of the curse of dimensionality!
+:::
+
+## Remember: Matching is NOT an identification strategy
+
+
+## Weighting 
+
+
+## Common ideas
+
+Subclassification, matching and weighting share some common ideas
+
+Most importantly, they all allow for some diagnostics *before* conducting the outcome analysis: balance testing
+
+Checking balance does not require looking at the outcome, and it can provide a guidance on the credibility of the results to come 
+
+. . . 
+
+* This is what Rubin meant by "design triumphs analysis"
+
+. . . 
+
+But be careful of overly relying on balance checking! (And use best practices, like equivalence testing)
+
+Also, beware of residual imbalance! Modeling the outcome can come handy, as we will see later
+
+# Modeling the outcome expectation {background-color="#E9004C"}
+
+## Regression
+
+## Imputation
+
+# Augmented estimators {background-color="#E9004C"}
+
+## Augmented IPW 
+
+## TMLE
+
+## Double-ML
 
 
