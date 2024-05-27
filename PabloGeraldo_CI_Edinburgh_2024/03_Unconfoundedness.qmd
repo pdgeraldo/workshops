@@ -57,33 +57,6 @@ An observational study is an attempt to use observational data to *approximate* 
 While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on assumptions
 
 
-
-## The First Commandment of Causal Inference {background-color="#692044"}
-### (by Chad Hazlett)
-
-:::{.callout-warning}
-Thou shalt not blindly apply identification strategies as if the *procedure* makes your results causal
-:::
-
-. . .
-
-Identification strategies are about assumptions, not tools:
-
-* learning tools is important, useful, and fun
-
-* but the tool you use doesn't make your result causal, your assumptions do
-
-* most of your effort should go into understanding and communicating wheather your assumptions are credible
-
-. . .
-
-:::{.callout-note}
-## Corolary: Never say "my estimate is causal because I used (.)"
-
-Where (.) = matching, IPW, IV, whatever
-:::
-
-
 ## Credible observational studies
 
 # Unconfoundedness {background-color="#00a191"}

@@ -350,8 +350,53 @@ Pablo Geraldo Bastías
 <h1>Outline</h1>
 
 </section>
-<section id="lecture-1-potential-outcomes" class="slide level2">
-<h2>Lecture 1: Potential Outcomes</h2>
+<section id="lecture-1-from-causal-methods-to-causal-assumptions" class="slide level2">
+<h2>Lecture 1: From causal methods to causal assumptions</h2>
+<p>It is common to hear the idea that some <em>methods</em> are inherently causal: propensity score matching, IPW, instrumental variables, panel methods, and even machine learning</p>
+<p>But there is nothing properly causal about a method (i.e, an estimator, an algorithm, a formula)!</p>
+<p>What makes our conclusions causal is the assumptions we make, whose plausibility is justified on a given research design</p>
+<div class="fragment">
+<p>In this first lecture, we are going to study the formal language that allows us to clearly and transparently state both our quantities of interest and our assumptions</p>
+<p>Then we will see this framework in action, to understand how does it work in the context on randomised studies</p>
+<p>We should be able to see why RCTs are often described as the “gold standard” for causal inference</p>
+</div>
+</section>
+<section id="the-first-commandment-of-causal-inference" class="slide level2" data-background-color="#692044">
+<h2>The First Commandment of Causal Inference</h2>
+<h3 id="by-chad-hazlett">(by Chad Hazlett)</h3>
+<div class="callout callout-warning callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>Thou shalt not blindly apply identification strategies as if the <em>procedure</em> makes your results causal</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Identification strategies are about assumptions, not tools:</p>
+<ul>
+<li><p>learning tools is important, useful, and fun</p></li>
+<li><p>but the tool you use doesn’t make your result causal, your assumptions do</p></li>
+<li><p>most of your effort should go into understanding and communicating wheather your assumptions are credible</p></li>
+</ul>
+</div>
+<div class="fragment">
+<div class="callout callout-note callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Corolary: Never say “my estimate is causal because I used (.)”</strong></p>
+</div>
+<div class="callout-content">
+<p>Where (.) = matching, IPW, IV, whatever</p>
+</div>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="potential-outcomes" class="title-slide slide level1 center" data-background-color="#17a091">
@@ -429,11 +474,21 @@ Pablo Geraldo Bastías
 </section>
 <section id="causal-estimands" class="slide level2">
 <h2>Causal estimands</h2>
-<p>ITE</p>
-<p>ATE</p>
-<p>ATT</p>
-<p>ATC</p>
-<p>CATE</p>
+<p>The first thing that potential outcomes allow us to do is to formalize the causal effects we may want to estimate.</p>
+<p>Some frequently invoked estimands are the following:</p>
+<p><span class="fragment fade-in-then-out"><span class="math display">\[ITE = \tau_i = Y_{1i} - Y_{0i}\]</span></span></p>
+<p><span class="fragment fade-in-then-out"><span class="math display">\[
+ATE = E[\tau_i] = E[Y_{1i} - Y_{0i}] = E[Y_{1i}] - E[Y_{0i}]
+\]</span></span></p>
+<p><span class="fragment fade-in-then-out"><span class="math display">\[
+ATT = E[\tau_i|D_i=1] = E[Y_{1i} - Y_{0i}|D_i=1] = E[Y_{1i}|D_i=1] - E[Y_{0i}|D_i=1]
+\]</span></span></p>
+<p><span class="fragment fade-in-then-out"><span class="math display">\[
+ATC = E[\tau_i|D_i=0] = E[Y_{1i} - Y_{0i}|D_i=0] = E[Y_{1i}|D_i=0] - E[Y_{0i}|D_i=0]
+\]</span></span></p>
+<p><span class="fragment fade-in-then-out"><span class="math display">\[
+CATE = E[\tau_i|X_i=x] = E[Y_{1i} - Y_{0i}|X_i=x] = E[Y_{1i}|X_i=x] - E[Y_{0i}|X_i=x]
+\]</span></span></p>
 </section>
 <section id="short-activity-3-mins" class="slide level2" data-background-color="#692044">
 <h2>Short activity (3 mins)</h2>
@@ -1353,49 +1408,45 @@ Y_d \perp\!\!\!\perp D | W
 <section id="why-randomization" class="slide level2">
 <h2>Why randomization</h2>
 <p>If we want to <strong>predict under interventions</strong>, then the best way to do it is <strong>interveening</strong>!</p>
-<p><br> Random assignment (more specifically, RCTs) has been called the <strong>gold standard</strong> for causal inference: it guarantees the necessary assumptions for causal inference hold by design.</p>
-<p><br> When unfesible, imagining a hypothetical experiment still offers a useful benchmark to assess the validity of causal claims, and even to clarify what do we mean by a particular causal effect.</p>
-<p><br> Experiments come in many different flavours: lab, field, survey, and even quasi-experimentss!</p>
-<p><br> Here we will only scratch the surface of social science experiments: the idea is to get you interested and point you to the resources out there! Maybe sometime soon you will be running your own experiment! (Or at least someone else’s experiment)</p>
+<p>Random assignment (more specifically, RCTs) has been called the <strong>gold standard</strong> for causal inference: it guarantees the necessary assumptions for causal inference hold by design.</p>
+<p>When unfeasible, imagining a hypothetical experiment still offers a useful benchmark to assess the validity of causal claims, and even to clarify what do we mean by a particular causal effect.</p>
+<p>Experiments come in many different flavors: lab, field, survey, and even quasi-experiments!</p>
+<p>Here we will only scratch the surface of social science experiments: the idea is to get you interested and point you to the resources out there</p>
 </section>
 <section id="short-activity-3-mins-1" class="slide level2">
 <h2>Short activity (3 mins)</h2>
 <p>Sometimes it is hard to imagine an experiment that would be relevant for the type of questions we care about.</p>
-<p><br> Some people even say (and I for sure partially agree!) that experiments tend to emphasize “small” versus “big” questions, promoting incremental/testable policies.</p>
-<p><br> However, there are tons of examples of researchers using experiments to address important, <strong>big</strong> and difficult questions. <strong>Do you know of any example?</strong></p>
-<p><br> Take a moment to check the syllabus of UCLA professor Graeme Blair’s Experimental Design class <a href="https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf">here</a>. He put together a list of experiments conducted by UCLA faculty, and by graduate students.</p>
-<p>.center[<strong>Any comments?</strong>]</p>
+<p>Some people even say (and I for sure partially agree!) that experiments tend to emphasize “small” versus “big” questions, promoting incremental/testable policies.</p>
+<p>However, there are tons of examples of researchers using experiments to address important, <strong>big</strong> and difficult questions. <strong>Do you know of any example?</strong></p>
+<p>Take a moment to check the syllabus of UCLA professor Graeme Blair’s Experimental Design class <a href="https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf">here</a>. He put together a list of experiments conducted by UCLA faculty, and by graduate students.</p>
 </section>
 <section id="why-randomization-1" class="slide level2">
 <h2>Why randomization</h2>
 <h3 id="more-formally">(more formally)</h3>
-<p>We already saw that we can identify the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> if the treatment assignment is independent of the potential outcomes. Formally <span class="math display">\[(Y_x,Y_{x^*}) \perp\!\!\!\perp X\]</span></p>
+<p>We already saw that we can identify the causal effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> if the treatment assignment is independent of the potential outcomes. Formally <span class="math display">\[(Y_d,Y_{d^*}) \perp\!\!\!\perp D\]</span></p>
 <p>Recall the diff-in-means decomposition we review earlier. Given the <strong>ignorability</strong> of the treatment assignment, we have can further write it as:</p>
 <p>By consistency</p>
-<p><span class="math display">\[E(Y_i|X=x) - E(Y_i|X=x^*) = E(Y_x|X=x) - E(Y_{x^*}|X=x^*)\]</span> With some algebra</p>
-<p><span class="math display">\[= E(Y_x - Y_{x^*}) + (E[Y_{x^*}|X=x] - E[Y_{x^*}|X=x^*])+(1-P[X])(ATT-ATC)\]</span> By ignorability, this simplifies to</p>
-<p><span class="math display">\[E(Y_x - Y_{x^*}) = ATE\]</span></p>
+<p><span class="math display">\[E(Y_i|D=d) - E(Y_i|D=d^*) = E(Y_d|D=d) - E(Y_{d^*}|D=d^*)\]</span></p>
+</section>
+<section id="why-randomization-2" class="slide level2">
+<h2>Why randomization</h2>
+<h3 id="more-formally-1">(more formally)</h3>
+<p>With some algebra</p>
+<p><span class="math display">\[= E(Y_d - Y_{d^*}) + (E[Y_{d^*}|D=d] - E[Y_{d^*}|D=d^*])+(1-P[D])(ATT-ATC)\]</span></p>
+<p>And, by ignorability, this simplifies to</p>
+<p><span class="math display">\[E(Y_d - Y_{d^*}) = ATE\]</span></p>
 </section>
 <section id="forms-of-validity" class="slide level2">
 <h2>Forms of validity</h2>
 <p>Traditionally, researchers argue about the validity of a study’s causal conclusion (and, more generally, about the validity of different research designs) based on the potential biases that pose <strong>threats to validity</strong>. Check <a href="https://journals.lww.com/epidem/Fulltext/2020/05000/A_Graphical_Catalog_of_Threats_to_Validity_.11.aspx">this</a> amazing paper by Matthay and Glymour for a review.</p>
-<p><br> We reviewed the bias in the difference-in-means estimator: baseline differences (under the control condition), and differential response to the treatment (under the exposure condition).</p>
-<p><br> But when we randomize an exposure, we know that who ends up in each treatment arm has nothing to do with their potential outcomes!</p>
-<p><br> This is why we generally say that experiments are great for <strong>internal validity</strong>: among the people that participated in our study, we can rule out systematic sources of bias.</p>
-<p><br> However, this does not imply that our results are <strong>externally valid</strong>, i.e., that they apply to people outside our study! We need further assumptions to move from one to another.</p>
-</section>
-<section id="how-to-randomize" class="slide level2">
-<h2>How to randomize?</h2>
-<p>Many times, we use randomization not just for identification (<strong>ignorability</strong>), but also for estimation!</p>
-<p><br> If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a <strong>permutation distribution</strong> and use it for inference.</p>
-<p><br> How much dispersion (i.e.&nbsp;uncertainty) is in our distribution will be affected by <strong>the level</strong> at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?</p>
-<ul>
-<li>The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?</li>
-</ul>
-<p>Conditional randomization (i.e., blocking) increase efficiency, when we have variables that are highly predictive of the outcome of interest</p>
-<ul>
-<li>One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control.</li>
-</ul>
+<p>We reviewed the bias in the difference-in-means estimator: baseline differences (under the control condition), and differential response to the treatment (under the exposure condition).</p>
+<div class="fragment">
+<p>But when we randomize an exposure, we know that who ends up in each treatment arm has nothing to do with their potential outcomes!</p>
+</div>
+<div class="fragment">
+<p>This is why we generally say that experiments are great for <strong>internal validity</strong>: among the people that participated in our study, we can rule out systematic sources of bias.</p>
+<p>However, this does not imply that our results are <strong>externally valid</strong>, i.e., that they apply to people outside our study! We need further assumptions to move from one to another.</p>
+</div>
 </section>
 <section id="types-of-experiments" class="slide level2">
 <h2>Types of experiments</h2>
@@ -1406,9 +1457,36 @@ Y_d \perp\!\!\!\perp D | W
 <li><p><strong>(Bonus) Quasi-experiments</strong>: Researchers usually call quasi-experiments to real-world situations that offer as-if random variation in a treatment of interest. For example, earthquakes, change in laws, date of birth, etc.</p></li>
 </ul>
 </section>
+<section id="how-to-randomize" class="slide level2">
+<h2>How to randomize?</h2>
+<p>Many times, we use randomization not just for identification (<strong>ignorability</strong>), but also for estimation!</p>
+<p>If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a <strong>permutation distribution</strong> and use it for inference.</p>
+<p>How much dispersion (i.e.&nbsp;uncertainty) is in our distribution will be affected by <strong>the level</strong> at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?</p>
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?</p>
+</div>
+</div>
+</div>
+<p>Conditional randomization (i.e., blocking) increase efficiency, when we have variables that are highly predictive of the outcome of interest</p>
+<div class="callout callout-note callout-style-simple">
+<div class="callout-body">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-content">
+<p>One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control</p>
+</div>
+</div>
+</div>
+</section>
 <section id="additional-resources" class="slide level2">
 <h2>Additional Resources</h2>
-<p><br> ### Online learning</p>
+<h3 id="online-learning">Online learning</h3>
 <ul>
 <li><p>A selected and annotated bibliography on causality <a href="https://www.pablogeraldo.com/pdf/GeraldoBrand_2020_Causality.pdf">here</a></p></li>
 <li><p>J-PAL research resources <a href="https://www.povertyactionlab.org/research-resources?view=toc">here</a></p></li>
@@ -1421,14 +1499,13 @@ Y_d \perp\!\!\!\perp D | W
 </section>
 <section id="short-activity" class="slide level2" data-background-color="#692044">
 <h2>Short activity</h2>
-<p>Meet with your project group, and think in a research question that you could possibly address using an experimental design:</p>
+<p>Think in a research question that you could possibly address using an experimental design:</p>
 <ul>
 <li><p>What is your research question?</p></li>
-<li><p>What is your <strong>estimand</strong>? (effect of what? among whom?)</p></li>
+<li><p>What is your <strong>estimand</strong>? (effect of what? omn what? among whom?)</p></li>
 <li><p>What type of experiment would you conduct? (lab? field? survey?)</p></li>
 <li><p>What would be the level of your randomization? (individual? cluster? why?)</p></li>
 </ul>
-<p>Using your answers to the question above, propose and design a (survey) experiment that could help answering your research questions.</p>
 <p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
 <div class="footer footer-default">
 <p>Demystifying Causal Inference - Potential Outcomes</p>

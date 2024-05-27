@@ -32,6 +32,47 @@ callout-appearance: simple
 
 ## Lecture 1: From causal methods to causal assumptions
 
+It is common to hear the idea that some *methods* are inherently causal: propensity score matching, IPW, instrumental variables, panel methods, and even machine learning
+
+But there is nothing properly causal about a method (i.e, an estimator, an algorithm, a formula)! 
+
+What makes our conclusions causal is the assumptions we make, whose plausibility is justified on a given research design
+
+. . .
+
+In this first lecture, we are going to study the formal language that allows us to clearly and transparently state both our quantities of interest and our assumptions 
+
+Then we will see this framework in action, to understand how does it work in the context on randomised studies
+
+We should be able to see why RCTs are often described as the "gold standard" for causal inference
+
+
+## The First Commandment of Causal Inference {background-color="#692044"}
+### (by Chad Hazlett)
+
+:::{.callout-warning}
+Thou shalt not blindly apply identification strategies as if the *procedure* makes your results causal
+:::
+
+. . .
+
+Identification strategies are about assumptions, not tools:
+
+* learning tools is important, useful, and fun
+
+* but the tool you use doesn't make your result causal, your assumptions do
+
+* most of your effort should go into understanding and communicating wheather your assumptions are credible
+
+. . .
+
+:::{.callout-note}
+## Corolary: Never say "my estimate is causal because I used (.)"
+
+Where (.) = matching, IPW, IV, whatever
+:::
+
+
 # Potential Outcomes {background-color="#17a091"}
 
 ## Neyman, Neyman-Rubin, or Rubin Causal Model?
@@ -111,15 +152,28 @@ What type of dependence are we ruling out?
 
 ## Causal estimands
 
-ITE
+The first thing that potential outcomes allow us to do is to formalize the causal effects we may want to estimate.
 
-ATE
+Some frequently invoked estimands are the following:
 
-ATT
 
-ATC
+[$$ITE = \tau_i = Y_{1i} - Y_{0i}$$]{.fragment .fade-in-then-out}
 
-CATE
+[$$
+ATE = E[\tau_i] = E[Y_{1i} - Y_{0i}] = E[Y_{1i}] - E[Y_{0i}]
+$$]{.fragment .fade-in-then-out}
+
+[$$
+ATT = E[\tau_i|D_i=1] = E[Y_{1i} - Y_{0i}|D_i=1] = E[Y_{1i}|D_i=1] - E[Y_{0i}|D_i=1]
+$$]{.fragment .fade-in-then-out}
+
+[$$
+ATC = E[\tau_i|D_i=0] = E[Y_{1i} - Y_{0i}|D_i=0] = E[Y_{1i}|D_i=0] - E[Y_{0i}|D_i=0]
+$$]{.fragment .fade-in-then-out}
+
+[$$
+CATE = E[\tau_i|X_i=x] = E[Y_{1i} - Y_{0i}|X_i=x] = E[Y_{1i}|X_i=x] - E[Y_{0i}|X_i=x]
+$$]{.fragment .fade-in-then-out}
 
 ---
 
@@ -466,17 +520,13 @@ Is there a way to design an study in which we know, **by design**, that the need
 
 If we want to **predict under interventions**, then the best way to do it is **interveening**!
 
-<br>
 Random assignment (more specifically, RCTs) has been called the **gold standard** for causal inference: it guarantees the necessary assumptions for causal inference hold by design.
 
-<br>
-When unfesible, imagining a hypothetical experiment still offers a useful benchmark to assess the validity of causal claims, and even to clarify what do we mean by a particular causal effect.
+When unfeasible, imagining a hypothetical experiment still offers a useful benchmark to assess the validity of causal claims, and even to clarify what do we mean by a particular causal effect.
 
-<br>
-Experiments come in many different flavours: lab, field, survey, and even quasi-experimentss!
+Experiments come in many different flavors: lab, field, survey, and even quasi-experiments!
 
-<br>
-Here we will only scratch the surface of social science experiments: the idea is to get you interested and point you to the resources out there! Maybe sometime soon you will be running your own experiment! (Or at least someone else's experiment)
+Here we will only scratch the surface of social science experiments: the idea is to get you interested and point you to the resources out there
 
 
 ---
@@ -485,35 +535,38 @@ Here we will only scratch the surface of social science experiments: the idea is
 
 Sometimes it is hard to imagine an experiment that would be relevant for the type of questions we care about. 
 
-<br>
 Some people even say (and I for sure partially agree!) that experiments tend to emphasize "small" versus "big" questions, promoting incremental/testable policies. 
 
-<br>
 However, there are tons of examples of researchers using experiments to address important, **big** and difficult questions. **Do you know of any example?**
 
-<br>
 Take a moment to check the syllabus of UCLA professor Graeme Blair's Experimental Design class [here](https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf). He put together a list of experiments conducted by UCLA faculty, and by graduate students.
-
-.center[**Any comments?**]
 
 ---
 
 ## Why randomization 
 ### (more formally)
 
-We already saw that we can identify the causal effect of $X$ on $Y$ if the treatment assignment is independent of the potential outcomes. Formally $$(Y_x,Y_{x^*}) \indep X$$
+We already saw that we can identify the causal effect of $D$ on $Y$ if the treatment assignment is independent of the potential outcomes. Formally $$(Y_d,Y_{d^*}) \indep D$$
 
 Recall the diff-in-means decomposition we review earlier. Given the **ignorability** of the treatment assignment, we have can further write it as:
 
 By consistency
 
-$$E(Y_i|X=x) - E(Y_i|X=x^*) = E(Y_x|X=x) - E(Y_{x^*}|X=x^*)$$
+$$E(Y_i|D=d) - E(Y_i|D=d^*) = E(Y_d|D=d) - E(Y_{d^*}|D=d^*)$$
+
+
+
+## Why randomization 
+### (more formally)
+
 With some algebra
 
-$$= E(Y_x - Y_{x^*}) + (E[Y_{x^*}|X=x] - E[Y_{x^*}|X=x^*])+(1-P[X])(ATT-ATC)$$
-By ignorability, this simplifies to
+$$= E(Y_d - Y_{d^*}) + (E[Y_{d^*}|D=d] - E[Y_{d^*}|D=d^*])+(1-P[D])(ATT-ATC)$$
 
-$$E(Y_x - Y_{x^*}) = ATE$$
+And, by ignorability, this simplifies to
+
+$$E(Y_d - Y_{d^*}) = ATE$$
+
 
 ---
 
@@ -521,39 +574,18 @@ $$E(Y_x - Y_{x^*}) = ATE$$
 
 Traditionally, researchers argue about the validity of a study's causal conclusion (and, more generally, about the validity of different research designs) based on the potential biases that pose **threats to validity**. Check [this](https://journals.lww.com/epidem/Fulltext/2020/05000/A_Graphical_Catalog_of_Threats_to_Validity_.11.aspx) amazing paper by Matthay and Glymour for a review.
 
-<br>
 We reviewed the bias in the difference-in-means estimator: baseline differences (under the control condition), and differential response to the treatment (under the exposure condition).
 
-<br>
+. . .
+
 But when we randomize an exposure, we know that who ends up in each treatment arm has nothing to do with their potential outcomes!
 
-<br>
+. . .
+
 This is why we generally say that experiments are great for **internal validity**: among the people that participated in our study, we can rule out systematic sources of bias. 
 
-<br>
 However, this does not imply that our results are **externally valid**, i.e., that they apply to people outside our study! We need further assumptions to move from one to another.
 
----
-
-## How to randomize?
-
-Many times, we use randomization not just for identification (**ignorability**), but also for estimation! 
-
-<br>
-If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a **permutation distribution** and use it for inference.
-
-<br>
-How much dispersion (i.e. uncertainty) is in our distribution will be affected by **the level** at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?
-
-* The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?
-
-Conditional randomization (i.e., blocking) increase efficiency, when we have variables that are highly predictive of the outcome of interest
-
-* One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control.
-
-
-
----
 
 ## Types of experiments
 
@@ -568,9 +600,30 @@ Conditional randomization (i.e., blocking) increase efficiency, when we have var
 
 ---
 
-## Additional Resources 
 
-<br>
+## How to randomize?
+
+Many times, we use randomization not just for identification (**ignorability**), but also for estimation! 
+
+If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a **permutation distribution** and use it for inference.
+
+How much dispersion (i.e. uncertainty) is in our distribution will be affected by **the level** at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?
+
+:::{.callout-note}
+The more the aggregation, the more uncertainty. So why would we want to randomize at the cluster level?
+:::
+
+Conditional randomization (i.e., blocking) increase efficiency, when we have variables that are highly predictive of the outcome of interest
+
+:::{.callout-note}
+One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control
+:::
+
+
+---
+
+
+## Additional Resources 
 ### Online learning
 
 * A selected and annotated bibliography on causality [here](https://www.pablogeraldo.com/pdf/GeraldoBrand_2020_Causality.pdf)
@@ -588,16 +641,15 @@ Conditional randomization (i.e., blocking) increase efficiency, when we have var
 
 ## Short activity {background-color="#692044"}
 
-Meet with your project group, and think in a research question that you could possibly address using an experimental design:
+Think in a research question that you could possibly address using an experimental design:
 
 * What is your research question?
 
-* What is your **estimand**? (effect of what? among whom?)
+* What is your **estimand**? (effect of what? omn what? among whom?)
 
 * What type of experiment would you conduct? (lab? field? survey?)
 
 * What would be the level of your randomization? (individual? cluster? why?)
 
-Using your answers to the question above, propose and design a (survey) experiment that could help answering your research questions.
 
 
