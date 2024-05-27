@@ -25,17 +25,52 @@ format:
 callout-appearance: minimal
 ---
 
-# Outline {background-color="aquamarine"}
+# Outline {background-color="#17a091"}
 
-# Canonical setting {background-color="aquamarine"}
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+## Finding as-if random variation
+
+Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even in a particular subpopulation
+
+We will discuss identification and estimation in the instrumental variable setting under two frameworks:
+
+. . . 
+
+* The canonical setting, where a constant treatment effect is assumed
+
+. . . 
+
+* The modern approach, where heterogeneous treatment effect are allowed
+
+. . .
+
+Depending on the invoked assumptions, the quantity identified by the IV analysis is different
+
+We will discuss in certain detail the common issues faced by all IV analyses, and also some issues particular to each framework
 
 ## Graphical representation
 
-## Non-parametric asssumptions
+![](img\IV.pdf){fig-align="center" width=50%}
+
+## Non-parametric asssumptions {background-color="#002F87"}
+
+In graphical terms, the non-parametric IV conditions are:
+
+* The instrument $Z$ and the treatment $D$ are $d-$connected in the observational DAG $G$
+
+* The instrument $Z$ and the outcome $Y$ are $d-$separated in the interventional DAG where we $do(z)$, $G_{\overbar_{X}}$
 
 ## IV bounds
 
-# Effect homogeneity {background-color="aquamarine"}
+Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect **cannot** be identified.
+
+However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect
+
+# Canonical setting {background-color="#17a091"}
+
+# Effect homogeneity {background-color="#17a091"}
 
 ## Assumptions
 
@@ -45,7 +80,7 @@ callout-appearance: minimal
 
 ## Issues
 
-# Modern IV {background-color="aquamarine"}
+# Modern IV {background-color="#17a091"}
 
 ## LATE framework
 
@@ -59,6 +94,16 @@ $$
 E[\underbrace{Y_{d=1,i} - Y_{d=0,i}}_{\text{treatment effect}} \vert \underbrace{D_{z=1,i} \gt D_{z=0,i}}_{\text{among compliers}}]
 $$
 
+. . . 
+
+In words, we aim to identify the effect of the treatment $D$ on the outcome $Y$, *only among* those that are induced to receive the treatment $D=1$ by the instrument $Z$
+
+Note that this population of *compliers* can be substantially different than the total population!
+
+. . . 
+
+The IV-LATE assumptions we are going to discuss now are embedded in this quantity formalization
+
 ## Assumptions
 
 ### Relevance
@@ -67,17 +112,39 @@ $$
 E[D_{z=1,i} - D_{z=0,i}] \neq 0
 $$
 
+. . . 
+
+**Relevance** is the assumption that the instruments does indeed makes a difference!
+
+It is an assumption about the $Z \rightarrow D$
+
+. . .
+
+Is this a testable assumption?
+
+Is it necessary for the association between $Z$ and $D$ to be causal?
+
 ## Assumptions
 
 ### Unconfoundedness of the instrument
 
 $$
-Y_{(d,z),i} \perp Z_i \forall d,z
+Y_{(d,z),i} \indep Z_i \forall d,z
 $$
 
+. . . 
+
+It reads: The joint potential outcomes (depending on the treatment $D$ and the instrument $Z$) are independent of the instrument $Z$
+
+Can you think of a graphical criteria for this?
+
+. . .
+
 $$
-D_{z,i} \perp Z_i \forall z
+D_{z,i} \indep Z_i \forall z
 $$
+
+It reads: The potential *treatment* is independent of the instrument
 
 ## Assumptions
 
@@ -94,6 +161,14 @@ $$
 "Exclusion restriction" means that we can **exclude** the instrument $z$ from the outcome equation, once the treatment is accounted for
 :::
 
+. . . 
+
+It can also be described as a "full mediation" assumption: the whole effect of the instrument on the outcome goes through the treatment! 
+
+. . .
+
+Can this be tested?
+
 ## Assumptions
 ### Monotonicity
 
@@ -101,10 +176,23 @@ $$
 D_{z=1,i} \geq D_{z=0,i} \forall i
 $$
 
+. . .
+
+This assumption is tricky! And it sounds more harmless than it is.
+
+It implies that the instrument affects *everyone* in the same direction: an instrument cannot induce some people to receive the treatment, and discourage some other people to receive the treatment
+
+## Assumptions
+### SUTVA and Positivity
+
+Usually not discussed much in the context of IV, but remember that we are generally assuming **SUTVA** (consistency + non interference + no relevant versions of the treatment)
+
+**Positivity** is required whenever we need to condition for certain covariates $X$, like in the case of 
+
 ## Estimation
 
 ## Issues
 
-# IV in practice {background-color="aquamarine"}
+# IV in practice {background-color="#17a091"}
 
 

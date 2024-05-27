@@ -22,6 +22,7 @@ format:
     slide-number: c/t
     chalkboard: true
     auto-stretch: false
+filters: [parse-latex.lua]
 callout-appearance: minimal
 ---
 
@@ -731,6 +732,19 @@ Identification strategies are well-known set of assumptions that are sufficient 
   
 ---
 
+## Identification strategies: a short tour
+### Randomised Controlled Trials
+
+```{=latex}
+\begin{tabular}{c c c c c c}
+\toprule
+\textbf{Identification} & & & \textbf{Independence} & \textbf{Parametric} & \\
+\textbf{Strategy} & \textbf{Estimand} & \textbf{Graphical Model} & \textbf{Assumptions} & \textbf{Assumptions} & \textbf{Estimator}\\
+\midrule
+ RCT & $\E[Y_{1i}-Y_{0i}]$ & \includegraphics[width=0.25\textwidth]{img/id_random.pdf} & $Y_d \indep D$ & No & $\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]$ \\
+\bottomrule
+\end{tabular}
+```
 
 ## Is there a ladder of identification strategies?
 

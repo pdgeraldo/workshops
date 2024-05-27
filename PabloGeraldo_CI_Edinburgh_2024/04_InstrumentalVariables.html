@@ -11,7 +11,7 @@
 
   <meta name="author" content="Pablo Geraldo Bastías">
   <meta name="dcterms.date" content="2024-05-28">
-  <title>Demystifying Causal Inference</title>
+  <title>Instrumental variables</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -333,7 +333,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Demystifying Causal Inference</h1>
+  <h1 class="title">Instrumental variables</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -345,27 +345,58 @@ Pablo Geraldo Bastías
 
   <p class="date">May 28, 2024</p>
 </section>
-<section id="outline" class="title-slide slide level1 center" data-background-color="aquamarine">
+<section>
+<section id="outline" class="title-slide slide level1 center" data-background-color="#17a091">
 <h1>Outline</h1>
 
 </section>
-
-<section>
-<section id="canonical-setting" class="title-slide slide level1 center" data-background-color="aquamarine">
-<h1>Canonical setting</h1>
-
+<section id="finding-as-if-random-variation" class="slide level2">
+<h2>Finding as-if random variation</h2>
+<p>Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even in a particular subpopulation</p>
+<p>We will discuss identification and estimation in the instrumental variable setting under two frameworks:</p>
+<div class="fragment">
+<ul>
+<li>The canonical setting, where a constant treatment effect is assumed</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>The modern approach, where heterogeneous treatment effect are allowed</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Depending on the invoked assumptions, the quantity identified by the IV analysis is different</p>
+<p>We will discuss in certain detail the common issues faced by all IV analyses, and also some issues particular to each framework</p>
+</div>
 </section>
 <section id="graphical-representation" class="slide level2">
 <h2>Graphical representation</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><embed data-src="img\IV.pdf" style="width:50.0%"></p>
+</figure>
+</div>
 </section>
-<section id="non-parametric-asssumptions" class="slide level2">
+<section id="non-parametric-asssumptions" class="slide level2" data-background-color="#002F87">
 <h2>Non-parametric asssumptions</h2>
+<p>In graphical terms, the non-parametric IV conditions are:</p>
+<ul>
+<li><p>The instrument <span class="math inline">\(Z\)</span> and the treatment <span class="math inline">\(D\)</span> are <span class="math inline">\(d-\)</span>connected in the observational DAG <span class="math inline">\(G\)</span></p></li>
+<li><p>The instrument <span class="math inline">\(Z\)</span> and the outcome <span class="math inline">\(Y\)</span> are <span class="math inline">\(d-\)</span>separated in the interventional DAG where we <span class="math inline">\(do(z)\)</span>, <span class="math inline">\(G_{\overbar_{X}}\)</span></p></li>
+</ul>
 </section>
 <section id="iv-bounds" class="slide level2">
 <h2>IV bounds</h2>
+<p>Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect <strong>cannot</strong> be identified.</p>
+<p>However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect</p>
 </section></section>
+<section id="canonical-setting" class="title-slide slide level1 center" data-background-color="#17a091">
+<h1>Canonical setting</h1>
+
+</section>
+
 <section>
-<section id="effect-homogeneity" class="title-slide slide level1 center" data-background-color="aquamarine">
+<section id="effect-homogeneity" class="title-slide slide level1 center" data-background-color="#17a091">
 <h1>Effect homogeneity</h1>
 
 </section>
@@ -382,7 +413,7 @@ Pablo Geraldo Bastías
 <h2>Issues</h2>
 </section></section>
 <section>
-<section id="modern-iv" class="title-slide slide level1 center" data-background-color="aquamarine">
+<section id="modern-iv" class="title-slide slide level1 center" data-background-color="#17a091">
 <h1>Modern IV</h1>
 
 </section>
@@ -395,6 +426,13 @@ Pablo Geraldo Bastías
 E[\underbrace{Y_{d=1,i} - Y_{d=0,i}}_{\text{treatment effect}} \vert \underbrace{D_{z=1,i} \gt D_{z=0,i}}_{\text{among compliers}}]
 \]</span></p>
 </div>
+<div class="fragment">
+<p>In words, we aim to identify the effect of the treatment <span class="math inline">\(D\)</span> on the outcome <span class="math inline">\(Y\)</span>, <em>only among</em> those that are induced to receive the treatment <span class="math inline">\(D=1\)</span> by the instrument <span class="math inline">\(Z\)</span></p>
+<p>Note that this population of <em>compliers</em> can be substantially different than the total population!</p>
+</div>
+<div class="fragment">
+<p>The IV-LATE assumptions we are going to discuss now are embedded in this quantity formalization</p>
+</div>
 </section>
 <section id="assumptions-1" class="slide level2">
 <h2>Assumptions</h2>
@@ -402,16 +440,31 @@ E[\underbrace{Y_{d=1,i} - Y_{d=0,i}}_{\text{treatment effect}} \vert \underbrace
 <p><span class="math display">\[
 E[D_{z=1,i} - D_{z=0,i}] \neq 0
 \]</span></p>
+<div class="fragment">
+<p><strong>Relevance</strong> is the assumption that the instruments does indeed makes a difference!</p>
+<p>It is an assumption about the <span class="math inline">\(Z \rightarrow D\)</span></p>
+</div>
+<div class="fragment">
+<p>Is this a testable assumption?</p>
+<p>Is it necessary for the association between <span class="math inline">\(Z\)</span> and <span class="math inline">\(D\)</span> to be causal?</p>
+</div>
 </section>
 <section id="assumptions-2" class="slide level2">
 <h2>Assumptions</h2>
 <h3 id="unconfoundedness-of-the-instrument">Unconfoundedness of the instrument</h3>
 <p><span class="math display">\[
-Y_{(d,z),i} \perp Z_i \forall d,z
+Y_{(d,z),i} \perp\!\!\!\perp Z_i \forall d,z
 \]</span></p>
+<div class="fragment">
+<p>It reads: The joint potential outcomes (depending on the treatment <span class="math inline">\(D\)</span> and the instrument <span class="math inline">\(Z\)</span>) are independent of the instrument <span class="math inline">\(Z\)</span></p>
+<p>Can you think of a graphical criteria for this?</p>
+</div>
+<div class="fragment">
 <p><span class="math display">\[
-D_{z,i} \perp Z_i \forall z
+D_{z,i} \perp\!\!\!\perp Z_i \forall z
 \]</span></p>
+<p>It reads: The potential <em>treatment</em> is independent of the instrument</p>
+</div>
 </section>
 <section id="assumptions-3" class="slide level2">
 <h2>Assumptions</h2>
@@ -428,6 +481,12 @@ Y_{(d,z),i} = Y_{(d,z'),i} = Y_{d,i} \forall z, z', d, i
 </div>
 </div>
 </div>
+<div class="fragment">
+<p>It can also be described as a “full mediation” assumption: the whole effect of the instrument on the outcome goes through the treatment!</p>
+</div>
+<div class="fragment">
+<p>Can this be tested?</p>
+</div>
 </section>
 <section id="assumptions-4" class="slide level2">
 <h2>Assumptions</h2>
@@ -435,6 +494,10 @@ Y_{(d,z),i} = Y_{(d,z'),i} = Y_{d,i} \forall z, z', d, i
 <p><span class="math display">\[
 D_{z=1,i} \geq D_{z=0,i} \forall i
 \]</span></p>
+<div class="fragment">
+<p>This assumption is tricky! And it sounds more harmless than it is.</p>
+<p>It implies that the instrument affects <em>everyone</em> in the same direction: an instrument cannot induce some people to receive the treatment, and discourage some other people to receive the treatment</p>
+</div>
 </section>
 <section id="estimation" class="slide level2">
 <h2>Estimation</h2>
@@ -442,11 +505,11 @@ D_{z=1,i} \geq D_{z=0,i} \forall i
 <section id="issues-1" class="slide level2">
 <h2>Issues</h2>
 </section></section>
-<section id="iv-in-practice" class="title-slide slide level1 center" data-background-color="aquamarine">
+<section id="iv-in-practice" class="title-slide slide level1 center" data-background-color="#17a091">
 <h1>IV in practice</h1>
 <p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
 <div class="footer footer-default">
-<p>Instrumental variables</p>
+<p>Demystifying Causal Inference - Lecture 4</p>
 </div>
 </section>
     </div>
