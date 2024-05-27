@@ -645,7 +645,7 @@ Think in a research question that you could possibly address using an experiment
 
 * What is your research question?
 
-* What is your **estimand**? (effect of what? omn what? among whom?)
+* What is your **estimand**? (effect of what? on what? among whom?)
 
 * What type of experiment would you conduct? (lab? field? survey?)
 
