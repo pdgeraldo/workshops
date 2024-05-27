@@ -786,7 +786,6 @@ Pablo Geraldo Bastías
 </section>
 <section id="do-operator-and-interventions" class="slide level2">
 <h2>Do-operator and interventions</h2>
-<p><br></p>
 <p>Pearl introduced the <span class="math inline">\(do-\)</span>operator to clearly distinguish between passive observations and interventions on the data generating process</p>
 <p>In other words, is a form to make explicit the gap between interventional quantities and out more familiar conditional expectations</p>
 <p>Causal identification corresponds to removing the <span class="math inline">\(do-\)</span>operator from an expression, following the rules of <span class="math inline">\(do-\)</span>calculus, reducing it to an observational quantity. If there is no equivalence, it means that the quantity of interest is not identified</p>
@@ -1075,8 +1074,56 @@ Pablo Geraldo Bastías
 </section>
 <section id="identification-strategies-a-short-tour-1" class="slide level2">
 <h2>Identification strategies: a short tour</h2>
-<h3 id="randomised-controlled-trials">Randomised Controlled Trials</h3>
-<p><code>{=latex, results='asis'} \begin{tabular}{c c c c c c} \toprule \textbf{Identification} &amp; &amp; &amp; \textbf{Independence} &amp; \textbf{Parametric} &amp; \\ \textbf{Strategy} &amp; \textbf{Estimand} &amp; \textbf{Graphical Model} &amp; \textbf{Assumptions} &amp; \textbf{Assumptions} &amp; \textbf{Estimator}\\ \midrule  RCT &amp; $\E[Y_{1i}-Y_{0i}]$ &amp; \includegraphics[width=0.25\textwidth]{img/id_random.pdf} &amp; $Y_d \indep D$ &amp; No &amp; $\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]$ \\ \bottomrule \end{tabular}</code></p>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">RCTs</a></li><li><a href="#tabset-1-2">RDD</a></li><li><a href="#tabset-1-3">IV</a></li><li><a href="#tabset-1-4">SOO</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estimand</th>
+<th>Graphical model</th>
+<th>Independence</th>
+<th>Parametric</th>
+<th>Estimator</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\E[Y_{1i}-Y_{0i}]\)</span></td>
+<td></td>
+<td><span class="math inline">\(Y_d \perp\!\!\!\perp D\)</span></td>
+<td>No</td>
+<td><span class="math inline">\(\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]\)</span></td>
+</tr>
+<tr class="even">
+<td>–</td>
+<td>–</td>
+<td>–</td>
+<td>–</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-2">
+
+</div>
+<div id="tabset-1-3">
+
+</div>
+<div id="tabset-1-4">
+
+</div>
+</div>
+</div>
 </section>
 <section id="is-there-a-ladder-of-identification-strategies" class="slide level2">
 <h2>Is there a ladder of identification strategies?</h2>
@@ -1088,9 +1135,40 @@ Pablo Geraldo Bastías
 </section>
 <section id="debates-in-applied-research" class="slide level2">
 <h2>Debates in applied research</h2>
-<p><em>Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as</em> identification strategies &gt;Guido Imbens (2019)</p>
-<p><em>About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: ‘Make your theories elaborate.’ The reply puzzled me at first, since by Occam’s razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.</em> &gt;B. G. Cochran (cited in Rosenbaum, 1995)</p>
-<p><em>No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g.&nbsp;IV!)</em> &gt;Jason Abaluck (cited in Imbens, 2019)</p>
+<div class="callout callout-tip no-icon callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<p><strong>Imbens (2019)</strong></p>
+</div>
+<div class="callout-content">
+<p><em>Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as</em> identification strategies</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<p><strong>B. G. Cochran (cited in Rosenbaum, 1995)</strong></p>
+</div>
+<div class="callout-content">
+<p><em>About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: ‘Make your theories elaborate.’ The reply puzzled me at first, since by Occam’s razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.</em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<p><strong>Jason Abaluck (cited in Imbens, 2019)</strong></p>
+</div>
+<div class="callout-content">
+<p><em>No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g.&nbsp;IV!)</em></p>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="where-to-go-now" class="slide level2">
 <h2>Where to go now?</h2>

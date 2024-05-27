@@ -22,7 +22,6 @@ format:
     slide-number: c/t
     chalkboard: true
     auto-stretch: false
-filters: [parse-latex.lua]
 callout-appearance: minimal
 ---
 
@@ -473,7 +472,6 @@ A great general introduction to the topic is offered by [Elwert and Winship (201
 
 ## Do-operator and interventions
 
-<br>
 
 Pearl introduced the $do-$operator to clearly distinguish between passive observations and interventions on the data generating process
 
@@ -733,18 +731,27 @@ Identification strategies are well-known set of assumptions that are sufficient 
 ---
 
 ## Identification strategies: a short tour
-### Randomised Controlled Trials
 
-```{=latex}
-\begin{tabular}{c c c c c c}
-\toprule
-\textbf{Identification} & & & \textbf{Independence} & \textbf{Parametric} & \\
-\textbf{Strategy} & \textbf{Estimand} & \textbf{Graphical Model} & \textbf{Assumptions} & \textbf{Assumptions} & \textbf{Estimator}\\
-\midrule
- RCT & $\E[Y_{1i}-Y_{0i}]$ & \includegraphics[width=0.25\textwidth]{img/id_random.pdf} & $Y_d \indep D$ & No & $\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]$ \\
-\bottomrule
-\end{tabular}
-```
+:::{.panel-tabset}
+
+## RCTs
+
+| Estimand | Graphical model | Independence | Parametric | Estimator |
+| -- | -- | -- | -- | -- |
+| $\E[Y_{1i}-Y_{0i}]$ | \includegraphics[width=0.25\textwidth]{img/id_random.pdf} | $Y_d \indep D$ | No | $\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]$ |
+| -- | -- | -- | -- | -- |
+
+## RDD
+
+## IV 
+
+## SOO
+
+
+
+:::
+
+
 
 ## Is there a ladder of identification strategies?
 
@@ -763,15 +770,24 @@ Do empirical applications corresponds to the labels that we use to describe a gi
 
 ## Debates in applied research
 
+:::{.callout-tip}
+## Imbens (2019)
 *Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as* identification strategies
->Guido Imbens (2019)
+:::
 
+. . . 
+
+:::{.callout-tip}
+## B. G. Cochran (cited in Rosenbaum, 1995)
 *About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: 'Make your theories elaborate.' The reply puzzled me at first, since by Occam's razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.*
->B. G. Cochran (cited in Rosenbaum, 1995)
+:::
 
+. . .
 
+:::{.callout-tip}
+## Jason Abaluck (cited in Imbens, 2019)
 *No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g. IV!)*
->Jason Abaluck (cited in Imbens, 2019)
+:::
 
 ---
 
