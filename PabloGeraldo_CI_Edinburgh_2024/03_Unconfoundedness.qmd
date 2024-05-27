@@ -28,6 +28,9 @@ callout-appearance: simple
 
 # Outline {background-color="#17a091"}
 
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
 ## Lecture 3: Selection on observables
 
 During this lecture, we will cover one of the most popular identification strategies: selection on observables, also known as conditional ignorability/independence (stats), unconfoundedness (econ), or conditional exchangeability (epi)
@@ -54,18 +57,79 @@ An observational study is an attempt to use observational data to *approximate* 
 
 . . .
 
-While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on assumptions
+While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on [[untestable and extra-statistical]()]{.fragment .fade-in} assumptions
 
 
 ## Credible observational studies
+
+Not all comparisons are created equal!
+
+It is all too common to run some regression analysis and analyse its output as-if a credible *causal* comparison can be immediately obtained from the data
+
+. . .
+
+Many times, just recognizing that "our results are not causal" is not enough to prevent a causal interpretation!
+
+## Credible observational studies
+
+A credible observational study should be carefully designed to address common issues and rule out alternative explanations:
+
+* Assignment is not random, but is it well understood?
+
+* Do we have reliable measures of our variables of interest? Does the timing of measurement allow us to order them?
+
+* Can we check "balance" in observable characteristics?
+
+* Can we explain why some units that look similar receive different treatments?
+
+* Can we quantify the influence that unobserved confounding would have on our results?
+
+* Can we rule out alternative explanations to the observed "treatment effect"?
 
 # Unconfoundedness {background-color="#00a191"}
 
 ## General setting
 
+Let's assume the following:
+
+* We observe units $i = 1, \dots, n$
+* We observe a treatment $D \in {0,1}$
+* We assume potential outcomes $Y_{di}$ are well defined
+
+. . . 
+
+Our quantity of interest can be (most commonly) the ATE or the ATT
+
+. . . 
+
+We have a collection of $k$ **pre-treatment** covariates: $X_i = [X_{i1}, \dots , X_{ik}]$
+
+* Predetermined/ causally precede $D_i$
+* If $X_i$ causes both $D$ and $Y$, it would *confound* the relationship between them
+* If $X_i$ is potentially affected by $D_i$, then it may possibly be a *mediator*, and it should be handlded with double care
+
 ## Assumptions
 
+The main assumption in this context is usually referred as unconfoudedness, conditional ignorability, or conditional exhangeability
+
+It can be formalized as:
+
+$$
+\{Y_{1i}, Y_{0i}\} \indep D_i
+$$
+
+:::{.callout-note}
+## Read it like this
+Among units with the same values of $X$, the treatment $D_i$ is as-good-as randomly assigned
+:::
+
+. . .
+
+To actually be able to condition by $X$, we also require positivity (or overlap): the treatment is not deterministic at any relevant value of $X=x$
+
 ## Identification of ATE/ATT
+
+On board
 
 # Estimation {background-color="#00a191"}
 

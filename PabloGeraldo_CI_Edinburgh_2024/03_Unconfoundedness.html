@@ -374,42 +374,28 @@ Pablo Geraldo Bastías
 <p>An observational study is an attempt to use observational data to <em>approximate</em> causal conclusions (or, as some would say, “to approximate an experiment”)</p>
 </div>
 <div class="fragment">
-<p>While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on assumptions</p>
-</div>
-</section>
-<section id="the-first-commandment-of-causal-inference" class="slide level2" data-background-color="#692044">
-<h2>The First Commandment of Causal Inference</h2>
-<h3 id="by-chad-hazlett">(by Chad Hazlett)</h3>
-<div class="callout callout-warning no-icon callout-style-simple">
-<div class="callout-body">
-<div class="callout-content">
-<p>Thou shalt not blindly apply identification strategies as if the <em>procedure</em> makes your results causal</p>
-</div>
-</div>
-</div>
-<div class="fragment">
-<p>Identification strategies are about assumptions, not tools:</p>
-<ul>
-<li><p>learning tools is important, useful, and fun</p></li>
-<li><p>but the tool you use doesn’t make your result causal, your assumptions do</p></li>
-<li><p>most of your effort should go into understanding and communicating wheather your assumptions are credible</p></li>
-</ul>
-</div>
-<div class="fragment">
-<div class="callout callout-note no-icon callout-captioned callout-style-simple">
-<div class="callout-body">
-<div class="callout-caption">
-<p><strong>Corolary: Never say “my estimate is causal because I used (.)”</strong></p>
-</div>
-<div class="callout-content">
-<p>Where (.) = matching, IPW, IV, whatever</p>
-</div>
-</div>
-</div>
+<p>While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on <span class="fragment fade-in"><a href="">untestable and extra-statistical</a></span> assumptions</p>
 </div>
 </section>
 <section id="credible-observational-studies" class="slide level2">
 <h2>Credible observational studies</h2>
+<p>Not all comparisons are created equal!</p>
+<p>It is all too common to run some regression analysis and analyse its output as-if a credible <em>causal</em> comparison can be immediately obtained from the data</p>
+<div class="fragment">
+<p>Many times, just recognizing that “our results are not causal” is not enough to prevent a causal interpretation!</p>
+</div>
+</section>
+<section id="credible-observational-studies-1" class="slide level2">
+<h2>Credible observational studies</h2>
+<p>A credible observational study should be carefully designed to address common issues and rule out alternative explanations:</p>
+<ul>
+<li><p>Assignment is not random, but is it well understood?</p></li>
+<li><p>Do we have reliable measures of our variables of interest? Does the timing of measurement allow us to order them?</p></li>
+<li><p>Can we check “balance” in observable characteristics?</p></li>
+<li><p>Can we explain why some units that look similar receive different treatments?</p></li>
+<li><p>Can we quantify the influence that unobserved confounding would have on our results?</p></li>
+<li><p>Can we rule out alternative explanations to the observed “treatment effect”?</p></li>
+</ul>
 </section></section>
 <section>
 <section id="unconfoundedness" class="title-slide slide level1 center" data-background-color="#00a191">
@@ -418,12 +404,51 @@ Pablo Geraldo Bastías
 </section>
 <section id="general-setting" class="slide level2">
 <h2>General setting</h2>
+<p>Let’s assume the following:</p>
+<ul>
+<li>We observe units <span class="math inline">\(i = 1, \dots, n\)</span></li>
+<li>We observe a treatment <span class="math inline">\(D \in {0,1}\)</span></li>
+<li>We assume potential outcomes <span class="math inline">\(Y_{di}\)</span> are well defined</li>
+</ul>
+<div class="fragment">
+<p>Our quantity of interest can be (most commonly) the ATE or the ATT</p>
+</div>
+<div class="fragment">
+<p>We have a collection of <span class="math inline">\(k\)</span> <strong>pre-treatment</strong> covariates: <span class="math inline">\(X_i = [X_{i1}, \dots , X_{ik}]\)</span></p>
+<ul>
+<li>Predetermined/ causally precede <span class="math inline">\(D_i\)</span></li>
+<li>If <span class="math inline">\(X_i\)</span> causes both <span class="math inline">\(D\)</span> and <span class="math inline">\(Y\)</span>, it would <em>confound</em> the relationship between them</li>
+<li>If <span class="math inline">\(X_i\)</span> is potentially affected by <span class="math inline">\(D_i\)</span>, then it may possibly be a <em>mediator</em>, and it should be handlded with double care</li>
+</ul>
+</div>
 </section>
 <section id="assumptions" class="slide level2">
 <h2>Assumptions</h2>
+<p>The main assumption in this context is usually referred as unconfoudedness, conditional ignorability, or conditional exhangeability</p>
+<p>It can be formalized as:</p>
+<p><span class="math display">\[
+\{Y_{1i}, Y_{0i}\} \perp\!\!\!\perp D_i
+\]</span></p>
+<div class="callout callout-note callout-captioned callout-style-simple">
+<div class="callout-body">
+<div class="callout-caption">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Read it like this</strong></p>
+</div>
+<div class="callout-content">
+<p>Among units with the same values of <span class="math inline">\(X\)</span>, the treatment <span class="math inline">\(D_i\)</span> is as-good-as randomly assigned</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>To actually be able to condition by <span class="math inline">\(X\)</span>, we also require positivity (or overlap): the treatment is not deterministic at any relevant value of <span class="math inline">\(X=x\)</span></p>
+</div>
 </section>
 <section id="identification-of-ateatt" class="slide level2">
 <h2>Identification of ATE/ATT</h2>
+<p>On board</p>
 </section></section>
 <section>
 <section id="estimation" class="title-slide slide level1 center" data-background-color="#00a191">
