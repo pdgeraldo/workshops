@@ -352,6 +352,25 @@ Pablo Geraldo Bastías
 <h1>Outline</h1>
 
 </section>
+<section id="recap-from-previous-session" class="slide level2">
+<h2>Recap from previous session</h2>
+<ul>
+<li><p>We studied the difference between <strong>seeing</strong> (the focus of Stats/ML) and <strong>doing</strong> (the focus of causal inference)</p></li>
+<li><p>We studied the importance of using the formal language of potential outcomes to:</p>
+<ul>
+<li><p>clarify <em>what do we want to know</em> (<strong>estimand</strong>)</p></li>
+<li><p>identify <em>reasons for discrepancies</em> between what we observe and our target (<strong>bias</strong>)</p></li>
+<li><p>formalize <em>what needs to be true</em> for our estimand to be identified with a given <em>estimator</em> (<strong>assumptions</strong>)</p></li>
+</ul></li>
+<li><p>We studied the role of <strong>randomisation</strong> to identify causal effects <strong>by design</strong>.</p></li>
+</ul>
+<div class="fragment">
+<p>But what do we do when we have <em>less than perfect</em> experiments?</p>
+</div>
+<div class="fragment">
+<p>And how to assess our assumptions with <em>observational data</em>?</p>
+</div>
+</section>
 <section id="lecture-2-from-causal-assumptions-to-causal-models" class="slide level2">
 <h2>Lecture 2: From causal assumptions to causal models</h2>
 <p>When introducing potential outcomes, we emphasized that it is not the method what makes our results causal, but our <strong>assumptions</strong></p>
@@ -370,25 +389,6 @@ Pablo Geraldo Bastías
 </div>
 <div class="fragment">
 <p>Researchers often leave the model implicit and unspecified. I will argue that making it explicit can greatly improve transparency in scientific communication</p>
-</div>
-</section>
-<section id="recap-from-previous-session" class="slide level2">
-<h2>Recap from previous session</h2>
-<ul>
-<li><p>We studied the difference between <strong>seeing</strong> (the focus of Stats/ML) and <strong>doing</strong> (the focus of causal inference)</p></li>
-<li><p>We studied the importance of using the formal language of potential outcomes to:</p>
-<ul>
-<li><p>clarify <em>what do we want to know</em> (<strong>estimand</strong>)</p></li>
-<li><p>identify <em>reasons for discrepancies</em> between what we observe and our target (<strong>bias</strong>)</p></li>
-<li><p>formalize <em>what needs to be true</em> for our estimand to be identified with a given <em>estimator</em> (<strong>assumptions</strong>)</p></li>
-</ul></li>
-<li><p>We studied the role of <strong>randomisation</strong> to identify causal effects <strong>by design</strong>.</p></li>
-</ul>
-<div class="fragment">
-<p>But what do we do when we have <em>less than perfect</em> experiments?</p>
-</div>
-<div class="fragment">
-<p>And how to assess our assumptions with <em>observational data</em>?</p>
 </div>
 </section></section>
 <section>
@@ -515,11 +515,7 @@ Pablo Geraldo Bastías
 <p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
 <p>Are they conditionally independent?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\confounder1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\confounder1.png"></p>
 <p>The DAG includes the following paths</p>
 <p><span class="math display">\[X \rightarrow Y\]</span></p>
 <p><span class="math display">\[X \leftarrow W \rightarrow Y\]</span></p>
@@ -552,11 +548,7 @@ Pablo Geraldo Bastías
 <p>Are <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> marginally independent?</p>
 <p>Are they conditionally independent?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\confounder3.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\confounder3.png"></p>
 <p>The following path is open</p>
 <p><span class="math display">\[X \rightarrow Y\]</span></p>
 <p>But this is now closed</p>
@@ -591,11 +583,7 @@ Pablo Geraldo Bastías
 <p>Are they conditionally independent?</p>
 <p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\confounder2.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\confounder2.png"></p>
 <p>The DAG includes the following path</p>
 <p><span class="math display">\[X \leftarrow W \rightarrow Y\]</span></p>
 </div>
@@ -628,11 +616,7 @@ Pablo Geraldo Bastías
 <p>Are they conditionally independent?</p>
 <p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\mediation1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\mediation1.png"></p>
 <p>The DAG includes the following paths</p>
 <p><span class="math display">\[X \rightarrow Y\]</span></p>
 <p><span class="math display">\[X \rightarrow M \rightarrow Y\]</span></p>
@@ -666,11 +650,7 @@ Pablo Geraldo Bastías
 <p>Are they conditionally independent?</p>
 <p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\mediation2.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\mediation2.png"></p>
 <p>The DAG includes the following path</p>
 <p><span class="math display">\[X \rightarrow Y\]</span></p>
 <p>But this path is now closed</p>
@@ -705,11 +685,7 @@ Pablo Geraldo Bastías
 <p>Are they conditionally independent?</p>
 <p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\collider1.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\collider1.png"></p>
 <p>The DAG includes the following paths</p>
 <p><span class="math display">\[X \rightarrow Y\]</span></p>
 <p><span class="math display">\[X \rightarrow C \leftarrow Y\]</span></p>
@@ -743,11 +719,7 @@ Pablo Geraldo Bastías
 <p>Are they conditionally independent?</p>
 <p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\collider2.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\collider2.png"></p>
 <p>The DAG includes the following path</p>
 <p><span class="math display">\[X \rightarrow C \leftarrow Y\]</span></p>
 </div>
@@ -780,11 +752,7 @@ Pablo Geraldo Bastías
 <p>Are they conditionally independent?</p>
 <p>Is there a causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>?</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\collider3.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\collider3.png"></p>
 <p>The DAG includes the following (open) path</p>
 <p><span class="math display">\[X \rightarrow \boxed{C} \leftarrow Y\]</span></p>
 </div>
@@ -840,11 +808,7 @@ Pablo Geraldo Bastías
 </table>
 <p>Let’s start with the observational data generating process above</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\intervention1.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\intervention1.png" style="width:65.0%"></p>
 </div>
 </div>
 </section>
@@ -878,11 +842,7 @@ Pablo Geraldo Bastías
 </table>
 <p>Intervening in the model to make <span class="math inline">\(X=x\)</span> creates an interventional graph <span class="math inline">\(G_{\bar{X}}\)</span>, in which all the incoming arrows into <span class="math inline">\(X\)</span> have been removed</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\intervention2.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\intervention2.png" style="width:65.0%"></p>
 </div>
 </div>
 </section>
@@ -916,11 +876,7 @@ Pablo Geraldo Bastías
 </table>
 <p>The purpose of an observational study is to allow only <strong>causal paths</strong> between the treatment <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span>, and block all the <strong>non causal paths</strong></p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\intervention3.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\intervention3.png" style="width:65.0%"></p>
 <p>Adjusting for <span class="math inline">\(W\)</span> blocks a non-causal path, but opens a new one.</p>
 <p><span class="math inline">\(P(Y|do(x))\)</span> is not identified conditioning on <span class="math inline">\(W\)</span> alone</p>
 </div>
@@ -956,11 +912,7 @@ Pablo Geraldo Bastías
 </table>
 <p>The purpose of an observational study is to allow only <strong>causal paths</strong> between the treatment <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span>, and block all the <strong>non causal paths</strong></p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\intervention4.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\intervention4.png" style="width:65.0%"></p>
 <p>Adjusting for <span class="math inline">\((Z_1,W)\)</span> blocks all non-causal paths</p>
 <p><span class="math inline">\(P(Y|do(x))\)</span> is identified conditioning on <span class="math inline">\((Z_1,W)\)</span></p>
 </div>
@@ -996,11 +948,7 @@ Pablo Geraldo Bastías
 </table>
 <p>The purpose of an observational study is to allow only <strong>causal paths</strong> between the treatment <span class="math inline">\(X\)</span> and the outcome <span class="math inline">\(Y\)</span>, and block all the <strong>non causal paths</strong></p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="img\intervention5.png" class="quarto-figure quarto-figure-center" style="width:50.0%"></p>
-</figure>
-</div>
+<p><img data-src="img\intervention5.png" style="width:65.0%"></p>
 <p>Adjusting for <span class="math inline">\((Z_2,W)\)</span> also blocks all non-causal paths</p>
 <p><span class="math inline">\(P(Y|do(x))\)</span> is identified conditioning on <span class="math inline">\((Z_2,W)\)</span></p>
 </div>
@@ -1075,71 +1023,82 @@ Pablo Geraldo Bastías
 <section id="identification-strategies-a-short-tour" class="slide level2">
 <h2>Identification strategies: a short tour</h2>
 <p>Identification strategies are well-known set of assumptions that are sufficient for the causal interpretation of certain estimators:</p>
-<ul>
-<li><p><strong>Randomization</strong> ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff in means estimator.</p></li>
-<li><p><strong>Selection on Observables</strong> (aka Conditional Ignorability, Unconfoundedness) for multiple regression, (propensity score) matching and (inverse probability) weighting.</p>
-<ul>
-<li>In FE confounders are assumed to be fully captured by constant characteristics of the individual, group, or time.</li>
-</ul></li>
-<li><p><strong>Parallel trends</strong> for the difference-in-difference estimator (equivalent to a two-way fixed effects only in the two group, two periods case)</p>
-<ul>
-<li>Generalizations for multiple groups, multiple adoption periods, and synthetic controls</li>
-</ul></li>
-<li><p><strong>Instrumental Variables</strong> and quasi-experiments (exogenous variation in the treatment assignment plus exclusion restriction) for the 2SLS and Wald estimator</p>
-<ul>
-<li>RDD can be interpreted as IVs or under continuity assumptions.</li>
-</ul></li>
-</ul>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Imbens (2019)</strong></p>
+</div>
+<div class="callout-content">
+<p><em>Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as</em> identification strategies</p>
+</div>
+</div>
+</div>
 </section>
 <section id="identification-strategies-a-short-tour-1" class="slide level2">
 <h2>Identification strategies: a short tour</h2>
 <div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">RCTs</a></li><li><a href="#tabset-1-2">RDD</a></li><li><a href="#tabset-1-3">IV</a></li><li><a href="#tabset-1-4">SOO</a></li></ul>
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">RCTs</a></li><li><a href="#tabset-1-2">RDD_lr</a></li><li><a href="#tabset-1-3">RDD_cpo</a></li><li><a href="#tabset-1-4">IV</a></li><li><a href="#tabset-1-5">SOO</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
-<table>
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Estimand</th>
-<th>Graphical model</th>
-<th>Independence</th>
-<th>Parametric</th>
-<th>Estimator</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(\E[Y_{1i}-Y_{0i}]\)</span></td>
-<td></td>
-<td><span class="math inline">\(Y_d \perp\!\!\!\perp D\)</span></td>
-<td>No</td>
-<td><span class="math inline">\(\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]\)</span></td>
-</tr>
-<tr class="even">
-<td>–</td>
-<td>–</td>
-<td>–</td>
-<td>–</td>
-<td>–</td>
-</tr>
-</tbody>
-</table>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="img/id_random.png"></p>
+</div><div class="column" style="width:60%;">
+<p><strong>Estimand</strong> : <span class="math inline">\(E[Y_{1i}-Y_{0i}]\)</span></p>
+<p><strong>Implied independences</strong>: <span class="math inline">\(Y_d \perp\!\!\!\perp D\)</span></p>
+<p><strong>Parametric assumptions</strong>: No</p>
+<p><strong>Estimator</strong>: <span class="math inline">\(\hat{E}[Y|D=1] - \hat{E}[Y|D=0]\)</span></p>
+</div>
+</div>
+<p><strong>Randomisation</strong> ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff-in-means estimator</p>
 </div>
 <div id="tabset-1-2">
-
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="img/id_rdd_LR.png"></p>
+</div><div class="column" style="width:60%;">
+<p><strong>Estimand</strong>: <span class="math inline">\(E[Y_{1i}-Y_{0i}|Z=c]\)</span></p>
+<p><strong>Implied independences</strong>: <span class="math inline">\(Y_d \perp\!\!\!\perp D \vert \{Z = c \pm \epsilon\}\)</span></p>
+<p><strong>Parametric assumptions</strong>: No</p>
+<p><strong>Estimator</strong>: <span class="math inline">\(\hat{E}[Y|c \leq Z \leq c+\epsilon] -  \hat{E}[Y |c &gt; Z \geq c-\epsilon]\)</span></p>
+</div>
+</div>
 </div>
 <div id="tabset-1-3">
-
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="img/id_rdd_Cont.png"></p>
+</div><div class="column" style="width:60%;">
+<p><strong>Estimand</strong>: <span class="math inline">\(E[Y_{1i}-Y_{0i}|Z=c]\)</span></p>
+<p><strong>Implied independences</strong>: No</p>
+<p><strong>Parametric assumptions</strong>: <span class="math inline">\(E[Y_d|Z=c] = \lim_{z\rightarrow c}E[Y_d|Z=z]\)</span></p>
+<p><strong>Estimator</strong>: <span class="math inline">\(\hat{E}[Y|c \leq Z \leq c+\epsilon, Z] - \hat{E}[Y |c &gt; Z \geq c-\epsilon, Z]\)</span></p>
+</div>
+</div>
 </div>
 <div id="tabset-1-4">
-
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="img/id_iv.png"></p>
+</div><div class="column" style="width:60%;">
+<p><strong>Estimand</strong>: <span class="math inline">\(E[Y_{1i}-Y_{0i}|D_{z=1}=1,D_{z=0}=0]\)</span></p>
+<p><strong>Implied independences</strong>: <span class="math inline">\(Y_{z,d} = Y_d\)</span>, <span class="math inline">\(\{Y_{z,d}, D_z\} \perp\!\!\!\perp Z\)</span></p>
+<p><strong>Parametric assumptions</strong>: <span class="math inline">\(P[D_{z,i}=1] \geq P[D_{z',i}=1] \forall i, z&gt;z'\)</span></p>
+<p><strong>Estimator</strong>: <span class="math inline">\(\hat{E}[Y|Z=1]-\hat{E}[Y|Z=0]/\hat{E}[D|Z=1]-\hat{E}[D|Z=0]\)</span></p>
+</div>
+</div>
+</div>
+<div id="tabset-1-5">
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="img/confounder1.png"></p>
+</div><div class="column" style="width:60%;">
+<p><strong>Estimand</strong>: <span class="math inline">\(E[Y_{1i}-Y_{0i}|D=1]\)</span></p>
+<p><strong>Implied independences</strong>: <span class="math inline">\(Y_d \perp\!\!\!\perp D | X\)</span>, <span class="math inline">\(Y_d \perp\!\!\!\perp D | e(X)\)</span></p>
+<p><strong>Parametric assumptions</strong>: No</p>
+<p><strong>Estimator</strong>: <span class="math inline">\(\hat{E}_x(\hat{E}[Y|D=1,X=x]-\hat{E}[Y|D=0,X=x])\)</span></p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1154,16 +1113,6 @@ Pablo Geraldo Bastías
 </section>
 <section id="debates-in-applied-research" class="slide level2">
 <h2>Debates in applied research</h2>
-<div class="callout callout-tip no-icon callout-titled callout-style-simple">
-<div class="callout-body">
-<div class="callout-title">
-<p><strong>Imbens (2019)</strong></p>
-</div>
-<div class="callout-content">
-<p><em>Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as</em> identification strategies</p>
-</div>
-</div>
-</div>
 <div class="fragment">
 <div class="callout callout-tip no-icon callout-titled callout-style-simple">
 <div class="callout-body">

@@ -217,7 +217,7 @@ Are they conditionally independent?
 :::{.column width=50%}
 
 
-![](img\confounder1.png){fig-align="center" width=70%}
+![](img\confounder1.png)
 
 The DAG includes the following paths
 
@@ -251,7 +251,7 @@ Are they conditionally independent?
 
 :::{.column width=50%}
 
-![](img\confounder3.png){fig-align="center" width=70%}
+![](img\confounder3.png)
 
 The following path is open
 
@@ -289,7 +289,7 @@ Is there a causal effect of $X$ on $Y$?
 
 :::{.column width=50%}
 
-![](img\confounder2.png){fig-align="center" width=70%}
+![](img\confounder2.png)
 
 The DAG includes the following path
 
@@ -323,7 +323,7 @@ Is there a causal effect of $X$ on $Y$?
 
 :::{.column width=50%}
 
-![](img\mediation1.png){fig-align="center" width=70%}
+![](img\mediation1.png)
 
 The DAG includes the following paths
 
@@ -358,7 +358,7 @@ Is there a causal effect of $X$ on $Y$?
 
 :::{.column width=50%}
 
-![](img\mediation2.png){fig-align="center" width=70%}
+![](img\mediation2.png)
 
 The DAG includes the following path
 
@@ -395,7 +395,7 @@ Is there a causal effect of $X$ on $Y$?
 
 :::{.column width=50%}
 
-![](img\collider1.png){fig-align="center" width=70%}
+![](img\collider1.png)
 
 The DAG includes the following paths
 
@@ -430,7 +430,7 @@ Is there a causal effect of $X$ on $Y$?
 
 :::{.column width=50%}
 
-![](img\collider2.png){fig-align="center" width=70%}
+![](img\collider2.png)
 
 The DAG includes the following path
 
@@ -463,7 +463,7 @@ Is there a causal effect of $X$ on $Y$?
 
 :::{.column width=50%}
 
-![](img\collider3.png){fig-align="center" width=70%}
+![](img\collider3.png)
 
 The DAG includes the following (open) path
 
@@ -526,7 +526,7 @@ Let's start with the observational data generating process above
 :::
 
 :::{.column width=50%}
-![](img\intervention1.png){fig-align="center" width=50%}
+![](img\intervention1.png){width=65%}
 :::
 
 :::
@@ -552,7 +552,7 @@ Intervening in the model to make $X=x$ creates an interventional graph $G_{\bar{
 :::
 
 :::{.column width=50%}
-![](img\intervention2.png){fig-align="center" width=50%}
+![](img\intervention2.png){width=65%}
 :::
 
 :::
@@ -581,7 +581,7 @@ The purpose of an observational study is to allow only **causal paths** between 
 :::
 
 :::{.column width=50%}
-![](img\intervention3.png){fig-align="center" width=50%}
+![](img\intervention3.png){width=65%}
 
 Adjusting for $W$ blocks a non-causal path, but opens a new one. 
 
@@ -613,7 +613,7 @@ The purpose of an observational study is to allow only **causal paths** between 
 :::
 
 :::{.column width=50%}
-![](img\intervention4.png){fig-align="center" width=50%}
+![](img\intervention4.png){width=65%}
 
 Adjusting for $(Z_1,W)$ blocks all non-causal paths
 
@@ -645,7 +645,7 @@ The purpose of an observational study is to allow only **causal paths** between 
 
 :::{.column width=50%}
 
-![](img\intervention5.png){fig-align="center" width=50%}
+![](img\intervention5.png){width=65%}
 
 Adjusting for $(Z_2,W)$ also blocks all non-causal paths
 
@@ -738,20 +738,12 @@ However, this only shows that they require parametric assumptions, no matter how
 
 Identification strategies are well-known set of assumptions that are sufficient for the causal interpretation of certain estimators:
 
-* **Randomization** ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff in means estimator.
+:::{.callout-tip}
+## Imbens (2019)
+*Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as* identification strategies
+:::
 
-* **Selection on Observables** (aka Conditional Ignorability, Unconfoundedness) for multiple regression, (propensity score) matching and (inverse probability) weighting.
 
-  * In FE confounders are assumed to be fully captured by constant characteristics of the individual, group, or time.
-  
-* **Parallel trends** for the difference-in-difference estimator (equivalent to a two-way fixed effects only in the two group, two periods case)
-
-  * Generalizations for multiple groups, multiple adoption periods, and synthetic controls
-  
-* **Instrumental Variables** and quasi-experiments (exogenous variation in the treatment assignment plus exclusion restriction) for the 2SLS and Wald estimator
-
-  * RDD can be interpreted as IVs or under continuity assumptions.
-  
 ---
 
 ## Identification strategies: a short tour
@@ -760,21 +752,123 @@ Identification strategies are well-known set of assumptions that are sufficient 
 
 ## RCTs
 
-| Estimand | Graphical model | Independence | Parametric | Estimator |
-| -- | -- | -- | -- | -- |
-| $\E[Y_{1i}-Y_{0i}]$ | \includegraphics[width=0.25\textwidth]{img/id_random.pdf} | $Y_d \indep D$ | No | $\hat{\E}[Y|D=1] - \hat{\E}[Y|D=0]$ |
-| -- | -- | -- | -- | -- |
+:::{.columns}
 
-## RDD
+:::{.column width=40%}
+![](img/id_random.png)
+:::
 
-## IV 
+:::{.column width=60%}
 
-## SOO
+**Estimand** : $E[Y_{1i}-Y_{0i}]$ 
 
+**Implied independences**:  $Y_d \indep D$ 
+
+**Parametric assumptions**:  No 
+
+**Estimator**:  $\hat{E}[Y|D=1] - \hat{E}[Y|D=0]$
+:::
+
+:::
+
+**Randomisation** ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff-in-means estimator
+
+## RDD_lr
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_rdd_LR.png)
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|Z=c]$
+
+**Implied independences**: $Y_d \indep D \vert \{Z = c \pm \epsilon\}$
+
+**Parametric assumptions**: No
+
+**Estimator**:  $\hat{E}[Y|c \leq Z \leq c+\epsilon] -  \hat{E}[Y |c > Z \geq c-\epsilon]$ 
+:::
+
+:::
+
+## RDD_cpo
+
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_rdd_Cont.png)
+
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|Z=c]$ 
+
+**Implied independences**: No
+
+**Parametric assumptions**: $E[Y_d|Z=c] = \lim_{z\rightarrow c}E[Y_d|Z=z]$
+
+**Estimator**:  $\hat{E}[Y|c \leq Z \leq c+\epsilon, Z] - \hat{E}[Y |c > Z \geq c-\epsilon, Z]$
 
 
 :::
 
+:::
+
+## IV 
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_iv.png)
+
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|D_{z=1}=1,D_{z=0}=0]$
+
+**Implied independences**: $Y_{z,d} = Y_d$,  $\{Y_{z,d}, D_z\} \indep Z$
+
+**Parametric assumptions**: $P[D_{z,i}=1] \geq P[D_{z',i}=1] \forall i, z>z'$
+
+**Estimator**:  $\hat{E}[Y|Z=1]-\hat{E}[Y|Z=0]/\hat{E}[D|Z=1]-\hat{E}[D|Z=0]$
+
+
+:::
+
+:::
+
+
+## SOO
+
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/confounder1.png)
+
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|D=1]$
+
+**Implied independences**: $Y_d \indep D | X$, $Y_d \indep D | e(X)$
+
+**Parametric assumptions**: No
+
+**Estimator**: $\hat{E}_x(\hat{E}[Y|D=1,X=x]-\hat{E}[Y|D=0,X=x])$
+
+:::
+
+:::
+
+:::
 
 
 ## Is there a ladder of identification strategies?
@@ -793,11 +887,6 @@ Do empirical applications corresponds to the labels that we use to describe a gi
 ---
 
 ## Debates in applied research
-
-:::{.callout-tip}
-## Imbens (2019)
-*Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as* identification strategies
-:::
 
 . . . 
 
