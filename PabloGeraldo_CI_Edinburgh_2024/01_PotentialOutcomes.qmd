@@ -626,6 +626,36 @@ Conditional randomization (i.e., blocking) increase efficiency, when we have var
 One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control
 :::
 
+## Blocking
+
+Similar to the intuition for stratified random *sampling* in the context of surveys, blocking may increase precision in experimental design
+
+Precision gains are similar to increasing the sample size (more on this later)
+
+* Collect background information on covariates relevant *to the outcome*
+
+* Pre-stratify your sample, then randomise within blocks
+
+  + This ensures that, with respect to the blocked factors, both treatment arms are identical
+  
+  + It is essentially the same as running a separate experiment in each strata
+  
+  
+## Blocking 
+
+For estimation, obtain block-specific effects, and average according to population shares. With $J$ strata:
+
+$$
+\tau_{\text{block}} = \sum_{j=1}^{J} \frac{N_j}{N} \tau_j
+$$
+with variance: 
+
+$$V(\tau_{\text{block}}) = \sum_{j=1}^{J} \Big(\frac{N_j}{N}\Big)^2 V(\tau_j)$$
+
+:::aside
+When would this be equal to regression with block fixed effects?
+:::
+
 ## How to estimate?
 
 Once we have random assignment, estimation is super easy!
@@ -661,6 +691,7 @@ Also, note that imbalance **does not** imply bias: properly estimated standard e
 
 * Check this great series by Senn: [blog](https://errorstatistics.com/2020/04/20/s-senn-randomisation-is-not-about-balance-nor-about-homogeneity-but-about-randomness-guest-post/), [slides](https://www.ideal.rwth-aachen.de/wp-content/uploads/2014/02/Senn_Randomisation.pdf), [article](https://onlinelibrary.wiley.com/doi/full/10.1002/sim.5713)
 
+
 ## Potential issues
 
 In random-land, everything is perfect!
@@ -673,7 +704,13 @@ However, many things can go wrong in practice, threatenind *internal validity*:
 
 * **Attrition and lost to follow up**: even if randomisation is properly conducted and everyone adheres to the treatment, we may differentially lost participants in the post-treatment period!
 
+## Potential issues
 
+![](https://imgs.xkcd.com/comics/research_ethics.png){.fragment width="600" align}
+
+:::aside
+[ethics](https://imgs.xkcd.com/comics/research_ethics.png)
+:::
 
 
 ------------------------------------------------------------------------
@@ -704,4 +741,6 @@ Think in a research question that you could possibly address using an experiment
 
 -   What type of experiment would you conduct? (lab? field? survey?)
 
--   What would be the level of your randomization? (individual? cluster? why?)
+-   What would be the level of your randomisation? (individual? cluster? why?)
+
+- What ethical considerations you should take into account for your experiment to be acceptable?

@@ -1545,6 +1545,30 @@ Y = DY_1 + (1-D)Y_0
 </div>
 </div>
 </section>
+<section id="blocking" class="slide level2">
+<h2>Blocking</h2>
+<p>Similar to the intuition for stratified random <em>sampling</em> in the context of surveys, blocking may increase precision in experimental design</p>
+<p>Precision gains are similar to increasing the sample size (more on this later)</p>
+<ul>
+<li><p>Collect background information on covariates relevant <em>to the outcome</em></p></li>
+<li><p>Pre-stratify your sample, then randomise within blocks</p>
+<ul>
+<li><p>This ensures that, with respect to the blocked factors, both treatment arms are identical</p></li>
+<li><p>It is essentially the same as running a separate experiment in each strata</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="blocking-1" class="slide level2">
+<h2>Blocking</h2>
+<p>For estimation, obtain block-specific effects, and average according to population shares. With <span class="math inline">\(J\)</span> strata:</p>
+<p><span class="math display">\[
+\tau_{\text{block}} = \sum_{j=1}^{J} \frac{N_j}{N} \tau_j
+\]</span> with variance:</p>
+<p><span class="math display">\[V(\tau_{\text{block}}) = \sum_{j=1}^{J} \Big(\frac{N_j}{N}\Big)^2 V(\tau_j)\]</span></p>
+
+<aside><div>
+<p>When would this be equal to regression with block fixed effects?</p>
+</div></aside></section>
 <section id="how-to-estimate" class="slide level2">
 <h2>How to estimate?</h2>
 <p>Once we have random assignment, estimation is super easy!</p>
@@ -1596,6 +1620,13 @@ Y = DY_1 + (1-D)Y_0
 <li><p><strong>Attrition and lost to follow up</strong>: even if randomisation is properly conducted and everyone adheres to the treatment, we may differentially lost participants in the post-treatment period!</p></li>
 </ul>
 </section>
+<section id="potential-issues-1" class="slide level2">
+<h2>Potential issues</h2>
+<p><img data-src="https://imgs.xkcd.com/comics/research_ethics.png">{.fragment width=“600” align}</p>
+
+<aside><div>
+<p><a href="https://imgs.xkcd.com/comics/research_ethics.png">ethics</a></p>
+</div></aside></section>
 <section id="additional-resources" class="slide level2">
 <h2>Additional Resources</h2>
 <h3 id="online-learning">Online learning</h3>
@@ -1616,7 +1647,8 @@ Y = DY_1 + (1-D)Y_0
 <li><p>What is your research question?</p></li>
 <li><p>What is your <strong>estimand</strong>? (effect of what? on what? among whom?)</p></li>
 <li><p>What type of experiment would you conduct? (lab? field? survey?)</p></li>
-<li><p>What would be the level of your randomization? (individual? cluster? why?)</p></li>
+<li><p>What would be the level of your randomisation? (individual? cluster? why?)</p></li>
+<li><p>What ethical considerations you should take into account for your experiment to be acceptable?</p></li>
 </ul>
 <div class="quarto-auto-generated-content">
 <p><img src="https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu" class="slide-logo"></p>
