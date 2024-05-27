@@ -541,7 +541,7 @@ We won't discuss it here, but there are ways to conceptualize potential outcomes
 :::
 
 
-## Why randomization
+## Why randomisation?
 
 ### (more formally)
 
@@ -553,7 +553,7 @@ By consistency
 
 $$E(Y_i|D=d) - E(Y_i|D=d^*) = E(Y_d|D=d) - E(Y_{d^*}|D=d^*)$$
 
-## Why randomization
+## Why randomisation?
 
 ### (more formally)
 
@@ -608,9 +608,9 @@ Take a moment to check the syllabus of UCLA professor Graeme Blair's Experimenta
 
 ------------------------------------------------------------------------
 
-## How to randomize?
+## How to randomise?
 
-Many times, we use randomization not just for identification (**ignorability**), but also for estimation!
+We use randomisation not just for identification (**ignorability**), but also for estimation!
 
 If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a **permutation distribution** and use it for inference.
 
@@ -625,6 +625,56 @@ Conditional randomization (i.e., blocking) increase efficiency, when we have var
 ::: callout-note
 One extreme of this is randomization in matched pairs: for each pair of individual with similar covariates, we randomly assign one to treatment and one to control
 :::
+
+## How to estimate?
+
+Once we have random assignment, estimation is super easy!
+
+All that matters is that your estimation procedure follows your (known) assignment rule
+
+:::{.callout-warning}
+## In other words: Estimate as you randomise!
+:::
+
+. . . 
+
+* A simple difference in means will recover the ATE
+
+* This is equivalent to running a bivariate regression (no controls)
+
+* With controls is a little trickier (see [Freedman 2008](https://projecteuclid.org/journals/annals-of-applied-statistics/volume-2/issue-1/On-regression-adjustments-in-experiments-withseveral-treatments/10.1214/07-AOAS143.full) and [Lin 2013](https://projecteuclid.org/journals/annals-of-applied-statistics/volume-7/issue-1/Agnostic-notes-on-regression-adjustments-to-experimental-data--Reexamining/10.1214/12-AOAS583.full)), but more useful (increased precision)!
+
+* Your standard errors depend on your randomisation scheme! 
+  + is assignment at the individual level
+  + do probabilities vary by block
+  + is randomisation conducted among clusters?
+
+## Covariate balance
+
+When you randomise the treatment, pre-treatment variables will be (in expectation) balanced across treatment arms
+
+This is usually a way to "check" if the randomisation step worked out correctly
+
+However, one should be careful to not discard "unlucky" realizations in an arbitrary manner
+
+Also, note that imbalance **does not** imply bias: properly estimated standard errors will account for uncertainty in the treatment effect!
+
+* Check this great series by Senn: [blog](https://errorstatistics.com/2020/04/20/s-senn-randomisation-is-not-about-balance-nor-about-homogeneity-but-about-randomness-guest-post/), [slides](https://www.ideal.rwth-aachen.de/wp-content/uploads/2014/02/Senn_Randomisation.pdf), [article](https://onlinelibrary.wiley.com/doi/full/10.1002/sim.5713)
+
+## Potential issues
+
+In random-land, everything is perfect!
+
+However, many things can go wrong in practice, threatenind *internal validity*:
+
+* **Randomisation failure**: for some reason, the physical procedure of assignment fails to be random (see Vietnam draft lottery)
+
+* **Noncompliance**: many times, participants fail to adhere to their assigned treatment status (one- or two-sided noncompliance)
+
+* **Attrition and lost to follow up**: even if randomisation is properly conducted and everyone adheres to the treatment, we may differentially lost participants in the post-treatment period!
+
+
+
 
 ------------------------------------------------------------------------
 

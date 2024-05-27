@@ -1474,16 +1474,16 @@ Y = DY_1 + (1-D)Y_0
 <aside><div>
 <p>We won’t discuss it here, but there are ways to conceptualize potential outcomes as random instead of fixed. This mostly affects estimation rather than identification</p>
 </div></aside></section>
-<section id="why-randomization" class="slide level2">
-<h2>Why randomization</h2>
+<section id="why-randomisation-1" class="slide level2">
+<h2>Why randomisation?</h2>
 <h3 id="more-formally">(more formally)</h3>
 <p>We already saw that we can identify the causal effect of <span class="math inline">\(D\)</span> on <span class="math inline">\(Y\)</span> if the treatment assignment is independent of the potential outcomes. Formally <span class="math display">\[(Y_d,Y_{d^*}) \perp\!\!\!\perp D\]</span></p>
 <p>Recall the diff-in-means decomposition we review earlier. Given the <strong>ignorability</strong> of the treatment assignment, we have can further write it as:</p>
 <p>By consistency</p>
 <p><span class="math display">\[E(Y_i|D=d) - E(Y_i|D=d^*) = E(Y_d|D=d) - E(Y_{d^*}|D=d^*)\]</span></p>
 </section>
-<section id="why-randomization-1" class="slide level2">
-<h2>Why randomization</h2>
+<section id="why-randomisation-2" class="slide level2">
+<h2>Why randomisation?</h2>
 <h3 id="more-formally-1">(more formally)</h3>
 <p>With some algebra</p>
 <p><span class="math display">\[= E(Y_d - Y_{d^*}) + (E[Y_{d^*}|D=d] - E[Y_{d^*}|D=d^*])+(1-P[D])(ATT-ATC)\]</span></p>
@@ -1518,9 +1518,9 @@ Y = DY_1 + (1-D)Y_0
 <p>However, there are tons of examples of researchers using experiments to address important, <strong>big</strong> and difficult questions. <strong>Do you know of any example?</strong></p>
 <p>Take a moment to check the syllabus of UCLA professor Graeme Blair’s Experimental Design class <a href="https://graemeblair.com/teaching/UCLA_PS200E_Syllabus.pdf">here</a>. He put together a list of experiments conducted by UCLA faculty, and by graduate students.</p>
 </section>
-<section id="how-to-randomize" class="slide level2">
-<h2>How to randomize?</h2>
-<p>Many times, we use randomization not just for identification (<strong>ignorability</strong>), but also for estimation!</p>
+<section id="how-to-randomise" class="slide level2">
+<h2>How to randomise?</h2>
+<p>We use randomisation not just for identification (<strong>ignorability</strong>), but also for estimation!</p>
 <p>If we assume the potential outcomes are fixed, and the only thing that varies is the treatment assignment scheme, we can derive a <strong>permutation distribution</strong> and use it for inference.</p>
 <p>How much dispersion (i.e.&nbsp;uncertainty) is in our distribution will be affected by <strong>the level</strong> at which randomization (or, more precisely, the treatment) happens: is it at the individual level? or at a cluster/group level?</p>
 <div class="callout callout-note callout-style-simple">
@@ -1544,6 +1544,57 @@ Y = DY_1 + (1-D)Y_0
 </div>
 </div>
 </div>
+</section>
+<section id="how-to-estimate" class="slide level2">
+<h2>How to estimate?</h2>
+<p>Once we have random assignment, estimation is super easy!</p>
+<p>All that matters is that your estimation procedure follows your (known) assignment rule</p>
+<div class="callout callout-warning callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>In other words: Estimate as you randomise!</strong></p>
+</div>
+<div class="callout-content">
+
+</div>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li><p>A simple difference in means will recover the ATE</p></li>
+<li><p>This is equivalent to running a bivariate regression (no controls)</p></li>
+<li><p>With controls is a little trickier (see <a href="https://projecteuclid.org/journals/annals-of-applied-statistics/volume-2/issue-1/On-regression-adjustments-in-experiments-withseveral-treatments/10.1214/07-AOAS143.full">Freedman 2008</a> and <a href="https://projecteuclid.org/journals/annals-of-applied-statistics/volume-7/issue-1/Agnostic-notes-on-regression-adjustments-to-experimental-data--Reexamining/10.1214/12-AOAS583.full">Lin 2013</a>), but more useful (increased precision)!</p></li>
+<li><p>Your standard errors depend on your randomisation scheme!</p>
+<ul>
+<li>is assignment at the individual level</li>
+<li>do probabilities vary by block</li>
+<li>is randomisation conducted among clusters?</li>
+</ul></li>
+</ul>
+</div>
+</section>
+<section id="covariate-balance" class="slide level2">
+<h2>Covariate balance</h2>
+<p>When you randomise the treatment, pre-treatment variables will be (in expectation) balanced across treatment arms</p>
+<p>This is usually a way to “check” if the randomisation step worked out correctly</p>
+<p>However, one should be careful to not discard “unlucky” realizations in an arbitrary manner</p>
+<p>Also, note that imbalance <strong>does not</strong> imply bias: properly estimated standard errors will account for uncertainty in the treatment effect!</p>
+<ul>
+<li>Check this great series by Senn: <a href="https://errorstatistics.com/2020/04/20/s-senn-randomisation-is-not-about-balance-nor-about-homogeneity-but-about-randomness-guest-post/">blog</a>, <a href="https://www.ideal.rwth-aachen.de/wp-content/uploads/2014/02/Senn_Randomisation.pdf">slides</a>, <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/sim.5713">article</a></li>
+</ul>
+</section>
+<section id="potential-issues" class="slide level2">
+<h2>Potential issues</h2>
+<p>In random-land, everything is perfect!</p>
+<p>However, many things can go wrong in practice, threatenind <em>internal validity</em>:</p>
+<ul>
+<li><p><strong>Randomisation failure</strong>: for some reason, the physical procedure of assignment fails to be random (see Vietnam draft lottery)</p></li>
+<li><p><strong>Noncompliance</strong>: many times, participants fail to adhere to their assigned treatment status (one- or two-sided noncompliance)</p></li>
+<li><p><strong>Attrition and lost to follow up</strong>: even if randomisation is properly conducted and everyone adheres to the treatment, we may differentially lost participants in the post-treatment period!</p></li>
+</ul>
 </section>
 <section id="additional-resources" class="slide level2">
 <h2>Additional Resources</h2>
