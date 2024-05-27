@@ -30,7 +30,6 @@ callout-appearance: minimal
 \newcommand\indep{\perp\!\!\!\perp}
 \newcommand\nindep{\not\!\perp\!\!\!\perp}
 
-## Lecture 2: From causal assumptions to causal models
 
 ## Recap from previous session
 
@@ -54,6 +53,31 @@ But what do we do when we have *less than perfect* experiments?
 . . .
 
 And how to assess our assumptions with *observational data*?
+
+
+## Lecture 2: From causal assumptions to causal models
+
+When introducing potential outcomes, we emphasized that it is not the method what makes our results causal, but our **assumptions**
+
+. . .
+
+However, what makes our assumptions credible?
+
+. . .
+
+To answer that question, we need to be explicit about our **model**, i.e., how do we believe the world works
+
+. . . 
+
++ In this lecture we will introduce a framework that makes formulating such models easy and intuitive
+
++ We will develop the machinery needed to be explicit about our model and derive its testable implications
+
++ Potential outcomes appear now, not as *primitives*, but as quantities *derived* from a more fundamental entity: the model
+
+. . . 
+
+Researchers often leave the model implicit and unspecified. I will argue that making it explicit can greatly improve transparency in scientific communication
 
 # Graphical models {background-color="#17a091"}
 
