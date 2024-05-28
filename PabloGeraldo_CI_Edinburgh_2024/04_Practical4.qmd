@@ -34,11 +34,8 @@ and
 ```{r, echo=TRUE}
 library(AER)
 library(broom)
-arj <- foreign::read.dta("data/arj.dta")
 
-data.table::fwrite(arj, "/Users/pdgeraldo/Documents/GitHub/workshops/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv", sep = ",", row.names = FALSE)
-
-arj <- read.csv("https://github.com/pdgeraldo/workshops/tree/main/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv")
+arj <- read.csv("https://raw.githubusercontent.com/pdgeraldo/workshops/main/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv")
 
 
 
