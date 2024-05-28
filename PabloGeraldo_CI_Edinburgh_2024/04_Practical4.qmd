@@ -32,10 +32,11 @@ and
 
 
 ```{r, echo=TRUE}
-library(foreign)
 library(AER)
 library(broom)
-arj <- read.dta("data/arj.dta")
+#arj <- foreign::read.dta("data/arj.dta")
+arj <- data.table::fwrite("https://github.com/pdgeraldo/workshops/tree/main/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv")
+
 
 ################
 ## First model
