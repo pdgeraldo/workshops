@@ -57,16 +57,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="00_Practical1_files/libs/clipboard/clipboard.min.js"></script>
-<script src="00_Practical1_files/libs/quarto-html/quarto.js"></script>
-<script src="00_Practical1_files/libs/quarto-html/popper.min.js"></script>
-<script src="00_Practical1_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="00_Practical1_files/libs/quarto-html/anchor.min.js"></script>
-<link href="00_Practical1_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="00_Practical1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="00_Practical1_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="00_Practical1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="00_Practical1_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="01_Practical1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="01_Practical1_files/libs/quarto-html/quarto.js"></script>
+<script src="01_Practical1_files/libs/quarto-html/popper.min.js"></script>
+<script src="01_Practical1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="01_Practical1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="01_Practical1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="01_Practical1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="01_Practical1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="01_Practical1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="01_Practical1_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -153,109 +153,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Take a look at your data and make sure it has potential outcomes, a treatment indicator, and your outcome (four variables total)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>              Y1           Y0 treatment            Y
-1    0.625666843  0.975066144         1  0.625666843
-2    3.524368119  1.397889474         0  1.397889474
-3    0.423482045  0.201777057         1  0.423482045
-4    2.737941141  1.667503348         1  2.737941141
-5    2.360493852 -1.266130816         1  2.360493852
-6    1.053570070  0.434924901         0  0.434924901
-7    2.592765206  1.523427680         0  1.523427680
-8   -0.610905736  0.676986736         0  0.676986736
-9   -0.552475641 -0.803254501         1 -0.552475641
-10   2.560861228  1.637964797         0  1.637964797
-11   2.196700010  1.457094518         1  2.196700010
-12   5.712583048 -2.095541354         1  5.712583048
-13   1.378359287  0.974784969         1  1.378359287
-14   0.951104811  0.697883590         1  0.951104811
-15   0.670245350 -1.107336062         0 -1.107336062
-16  -0.435772923  0.221490907         1 -0.435772923
-17  -0.007376078  0.203853765         1 -0.007376078
-18   0.797755579 -0.326053842         1  0.797755579
-19   1.429787794  0.089736545         0  0.089736545
-20   2.356363038 -1.601871366         1  2.356363038
-21   1.183200303 -0.568705022         0 -0.568705022
-22  -0.516138686  0.289650670         1 -0.516138686
-23   0.194978298  0.356209701         1  0.194978298
-24   0.218899493 -1.313573365         1  0.218899493
-25   0.014099829  0.641164639         0  0.641164639
-26  -0.427163290 -0.278616885         0 -0.278616885
-27   0.610822474 -0.170786423         1  0.610822474
-28   1.702049816 -0.199591209         0 -0.199591209
-29  -0.143021465 -0.340437865         1 -0.143021465
-30   4.741687579 -2.124659206         0 -2.124659206
-31  -1.390890874  0.112275820         0  0.112275820
-32   1.558521932 -1.252741225         1  1.558521932
-33   1.663997382  0.276803024         0  0.276803024
-34   0.853798720  0.472414847         0  0.472414847
-35  -0.502077293 -0.613282902         1 -0.502077293
-36   1.686223506  0.592651030         1  1.686223506
-37   1.066228898 -1.015394139         1  1.066228898
-38  -2.146789708  0.220439084         1 -2.146789708
-39   0.869027257 -0.572371569         1  0.869027257
-40  -0.244108840  0.894035916         0  0.894035916
-41   0.318295008 -0.586531642         1  0.318295008
-42   3.535819216 -1.906333889         0 -1.906333889
-43   4.088446990  2.058419956         0  2.058419956
-44   0.321898032  1.711559588         0  1.711559588
-45   0.467733266 -0.628435633         1  0.467733266
-46   7.269427686  2.098431505         0  2.098431505
-47  -0.886331667  0.675238223         0  0.675238223
-48   1.565138485  1.308154906         0  1.308154906
-49   0.770952306  0.998025405         1  0.770952306
-50   0.755148290 -0.784205056         0 -0.784205056
-51  -1.758852723 -0.138155274         1 -1.758852723
-52   2.384604087 -1.284322678         1  2.384604087
-53  -0.864876309 -0.013341160         1 -0.864876309
-54  -0.956880236  1.083041587         0  1.083041587
-55   1.813558776  1.516439577         1  1.813558776
-56   1.634049547  1.173656752         0  1.173656752
-57   1.322961746 -0.789314656         1  1.322961746
-58  -1.770589470  0.135728739         0  0.135728739
-59  -0.909188893  0.353019845         0  0.353019845
-60   0.834764509 -0.314360199         0 -0.314360199
-61  -0.381015001  0.514563373         0  0.514563373
-62   1.837539974  0.288608876         1  1.837539974
-63  -0.091256155 -0.353628496         0 -0.353628496
-64   2.391994227  1.916170224         0  1.916170224
-65   1.991383927  1.291373453         1  1.991383927
-66   6.770547608 -2.489625143         0 -2.489625143
-67  -0.321629203  0.149039093         0  0.149039093
-68   5.012514164  2.196214215         0  2.196214215
-69   1.508160441  0.252478400         1  1.508160441
-70   0.093515201 -0.921604882         0 -0.921604882
-71  -1.253928118 -0.175236619         0 -0.175236619
-72   0.286440057 -0.292948558         0 -0.292948558
-73   0.198957652  0.004779535         1  0.198957652
-74  -0.996887550  0.070852109         0  0.070852109
-75  -0.193996540 -0.357120918         1 -0.193996540
-76   0.146711196  0.137458720         0  0.137458720
-77   3.448078733  2.074234937         0  2.074234937
-78   1.824274558 -1.113619587         0 -1.113619587
-79  -1.782583973  0.543508762         0  0.543508762
-80  -0.746943177 -0.359290746         0 -0.359290746
-81  -0.935377006  0.842245253         0  0.842245253
-82   0.935149696 -1.388549490         1  0.935149696
-83   5.967666417  2.036476507         1  5.967666417
-84   2.430479950 -1.839435775         0 -1.839435775
-85   0.242880739  0.965702498         1  0.242880739
-86   3.978012162 -1.684678772         0 -1.684678772
-87  -0.539145147 -0.769399288         0 -0.769399288
-88   0.635945998 -0.664606818         0 -0.664606818
-89   0.448383140 -0.027624927         1  0.448383140
-90  -0.294432873  0.312826285         0  0.312826285
-91  -0.282382737  0.247544337         0  0.247544337
-92   0.262460544  1.413389492         0  1.413389492
-93   1.015426551  1.273911060         0  1.273911060
-94  -0.279900533 -0.369506925         1 -0.279900533
-95  -1.387701133  0.273183932         1 -1.387701133
-96  -1.069568337  0.094159512         0  0.094159512
-97   1.977793184 -1.513217788         0 -1.513217788
-98   0.817099257  1.130830943         0  1.130830943
-99   1.473007050  0.937858812         0  0.937858812
-100 -0.034547607 -0.161096750         0 -0.161096750</code></pre>
+<pre><code>          Y1         Y0 treatment          Y
+1  1.4781859  0.4672368         0  0.4672368
+2  1.6152356 -1.2633597         0 -1.2633597
+3  0.9062952 -1.1434217         1  0.9062952
+4  0.5204097 -0.8174559         0 -0.8174559
+5 -0.4521506 -0.8520559         1 -0.4521506
+6 -0.5911480 -0.3894827         0 -0.3894827</code></pre>
 </div>
 </div>
 </section>
@@ -268,8 +174,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span> </span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ATE =</span> <span class="fu">mean</span>(Y1) <span class="sc">-</span> <span class="fu">mean</span>(Y0))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        ATE
-1 0.8427945</code></pre>
+<pre><code>       ATE
+1 1.177071</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># it should give you the same result as</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -277,8 +183,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">tau =</span> Y1 <span class="sc">-</span> Y0) <span class="sc">|&gt;</span> </span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ATE =</span> <span class="fu">mean</span>(tau))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        ATE
-1 0.8427945</code></pre>
+<pre><code>       ATE
+1 1.177071</code></pre>
 </div>
 </div>
 </section>
@@ -294,8 +200,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mean</span>(Y[treatment<span class="sc">==</span><span class="dv">1</span>]) <span class="sc">-</span> </span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mean</span>(Y[treatment<span class="sc">==</span><span class="dv">0</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>     ATEhat
-1 0.6364377</code></pre>
+<pre><code>    ATEhat
+1 1.103193</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># it should give the same result as</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -307,7 +213,7 @@ lm(formula = Y ~ treatment, data = data)
 
 Coefficients:
 (Intercept)    treatment  
-     0.2279       0.6364  </code></pre>
+    -0.2056       1.1032  </code></pre>
 </div>
 </div>
 <p>How close are your estimate and your estimand? What do you make of this?</p>
@@ -320,10 +226,11 @@ Coefficients:
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">ATEhat =</span> <span class="fu">mean</span>(Y[treatment<span class="sc">==</span><span class="dv">1</span>]) <span class="sc">-</span></span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mean</span>(Y[treatment<span class="sc">==</span><span class="dv">0</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        ATE    ATEhat
-1 0.8427945 0.6364377</code></pre>
+<pre><code>       ATE   ATEhat
+1 1.177071 1.103193</code></pre>
 </div>
 </div>
+<p>Can you write a function that repeats the process a few hundred times? Would you know to make inference with it?</p>
 </section>
 <section id="randomisation-inference" class="level1">
 <h1>Randomisation inference</h1>
@@ -333,26 +240,26 @@ Coefficients:
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sharp_test <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, D, times) {</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the observed ATE</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    ate <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y[D <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[D <span class="sc">==</span> <span class="dv">0</span>])</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Permute the treatment, take permuted ATEs</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    perms <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">ate_perm =</span> <span class="fu">replicate</span>(<span class="at">n =</span> times, {</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        D_perm <span class="ot">&lt;-</span> <span class="fu">sample</span>(D, <span class="at">size =</span> <span class="fu">length</span>(D), <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mean</span>(Y[D_perm <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[D_perm <span class="sc">==</span> <span class="dv">0</span>])</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    }))</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Obtain the p-value</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    right <span class="ot">&lt;-</span> <span class="fu">sum</span>(perms<span class="sc">$</span>ate_perm <span class="sc">&gt;=</span> <span class="fu">abs</span>(ate))<span class="sc">/</span><span class="fu">nrow</span>(perms)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    left <span class="ot">&lt;-</span> <span class="fu">sum</span>(perms<span class="sc">$</span>ate_perm <span class="sc">&lt;=</span> <span class="sc">-</span><span class="fu">abs</span>(ate))<span class="sc">/</span><span class="fu">nrow</span>(perms)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    p.val <span class="ot">&lt;-</span> (right <span class="sc">+</span> left)</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Make the plot</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(perms, <span class="fu">aes</span>(<span class="at">x =</span> ate_perm)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ate,</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggtitle</span>(<span class="st">"Permutation Distribution"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Difference-in-means"</span>) <span class="sc">+</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ate, <span class="at">y =</span> times<span class="sc">/</span><span class="dv">15</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"p-value="</span>,</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>p.val)) }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get the observed ATE</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  ate <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y[D <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[D <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Permute the treatment, take permuted ATEs</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  perms <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">ate_perm =</span> <span class="fu">replicate</span>(<span class="at">n =</span> times, {</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    D_perm <span class="ot">&lt;-</span> <span class="fu">sample</span>(D, <span class="at">size =</span> <span class="fu">length</span>(D), <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(Y[D_perm <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[D_perm <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Obtain the p-value</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  right <span class="ot">&lt;-</span> <span class="fu">sum</span>(perms<span class="sc">$</span>ate_perm <span class="sc">&gt;=</span> <span class="fu">abs</span>(ate))<span class="sc">/</span><span class="fu">nrow</span>(perms)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  left <span class="ot">&lt;-</span> <span class="fu">sum</span>(perms<span class="sc">$</span>ate_perm <span class="sc">&lt;=</span> <span class="sc">-</span><span class="fu">abs</span>(ate))<span class="sc">/</span><span class="fu">nrow</span>(perms)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  p.val <span class="ot">&lt;-</span> (right <span class="sc">+</span> left)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Make the plot</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(perms, <span class="fu">aes</span>(<span class="at">x =</span> ate_perm)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ate,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>                                                                   <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Permutation Distribution"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Difference-in-means"</span>) <span class="sc">+</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ate, <span class="at">y =</span> times<span class="sc">/</span><span class="dv">15</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"p-value="</span>,</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>                                                          p.val)) }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, let’s try the function</p>
 <div class="cell">
@@ -366,7 +273,7 @@ Coefficients:
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="00_Practical1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="01_Practical1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -380,7 +287,7 @@ Coefficients:
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="00_Practical1_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="01_Practical1_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -388,9 +295,137 @@ Coefficients:
 </section>
 <section id="randomised-designs" class="level1">
 <h1>Randomised designs</h1>
-</section>
-<section id="analysis-of-experiments" class="level1">
-<h1>Analysis of experiments</h1>
+<p>Let’s create a function that conducts complete random assignment</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>complete_ra <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(data, <span class="at">Z =</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">each =</span> <span class="fu">n</span>()<span class="sc">/</span><span class="dv">2</span>), <span class="fu">n</span>(), <span class="at">replace =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, let’s see how can we use it to simulate random assignment over several iterations</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">u =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>), <span class="co"># unobserved covariate </span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="co"># observed covariate</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Y0 =</span> x <span class="sc">+</span> u,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Y1 =</span> Y0 <span class="sc">+</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete_ra</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">if_else</span>(Z <span class="sc">==</span> <span class="dv">0</span>, Y0, Y1))</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>estimatr<span class="sc">::</span><span class="fu">lm_robust</span>(Y <span class="sc">~</span> Z, <span class="at">data =</span> data) <span class="sc">|&gt;</span> </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"Z"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  term estimate std.error statistic      p.value conf.low conf.high df outcome
+1    Z 4.818949 0.2837591  16.98254 5.917995e-31 4.255839   5.38206 98       Y</code></pre>
+</div>
+</div>
+<p>Can you put the code above in a loop (or replicate) to get the distribution of treatment effects across assignments?</p>
+<p>We can also adapt the above code to estimate balance as follows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">u =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>), <span class="co"># unobserved covariate </span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="co"># observed covariate</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Y0 =</span> x <span class="sc">+</span> u,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">Y1 =</span> Y0 <span class="sc">+</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete_ra</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">if_else</span>(Z <span class="sc">==</span> <span class="dv">0</span>, Y0, Y1))</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>estimatr<span class="sc">::</span><span class="fu">lm_robust</span>(x <span class="sc">~</span> Z, <span class="at">data =</span> data) <span class="sc">|&gt;</span> </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"Z"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  term  estimate std.error statistic   p.value   conf.low conf.high df outcome
+1    Z 0.1560937 0.1949875 0.8005317 0.4253392 -0.2308527 0.5430401 98       x</code></pre>
+</div>
+</div>
+<p>Now, let’s turn our pipeline into a function so we can better re-use it</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>balance <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">size =</span> <span class="dv">100</span>){</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">u =</span> <span class="fu">rnorm</span>(size),  <span class="co"># unobserved covariate </span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">rnorm</span>(size)   <span class="co"># observed covariate </span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Y0 =</span> x <span class="sc">+</span> u,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">Y1 =</span> Y0 <span class="sc">+</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">complete_ra</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">if_else</span>(Z <span class="sc">==</span> <span class="dv">0</span>, Y0, Y1)) </span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Instead of regressing the outcome on the treatment indicator</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We regress the observed covariates on the treatment indicator</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  estimate <span class="ot">&lt;-</span> estimatr<span class="sc">::</span><span class="fu">lm_robust</span>(x <span class="sc">~</span> Z, <span class="at">data =</span> dat) <span class="sc">|&gt;</span> </span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">|&gt;</span>  </span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"Z"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(estimate) </span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(estimate)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s simulate balance across realizations to check how does it behave</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sim_times <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sim_balance <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sample =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">50</span>, sim_times),</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">rep</span>(<span class="dv">100</span>, sim_times),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">rep</span>(<span class="dv">500</span>, sim_times),</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">rep</span>(<span class="dv">1000</span>, sim_times)),</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">imbalance =</span> <span class="cn">NA</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>sim_balance[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>sim_times), <span class="st">"imbalance"</span>] <span class="ot">&lt;-</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_df</span>(<span class="at">.x =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>sim_times), </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">.f =</span> <span class="sc">~</span><span class="fu">balance</span>(<span class="at">size =</span> <span class="dv">50</span>)) </span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>sim_balance[<span class="fu">c</span>(<span class="dv">1001</span><span class="sc">:</span><span class="dv">2000</span>), <span class="st">"imbalance"</span>] <span class="ot">&lt;-</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_df</span>(<span class="at">.x =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>sim_times), </span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">.f =</span> <span class="sc">~</span><span class="fu">balance</span>(<span class="at">size =</span> <span class="dv">100</span>)) </span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>sim_balance[<span class="fu">c</span>(<span class="dv">2001</span><span class="sc">:</span><span class="dv">3000</span>), <span class="st">"imbalance"</span>] <span class="ot">&lt;-</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_df</span>(<span class="at">.x =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>sim_times), </span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">.f =</span> <span class="sc">~</span><span class="fu">balance</span>(<span class="at">size =</span> <span class="dv">500</span>))</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>sim_balance[<span class="fu">c</span>(<span class="dv">3001</span><span class="sc">:</span><span class="dv">4000</span>), <span class="st">"imbalance"</span>] <span class="ot">&lt;-</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_df</span>(<span class="at">.x =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>sim_times), </span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">.f =</span> <span class="sc">~</span><span class="fu">balance</span>(<span class="at">size =</span> <span class="dv">1000</span>)) </span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>sim_balance <span class="sc">|&gt;</span> </span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sample) <span class="sc">|&gt;</span> </span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">imbalance =</span> <span class="fu">abs</span>(<span class="fu">mean</span>(imbalance))) <span class="sc">|&gt;</span>  </span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sample, <span class="at">y =</span> imbalance)) <span class="sc">+</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average imbalance across 1000 simulations"</span>,</span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sample size in each simulation"</span>,</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average imbalance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Practical1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>But what about any given experiment? Can the imbalance be large despite randomisation?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>sim_balance <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(sample), <span class="at">y =</span> imbalance)) <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average imbalance across 1000 simulations"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sample size in each simulation"</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Average imbalance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_Practical1_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 
 </main>

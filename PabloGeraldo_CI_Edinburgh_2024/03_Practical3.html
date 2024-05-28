@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Practical 3: Adjustment</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="03_Practical3_files/libs/clipboard/clipboard.min.js"></script>
+<script src="03_Practical3_files/libs/quarto-html/quarto.js"></script>
+<script src="03_Practical3_files/libs/quarto-html/popper.min.js"></script>
+<script src="03_Practical3_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="03_Practical3_files/libs/quarto-html/anchor.min.js"></script>
+<link href="03_Practical3_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="03_Practical3_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="03_Practical3_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="03_Practical3_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="03_Practical3_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Practical 3: Adjustment</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In what follows, we will demonstrate the use and compare different methods to estimate causal effects in observational data. Let’s denote units <span class="math inline">\(i, \dots ,N\)</span>, with treatment <span class="math inline">\(D \in \{0,1\}\)</span>, and potential outcomes <span class="math inline">\(Y_d\)</span>. In particular, as is common in this literature, we want to estimate an Average Treatment Effect on the Treated (ATT), defined as: <span class="math inline">\(E[\tau_i|D=1] = E[Y_{1i}-Y_{0i}|D=1]\)</span>.</p>
+<p>We also observe a series of pre-treatment variables <span class="math inline">\(X_i\)</span>. To estimate the ATT from observational data, in addition to SUTVA or consistency of the potential outcomes, we would need to assume the following:</p>
+<ul>
+<li>(Mean) Conditional independence of the control potential outcome and the treatment: <span class="math display">\[E[Y_{0i}] \indep D|X\]</span></li>
+<li>Positivity or common support <span class="math display">\[0 &gt; P(D|X) &gt; 1\]</span></li>
+</ul>
+<p>Under these conditions, we can estimate conditional treatment effects <span class="math inline">\(E[Y_{1i}-Y_{0i}|X=x]\)</span> for each <span class="math inline">\(X\)</span>, and then recover the ATT using the adjustment formula: <span class="math display">\[\sum_{X_{D=1}} \E[Y|D,X] P[X_{D=1}]\]</span> Where <span class="math inline">\(X_{D=1}\)</span> represent the covariate distribution among the treated.</p>
+<section id="data" class="level1">
+<h1>Data</h1>
+<p>For this exercise, I will use the classical data in Lalonde (1986). This dataset is widely used to evaluate the performance of different methods to estimate causal effects using observational data, since it has the unique feature of providing an experimental component that could be used as a benchmark, and an observational component that can be used to test the proposed method.</p>
+<p>The experimental portion of the data comes from the National Supported Work Demonstration (NSW), a labor training program that randomly selected participants to treatment (<span class="math inline">\(N_t = 185\)</span>) and control (<span class="math inline">\(N_c = 260\)</span>) conditions. The observational data, in addition to the treated group from the experiment, includes information about additional subjects from the Panel Survey of Income Dynamics (PSID), who are potential observational controls (<span class="math inline">\(N_{c,obs} = 2490\)</span>).</p>
+<p>The data includes 10 raw covariates: age, education (years), race (white, black, hispanic), marriage status (married/not), high school diploma (yes/no), and both previous earnings and unemployment (during 1974 and 1975). The outcome of interest is earnings in 1978. To better illustrate the difference between methods, and following Hainmueller (2012), we will use an expanded version of this covariates, including their squares and every two-way interaction (65 covariates in total).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"cobalt"</span>) <span class="co"># Package to assess covariate balance </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code> cobalt (Version 4.5.5, Build Date: 2024-04-02)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"causalsens"</span>) <span class="co"># lalonde experimental vs lalonde observational</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"tidyverse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">####################</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">### DATA LOADING </span><span class="al">###</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">####################</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># First, let's load the experimental dataset (lalonde.exp)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde.exp, <span class="at">package=</span><span class="st">"causalsens"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Then also the observational dataset (lalonde.psid)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde.psid, <span class="at">package=</span><span class="st">"causalsens"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="do">### BASELINE BALANCE </span><span class="al">###</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="do">########################</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ebal"</span>) <span class="co"># Entropy balance (and matrixmaker function)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>##
+## ebal Package: Implements Entropy Balancing.
+
+## See http://www.stanford.edu/~jhain/ for additional information.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's expand the matrix of covariates</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>lalonde.exp.covs <span class="ot">&lt;-</span> lalonde.exp <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span><span class="st">"treat"</span>,<span class="sc">-</span><span class="st">"re78"</span>) <span class="sc">|&gt;</span> <span class="fu">matrixmaker</span>()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>lalonde.obs.covs <span class="ot">&lt;-</span> lalonde.psid <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span><span class="st">"treat"</span>,<span class="sc">-</span><span class="st">"re78"</span>) <span class="sc">|&gt;</span> <span class="fu">matrixmaker</span>()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Then list the covariates we will be using in the analysis</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>covs_raw <span class="ot">&lt;-</span> lalonde.exp <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>re78, <span class="sc">-</span>treat) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">names</span>(lalonde.obs.covs)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a single dataset with both obs and experimental data</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Just to plot balance in both</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>lalonde.mix <span class="ot">&lt;-</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rbind</span>(lalonde.exp.covs <span class="sc">|&gt;</span> </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>          <span class="fu">mutate</span>(<span class="at">treat =</span> lalonde.exp<span class="sc">$</span>treat, <span class="at">wexp=</span><span class="dv">1</span>, <span class="at">wobs=</span><span class="fu">ifelse</span>(treat<span class="sc">==</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>)), </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        lalonde.obs.covs[lalonde.psid<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>,] <span class="sc">|&gt;</span> <span class="co"># Observational controls</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">treat=</span><span class="dv">0</span>, <span class="at">wexp=</span><span class="dv">0</span>, <span class="at">wobs=</span><span class="dv">1</span>)) <span class="co"># Weights for obs data</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#names(lalonde.mix)</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create "loveplot" to show covariate distribution in both samples</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A first interesting inspection of the data is to assess the overall covariate balance in the different samples. As we can see in the first figure, in the experimental sample all the covariates are very well balanced among treated and controls. In the observational sample, on the other hand, treated and control subjects are very different, in particular with respect to their previous earning trajectories.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The bal.table function takes the raw data and weights</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># And outputs a table of standardized difference between treated and controls</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Love.plot takes a bal.table object as inputs</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># And transform it into a plot to facilitate presentation</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="at">data=</span>lalonde.mix, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="at">m.threshold =</span>.<span class="dv">1</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">disp.var.ratio=</span><span class="cn">FALSE</span>, <span class="at">disp.means=</span><span class="cn">TRUE</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">weights =</span> <span class="fu">c</span>(<span class="st">"wexp"</span>,<span class="st">"wobs"</span>)) <span class="sc">|&gt;</span> <span class="co"># Weigght for experimental and observational sample</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">love.plot</span>(<span class="at">abs=</span><span class="cn">FALSE</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">sample.names =</span> </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">c</span>(<span class="st">"Combined"</span>,<span class="st">"Experimental"</span>,<span class="st">"Observational"</span>)) <span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span> <span class="st">" "</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Large mean differences detected; you may not be using standardized
+mean differences for continuous variables.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Standardized mean differences and raw mean differences are present in the same plot. 
+Use the `stars` argument to distinguish between them and appropriately label the x-axis.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption> Covariate Balance by sample</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A second aspect that is worth noting are the estimated returns of the program, as we can see in the next figure. The experimental benchmark is around 1,600 and 1,800 USD, depending if we use a simple difference in means or the Lin estimator (a regression model with all raw covariates and their interactions with the treatment).</p>
+<p>The observational difference in means, as expected from the huge covariate imbalance, is completely off: -15,205 USD. The multiple regression results with the observational data are more interesting, however. Although the point estimate is way below the point estimate from the experimental benchmark (suggesting only a 4USD return), the confidence interval resulting from the regression model overlaps with the benchmark returns. That’s it, the regression model does a good job in accounting for the uncertainty associated to estimate the effect of the program, providing a wide and uninformative confidence interval.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">#######################</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="do">### BASELINE MODELS </span><span class="al">###</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="do">#######################</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"estimatr"</span>) <span class="co"># Lin estimator</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Bivariate regression on experimental data: 1,794 USD</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>exp_biv <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat, <span class="at">data=</span>lalonde.exp) </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Lin estimator (treatment fully interacted) on experimental data: 1,583 USD</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>exp_lin <span class="ot">&lt;-</span> <span class="fu">lm_lin</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="st">"treat"</span>), <span class="at">covariates =</span> <span class="fu">f.build</span>(<span class="st">""</span>, covs_raw), <span class="at">data=</span>lalonde.exp) </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Bivariate linear regression on observational data: -15,205 USD</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>obs_biv <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat, <span class="at">data=</span>lalonde.psid) </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple regression with controls on observational data: 4.159 USD</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>obs_reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="fu">c</span>(<span class="st">"treat"</span>, covs_raw)), <span class="at">data=</span>lalonde.psid)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine results (Store in a matrix for plotting)</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>level_order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Experimental (diff-in-means)"</span>,<span class="st">"Experimental (Lin estimator)"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Observational (Regression)"</span>,<span class="st">"Observational (diff-in-means)"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile the resulting coefficients into a single matrix</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>coeffs <span class="ot">&lt;-</span> </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">estimator =</span> </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>           <span class="fu">factor</span>((<span class="fu">c</span>(<span class="st">"Experimental (diff-in-means)"</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Experimental (Lin estimator)"</span>,</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Observational (Regression)"</span>,</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Observational (diff-in-means)"</span>)), <span class="at">levels=</span>level_order),</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">coeff =</span> <span class="fu">c</span>(exp_biv<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>                   exp_lin<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>                   obs_reg<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                   obs_biv<span class="sc">$</span>coefficients[<span class="dv">2</span>]),</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">se =</span> <span class="fu">c</span>(<span class="fu">summary</span>(exp_biv)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">2</span>],</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                exp_lin<span class="sc">$</span>std.error[<span class="dv">2</span>],</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>                <span class="fu">summary</span>(obs_reg)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">2</span>],</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>                <span class="fu">summary</span>(obs_biv)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">2</span>]))</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the annotated plot</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coeffs, <span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator)) <span class="sc">+</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Error bars (Confidence intervals)</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmin=</span>coeff<span class="dv">-2</span><span class="sc">*</span>se, <span class="at">xmax=</span>coeff<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>se),</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>                 <span class="at">height=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Annotations (point estimates)</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="dv">2500</span>, <span class="at">y =</span> <span class="dv">1</span>, <span class="at">label =</span> <span class="st">"1,794 USD"</span>) <span class="sc">+</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="dv">2500</span>, <span class="at">y =</span> <span class="dv">2</span>, <span class="at">label =</span> <span class="st">"1,583 USD"</span>) <span class="sc">+</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="dv">4000</span>, <span class="at">y =</span> <span class="dv">3</span>, <span class="at">label =</span> <span class="st">"4.159 USD"</span>) <span class="sc">+</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="dv">10000</span>, <span class="at">y =</span> <span class="dv">4</span>, <span class="at">label =</span> <span class="st">"-15,205 USD"</span>) <span class="sc">+</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Labels</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Estimated return of the NSW training program"</span>,</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"(Outcome: Earnings in 1978)"</span>,</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">" "</span>, <span class="at">y=</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_errorbarh(aes(x = coeff, y = estimator, xmin = coeff - 2 * :
+Ignoring unknown aesthetics: x</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption> Estimated returns of the training program.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="traditional-methods" class="level1">
+<h1>Traditional methods</h1>
+<p>Here we will demonstrate the use and performance of two “traditional” conditioning methods: inverse probability weighting (as implemented in the <code>weighIt</code> package), and optimal full matching on the propensity score (using the <code>optmatch</code> package). “Traditional” just means that they achieve balance <em>in expectation</em>, but not necessarily within sample.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, add treatment and outcome variables to the expanded set of covariates</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>lalonde.obs <span class="ot">&lt;-</span> <span class="fu">cbind</span>(lalonde.psid[,<span class="fu">c</span>(<span class="st">"treat"</span>,<span class="st">"re78"</span>)], lalonde.obs.covs)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"WeightIt"</span>) <span class="co"># Weighit function</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Propensity Score Weighting (WeighIt package)</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>nsw_ipw <span class="ot">&lt;-</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weightit</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="co"># Formula: treatment ~ covariates</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> lalonde.obs, <span class="co"># Declare data</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="co"># Declare estimand</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"ps"</span>) <span class="co"># Weighting method</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: (from `glm()`) glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Propensity scores numerically equal to 0 or 1 were estimated,
+indicating perfect separation and infinite parameter estimates. These may yield
+problems with inference. Consider trying a different `link`. See
+`help("method_glm", package = "WeightIt")` for details.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Some extreme weights were generated. Examine them with `summary()` and
+maybe trim them with `trim()`.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#summary(nsw_psw)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Optimal Full matching (optmatch package)</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"optmatch"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a propensity score using a logit with expanded covariates</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>ps <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="at">family =</span> binomial, <span class="at">data =</span> lalonde.obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the optimal full matched sample</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>nsw_full <span class="ot">&lt;-</span> <span class="fu">fullmatch</span>(ps, <span class="at">data =</span> lalonde.obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+prediction from rank-deficient fit; attr(*, "non-estim") has doubtful cases</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#summary(nsw_full)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As we can see, both inverse probability weighting and optimal full matching greatly increase covariate balance with respect to the unadjusted observational comparison. Optimal full matching is slightly better in general, but the differences are not striking.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="at">data=</span>lalonde.obs,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="at">m.threshold =</span>.<span class="dv">1</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">disp.var.ratio=</span><span class="cn">FALSE</span>, <span class="at">disp.means=</span><span class="cn">TRUE</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">weights =</span> <span class="fu">list</span>(<span class="at">psw =</span> <span class="fu">get.w</span>(nsw_ipw),<span class="co">#IPW weights</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">full =</span> <span class="fu">get.w</span>(nsw_full))) <span class="sc">|&gt;</span> <span class="co"># Matching weights</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">love.plot</span>(<span class="at">abs=</span><span class="cn">FALSE</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">sample.names =</span> </span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>              <span class="fu">c</span>(<span class="st">"Unadjusted"</span>,<span class="st">"Inverse Probability Weghting"</span>,<span class="st">"Optimal full matching"</span>)) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span> <span class="st">" "</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Large mean differences detected; you may not be using standardized
+mean differences for continuous variables.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Standardized mean differences and raw mean differences are present in the same plot. 
+Use the `stars` argument to distinguish between them and appropriately label the x-axis.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption> Covariate Balance by Method</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>What about the estimated return? As we can see, both models estimate positive and statistically significant returns to the program of around 2,000 USD. The only noticeably difference is the efficiency gain of optimal full matching with respect to IPW.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ipw_out <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="fu">c</span>(<span class="st">"treat"</span>, covs_raw)), <span class="at">data=</span>lalonde.obs, <span class="at">weights =</span> <span class="fu">get.w</span>(nsw_ipw))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>full_out <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="fu">c</span>(<span class="st">"treat"</span>, covs_raw)), <span class="at">data=</span>lalonde.obs, <span class="at">weights =</span> <span class="fu">get.w</span>(nsw_full))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>coeffs_traditional <span class="ot">&lt;-</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">estimator =</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"IPW"</span>, <span class="st">"OptMatch"</span>)),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">coeff =</span> <span class="fu">c</span>(ipw_out<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>                   full_out<span class="sc">$</span>coefficients[<span class="dv">2</span>]),</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">se =</span> <span class="fu">c</span>(ipw_out<span class="sc">$</span>std.error[<span class="dv">2</span>],</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>                full_out<span class="sc">$</span>std.error[<span class="dv">2</span>]))</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the annotated plot</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coeffs_traditional, <span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator)) <span class="sc">+</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator,</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmin=</span>coeff<span class="dv">-2</span><span class="sc">*</span>se, <span class="at">xmax=</span>coeff<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>se),</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">height=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2000</span>, <span class="at">y =</span> <span class="fl">1.2</span>, <span class="at">label =</span> <span class="st">"2,017 USD"</span>) <span class="sc">+</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2000</span>, <span class="at">y =</span> <span class="fl">2.2</span>, <span class="at">label =</span> <span class="st">"2,020 USD"</span>) <span class="sc">+</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Estimated return of the NSW training program"</span>,</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"(Outcome: Earnings in 1978)"</span>,</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">" "</span>, <span class="at">y=</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_errorbarh(aes(x = coeff, y = estimator, xmin = coeff - 2 * :
+Ignoring unknown aesthetics: x</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption> Estimated returns of the training program.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="flexible-outcome-model" class="level1">
+<h1>Flexible outcome model</h1>
+<p>Here I use traditional random forest (not optimazed for causal inference) to estimate separate regressions for the treated and the controls, and then taking the difference between them, using the <code>randomForest</code> package. This will not result in a balanced sample or pseudo-population, but it will allow to obtain estimate returns to the program participation directly comparable with the previous sections.</p>
+<p>One important caveat is that I am using a very rough approximation using the standard formula for the standard error of a difference in means, since it is generally not straightforward to estimate uncertainty in ML models. It is also important to note that, given our estimand of interest being the ATT, we will use the model fitted to the controls to estimate the expected outcome for the treated units.</p>
+<p>The resulting estimate of the return is 1,113 USD, somewhat closer to the (difference-in-means) experimental benchmark than the previous models.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"randomForest"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>randomForest 4.7-1.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Type rfNews() to see new features/changes/bug fixes.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'randomForest'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    combine</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ggplot2':
+
+    margin</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct the random forest for the controls</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>rf_control <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, covs), <span class="co"># Formula: treatment ~covariates</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data=</span>lalonde.obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(treat<span class="sc">==</span><span class="dv">0</span>), <span class="co"># Filter: keep only controls</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">mty=</span><span class="dv">3</span>, <span class="at">ntree=</span><span class="dv">1000</span>) <span class="co"># mty: number of covariate available at each split</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct the random forest for the treated</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>rf_treated <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, covs), <span class="co"># Formula: treatment ~covariates</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data=</span>lalonde.obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(treat<span class="sc">==</span><span class="dv">1</span>), <span class="co"># Filter: keep only controls</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">mty=</span><span class="dv">3</span>, <span class="at">ntree=</span><span class="dv">1000</span>) <span class="co"># mty: number of covariate available at each split</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create predictions for treated and controls (using treated data: ATT!)</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="co"># This produce is likely invalid inference, but I show it as an approximation</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions for treated units</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>rf_yhat_treat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_treated)</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Prediction for treated units under control (control model)</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>rf_yhat_control <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_control, <span class="at">newdata =</span> lalonde.obs <span class="sc">|&gt;</span> <span class="fu">filter</span>(treat<span class="sc">==</span><span class="dv">1</span>))</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Model results</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>rf_out <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">estimator =</span> <span class="st">"Random Forest"</span>,</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">coeff =</span> <span class="fu">mean</span>(rf_yhat_treat) <span class="sc">-</span> <span class="fu">mean</span>(rf_yhat_control),</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>                 <span class="at">se =</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(rf_yhat_treat)<span class="sc">/</span><span class="dv">185</span> <span class="sc">+</span> <span class="fu">var</span>(rf_yhat_control)<span class="sc">/</span><span class="dv">185</span>))</span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(rf_out, <span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span><span class="st">"Random Forest"</span>)) <span class="sc">+</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span><span class="st">"Random Forest"</span>,</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmin=</span>coeff<span class="dv">-2</span><span class="sc">*</span>se, <span class="at">xmax=</span>coeff<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>se),</span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>                 <span class="at">height=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">1100</span>, <span class="at">y =</span> <span class="fl">1.1</span>, <span class="at">label =</span> <span class="st">"1,113 USD"</span>) <span class="sc">+</span></span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Estimated return of the NSW training program"</span>,</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"(Outcome: Earnings in 1978)"</span>,</span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">" "</span>, <span class="at">y=</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_errorbarh(aes(x = coeff, y = "Random Forest", xmin = coeff - :
+Ignoring unknown aesthetics: x</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption> Estimated returns of the training program.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calibration-weighting" class="level1">
+<h1>Calibration weighting</h1>
+<p>Here I will demonstrate methods that, in contrast to “traditional” estimators, seek to achieve balance (and, if possible, exact mean balance) <em>in the sample</em> and not just in expectation, and do so with minimum variance.</p>
+<p>I will exemplify the use of three methods: one IPW model with the propensity score estimated using generalized boosting, <code>entropy balance</code>, a reweighting method that solves an optimization problem to achieve maximum <em>in sample</em> balance; and and a combination of both requirements (propensity score and weighting), the Covariate Balancing Propensity Score, which solves an optimization problem with the double constrain of predicting the treatment status of a unit based on covariates (the <em>propensity score</em>), and doing so with the restriction of achieving the maximum <em>in sample</em> balance. All these methods are implemented in the <code>WeightIt</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the weights</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>nsw_gbm <span class="ot">&lt;-</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weightit</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="co"># Formula: treatment ~ covariates</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> lalonde.obs, <span class="co"># Declare data</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="co"># Declare estimand</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"gbm"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: No `criterion` was provided. Using "smd.mean".</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in gbm::gbm.fit(x = structure(c(0.264214037029416, -1.16437890675246, :
+variable 19: hispanic.black has no variation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in gbm::gbm.fit(x = structure(c(0.264214037029416, -1.16437890675246, :
+variable 53: u74.re74 has no variation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in gbm::gbm.fit(x = structure(c(0.264214037029416, -1.16437890675246, :
+variable 63: u75.re75 has no variation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Some extreme weights were generated. Examine them with `summary()` and
+maybe trim them with `trim()`.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>nsw_ebal <span class="ot">&lt;-</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weightit</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs_raw), <span class="co"># Formula: treatment ~ covariates</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> lalonde.obs, <span class="co"># Declare data</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="co"># Declare estimand</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"ebal"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Some extreme weights were generated. Examine them with `summary()` and
+maybe trim them with `trim()`.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>nsw_cbps <span class="ot">&lt;-</span> </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weightit</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="co"># Formula: treatment ~ covariates</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> lalonde.obs, <span class="co"># Declare data</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="co"># Declare estimand</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">method =</span> <span class="st">"cbps"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge
+Warning: Some extreme weights were generated. Examine them with `summary()` and
+maybe trim them with `trim()`.</code></pre>
+</div>
+</div>
+<p>As we can see, all the methods achieve very satisfactory balance. There is no considerable difference between the method, except for the notorious balanced sample resulting from <code>ebal</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="at">data=</span>lalonde.obs,</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="at">m.threshold =</span>.<span class="dv">1</span>,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">disp.var.ratio=</span><span class="cn">FALSE</span>, <span class="at">disp.means=</span><span class="cn">TRUE</span>,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">weights =</span> <span class="fu">list</span>(<span class="at">psw =</span> <span class="fu">get.w</span>(nsw_gbm),<span class="co">#IPW weights</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">ebal =</span> <span class="fu">get.w</span>(nsw_ebal),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cbps =</span> <span class="fu">get.w</span>(nsw_cbps))) <span class="sc">|&gt;</span> <span class="co"># Matching weights</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">love.plot</span>(<span class="at">abs=</span><span class="cn">FALSE</span>,</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">sample.names =</span> </span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>              <span class="fu">c</span>(<span class="st">"Unadjusted"</span>,<span class="st">"Generalized Boosting"</span>,<span class="st">"Entropy Balance"</span>, <span class="st">"Covariate Balancing PS"</span>)) <span class="sc">+</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span> <span class="st">" "</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Large mean differences detected; you may not be using standardized
+mean differences for continuous variables.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Standardized mean differences and raw mean differences are present in the same plot. 
+Use the `stars` argument to distinguish between them and appropriately label the x-axis.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption> Covariate Balance by Method</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In terms of the outcome estimation, we can see that both methods relying on Propensity Score estimation calculate a return of around 2,100 USD, while the reweighted sample using entropy balance overestimate the returns of the program, calculating an effect of around 2,400 USD.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>gbm_out <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="fu">c</span>(<span class="st">"treat"</span>, covs_raw)), <span class="at">data=</span>lalonde.obs, <span class="at">weights =</span> <span class="fu">get.w</span>(nsw_gbm))</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>ebal_out <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="fu">c</span>(<span class="st">"treat"</span>, covs_raw)), <span class="at">data=</span>lalonde.obs, <span class="at">weights =</span> <span class="fu">get.w</span>(nsw_ebal))</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>cbps_out <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(<span class="fu">f.build</span>(<span class="st">"re78"</span>, <span class="fu">c</span>(<span class="st">"treat"</span>, covs_raw)), <span class="at">data=</span>lalonde.obs, <span class="at">weights =</span> <span class="fu">get.w</span>(nsw_cbps))</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>coeffs_ml <span class="ot">&lt;-</span> </span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">estimator =</span> </span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>           <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"Generalized Boosting"</span>,<span class="st">"Entropy Balance"</span>, <span class="st">"Covariate Balancing PS"</span>)),</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">coeff =</span> <span class="fu">c</span>(gbm_out<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>                   ebal_out<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>                   cbps_out<span class="sc">$</span>coefficients[<span class="dv">2</span>]),</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">se =</span> <span class="fu">c</span>(gbm_out<span class="sc">$</span>std.error[<span class="dv">2</span>],</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>                ebal_out<span class="sc">$</span>std.error[<span class="dv">2</span>],</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>                cbps_out<span class="sc">$</span>std.error[<span class="dv">2</span>]))</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the annotated plot</span></span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coeffs_ml, <span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator)) <span class="sc">+</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator,</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmin=</span>coeff<span class="dv">-2</span><span class="sc">*</span>se, <span class="at">xmax=</span>coeff<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>se),</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">height=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2134</span>, <span class="at">y =</span> <span class="fl">1.2</span>, <span class="at">label =</span> <span class="st">"2,134 USD"</span>) <span class="sc">+</span></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2425</span>, <span class="at">y =</span> <span class="fl">2.2</span>, <span class="at">label =</span> <span class="st">"2,425 USD"</span>) <span class="sc">+</span></span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2115</span>, <span class="at">y =</span> <span class="fl">3.2</span>, <span class="at">label =</span> <span class="st">"2,115 USD"</span>) <span class="sc">+</span></span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Estimated return of the NSW training program"</span>,</span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"(Outcome: Earnings in 1978)"</span>,</span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">" "</span>, <span class="at">y=</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_errorbarh(aes(x = coeff, y = estimator, xmin = coeff - 2 * :
+Ignoring unknown aesthetics: x</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption> Estimated returns of the training program.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="comparison" class="level1">
+<h1>Comparison</h1>
+<p>Let’s use two metrics to compare the performance of different methods: 1) the covariate balance they are able to achieve; 2) how close their estimate of the ATT comes to the experimental benchmark. This is just a combination of the previous graphs to show in one place all the results and facilitate the comparison.</p>
+<p>First, we can see that most methods tend to outperform the traditional IPW in terms of achieving balance. The difference is not so clear with respect to the optimal full matching implementation, so we can see that it is still a state-of-the-art approach (This will not be true in general for other matching approaches, which tend to be outperformed by optimal full matching). The only estimator that systematically outperforms the rest in terms of balance it Entropy Balancing.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.tab</span>(<span class="fu">f.build</span>(<span class="st">"treat"</span>, covs), <span class="at">data=</span>lalonde.obs,</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">estimand =</span> <span class="st">"ATT"</span>, <span class="at">m.threshold =</span>.<span class="dv">1</span>,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">disp.var.ratio=</span><span class="cn">FALSE</span>, <span class="at">disp.means=</span><span class="cn">TRUE</span>,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">weights =</span> <span class="fu">list</span>(<span class="at">psw =</span> <span class="fu">get.w</span>(nsw_ipw), <span class="co"># IPW weights</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">full =</span> <span class="fu">get.w</span>(nsw_full), <span class="co"># Full matchin weights</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">gbm =</span> <span class="fu">get.w</span>(nsw_gbm), <span class="co"># Generalized boosting model weights</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">ebal =</span> <span class="fu">get.w</span>(nsw_ebal), <span class="co"># Entropy Balance weights</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cbps =</span> <span class="fu">get.w</span>(nsw_cbps))) <span class="sc">|&gt;</span> <span class="co"># CBPS weights</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">love.plot</span>(<span class="at">abs=</span><span class="cn">TRUE</span>,</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">sample.names =</span> </span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">c</span>(<span class="st">"Unadjusted"</span>,<span class="st">"Inverse Probability Weghting"</span>,<span class="st">"Optimal full matching"</span>,</span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Generalized Boosting"</span>,<span class="st">"Entropy Balance"</span>,<span class="st">"Covariate Balancing PS"</span>)) <span class="sc">+</span></span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span> <span class="st">" "</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Large mean differences detected; you may not be using standardized
+mean differences for continuous variables.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Standardized mean differences and raw mean differences are present in the same plot. 
+Use the `stars` argument to distinguish between them and appropriately label the x-axis.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption> Covariate Balance by Method</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In terms of effect estimation, let’s look at the consolidated version. Experimental benchmarks are in the vertical lines. On the good side, all the estimators produce confidence intervals that cover the true parameters (both the difference-in-means and the Lin estimator in the experimental sample). In general, either matching or direct balancing tend to produce more precise estimates, while weighting based on the propensity score tend to be accompanied by more variance.</p>
+<p>We can also see, in terms of the effect estimates, that most methods estimate higher benefits of the program than the experimental benchmark. This does not necessarily means that those effects are biased, though, since the experiment used as benchmark is but one realization, itself subject to sampling variation.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>rf_out<span class="sc">$</span>estimator <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(rf_out<span class="sc">$</span>estimator)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>coeffs_all <span class="ot">&lt;-</span> <span class="fu">rbind</span>(coeffs_traditional, coeffs_ml, rf_out)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the annotated plot</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coeffs_all, <span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator)) <span class="sc">+</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator,</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmin=</span>coeff<span class="dv">-2</span><span class="sc">*</span>se, <span class="at">xmax=</span>coeff<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>se),</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">height=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1794</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1583</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Estimated return of the NSW training program"</span>,</span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"(Outcome: Earnings in 1978)"</span>,</span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">" "</span>, <span class="at">y=</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_errorbarh(aes(x = coeff, y = estimator, xmin = coeff - 2 * :
+Ignoring unknown aesthetics: x</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption> Estimated returns of the training program.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="augmented-estimator" class="level1">
+<h1>Augmented estimator</h1>
+<p>Doubly-robust methods, mostly known as the augmented propensity score weighting estimator, is a combination of regression modeling and weighting. It called doubly robust because it is sufficient for one of the piece (propensity score, outcome model) to be correctly specified to have an unbiased estimator of the causal effect.</p>
+<p>More agnostically, we can say that the errors in the models multiply each other, so even if no piece is perfectly estimate, we can in general observe an improved behavior.</p>
+<p>Here we will implement a doubly robust estimator “by hand”, combining the weights produced by Entropy Balance, and the predictions of <span class="math inline">\(\E[Y_{0i}|D=0, X]\)</span> obtained from the Random Forest model for the controls.</p>
+<p>We can see that, among all estimators, the doubly robust version just described here generates the closest point estimate with respect to the experimental benchmark, and its confidence interval includes the true parameter.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using RF model for the outcome regression</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>y1_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_treated, <span class="at">newdata =</span> lalonde.obs) <span class="co"># Used for ATE</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>y0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf_control, <span class="at">newdata =</span> lalonde.obs) <span class="co"># Used fot ATT</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Using ebal for weighting, adjusting for predicted Y(0) function</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>dr_out <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> y0_hat, <span class="at">data=</span>lalonde.obs, <span class="at">weights =</span> <span class="fu">get.w</span>(nsw_ebal))</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>coeffs_dr <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">estimator =</span> <span class="st">"Doubly Robust Estimator"</span>,</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">coeff =</span> dr_out<span class="sc">$</span>coefficients[<span class="dv">2</span>],</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">se =</span> dr_out<span class="sc">$</span>std.error[<span class="dv">2</span>])</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>coeffs_all <span class="ot">&lt;-</span> <span class="fu">rbind</span>(coeffs_all, coeffs_dr)</span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the annotated plot</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coeffs_all, <span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator)) <span class="sc">+</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">x=</span>coeff, <span class="at">y=</span>estimator,</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">xmin=</span>coeff<span class="dv">-2</span><span class="sc">*</span>se, <span class="at">xmax=</span>coeff<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>se),</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>                 <span class="at">height=</span><span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1794</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1583</span>, <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Estimated return of the NSW training program"</span>,</span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"(Outcome: Earnings in 1978)"</span>,</span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">" "</span>, <span class="at">y=</span> <span class="st">" "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_errorbarh(aes(x = coeff, y = estimator, xmin = coeff - 2 * :
+Ignoring unknown aesthetics: x</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_Practical3_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption> Estimated returns of the training program.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
