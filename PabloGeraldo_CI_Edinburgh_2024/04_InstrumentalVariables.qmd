@@ -134,15 +134,39 @@ But in order to use that information, we need some further clarifications. Let's
 
 ## Graphical representation
 
-![](img\IV.pdf){fig-align="center" width=50%}
+:::{.columns}
+
+:::{.column width=40%}
+![](img\id_iv)
+:::
+
+:::{.column width=60%}
+
+Let's analysis together this setting
+
+* What assumptions are implied?
+
+* Can we think in applied examples in the literature?
+
+:::
+
+:::
 
 ## Non-parametric asssumptions {background-color="#002F87"}
 
 In graphical terms, the non-parametric IV conditions are:
 
-* The instrument $Z$ and the treatment $D$ are $d-$connected in the observational DAG $G$
+* The instrument $Z$ and the treatment $D$ are $d-$connected in the observational DAG $G$:
 
-* The instrument $Z$ and the outcome $Y$ are $d-$separated in the interventional DAG where we $do(z)$, $G_{\overbar_{X}}$
+$$
+(Z \nindep D)_G
+$$
+
+* The instrument $Z$ and the outcome $Y$ are $d-$separated in the interventional DAG where we $do(z)$, $G_{\bar{X}}$
+
+$$
+(Z \indep Y)_{G_{\bar{X}}}
+$$
 
 ## IV bounds
 
@@ -152,9 +176,16 @@ However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain b
 
 
 # Classical IV {background-color="#17a091"}
-## Effect homogeneity
 
-## Identification
+## Some IV terminology
+
+![](img/Felton_iv_terminology.png)
+
+:::aside
+By Felton and Stewart (2024)
+:::
+
+## Identification under effect homogeneity
 
 Traditionally, the IV assumptions are described in terms of two linear model and their error terms:
 
@@ -173,16 +204,41 @@ Traditionally, the IV assumptions are described in terms of two linear model and
 
 :::
 
-## 2SLS
+. . .
 
-## Wald estimator
+Given how strong these assumptions are, one may wonder how common is for this framework to be invoked in applied research
 
-## Issues
+## IV in political science
+
+A recent review by [Lal et al (2024)](https://www.cambridge.org/core/journals/political-analysis/article/how-much-should-we-trust-instrumental-variable-estimates-in-political-science-practical-advice-based-on-67-replicated-studies/70A232CA0CD55FE8B97E93543CDD6361) found that more than 70% of published IV papers in PoliSci use continuous instruments and treatments (ill-suited for modern approach)
+
+![](img/Lal_papers.png)
+
+
+## Types of instruments
+
+![](img/Lal_iv_types.png)
+
+
+## Issues: Weak first-stage
+
+![](img/Lal_iv_F.png)
+
+## Issues: Unreliable inference
+
+![](img/Lal_iv_inference.png)
+
+
+## Issues: Comparison to OLS
+
+![](img/Lal_iv_obsexp.png){width=40%}
+
 
 # Modern IV {background-color="#17a091"}
-## Effect heterogeneity
 
-## LATE framework
+
+## Effect heterogeneity and LATE
+
 
 Assuming effect heterogeneity, the estimand of interest is not the "total effect" anymore, but a new quantity:
 
@@ -204,9 +260,9 @@ Note that this population of *compliers* can be substantially different than the
 
 The IV-LATE assumptions we are going to discuss now are embedded in this quantity formalization
 
-## Assumptions
+I will closely follow the discussion by [Felton and Stewart (2024)](https://osf.io/preprints/socarxiv/3ua7q)
 
-### Relevance
+## Assumptions: Relevance
 
 $$
 E[D_{z=1,i} - D_{z=0,i}] \neq 0
@@ -224,9 +280,7 @@ Is this a testable assumption?
 
 Is it necessary for the association between $Z$ and $D$ to be causal?
 
-## Assumptions
-
-### Unconfoundedness of the instrument
+## Assumptions: Unconfounded instrument
 
 $$
 Y_{(d,z),i} \indep Z_i \forall d,z
@@ -246,9 +300,7 @@ $$
 
 It reads: The potential *treatment* is independent of the instrument
 
-## Assumptions
-
-### Exclusion restriction
+## Assumptions:  Exclusion restriction
 
 $$
 Y_{(d,z),i} = Y_{(d,z'),i} = Y_{d,i} \forall z, z', d, i
@@ -269,8 +321,7 @@ It can also be described as a "full mediation" assumption: the whole effect of t
 
 Can this be tested?
 
-## Assumptions
-### Monotonicity
+## Assumptions: Monotonicity
 
 $$
 D_{z=1,i} \geq D_{z=0,i} \forall i
@@ -282,8 +333,7 @@ This assumption is tricky! And it sounds more harmless than it is.
 
 It implies that the instrument affects *everyone* in the same direction: an instrument cannot induce some people to receive the treatment, and discourage some other people to receive the treatment
 
-## Assumptions
-### SUTVA and Positivity
+## Assumptions: SUTVA and Positivity
 
 Usually not discussed much in the context of IV, but remember that we are generally assuming **SUTVA** (consistency + non interference + no relevant versions of the treatment)
 
@@ -291,7 +341,7 @@ Usually not discussed much in the context of IV, but remember that we are genera
 
 ## Estimation
 
-There are several frameworks to conduct estimation in the IV settings. We are going to discuss two common ones:
+There are several frameworks to conduct estimation in the IV settings. We are going to briefly review two common ones:
 
 . . .
 
@@ -324,6 +374,64 @@ $$
 
 ## Issues
 
-# IV in practice {background-color="#17a091"}
+Despite being a more flexible approach, allowing for effect heterogeneity, and more clearly articulated in terms of the experimental analogy, IVs in practice are still very fragile 
+
+Altough with some differences, the problems identified by Lal et al., carry over the modern IV setting
+
+Felton and Stewart identify three of these issues, all of them exacerbated by the presence of *weak instruments*
+
+Here I will only focus on the first two problems they discuss: identification bias, and estimation bias
+
+The authors also discuss Type-M bias; as a complicated issue, I will not further expand on it
+
+## Issues
+
+![](img/Felton_iv_problems.png)
+
+## An illustration
+
+![](img/Felton_iv_amplification.png)
+
+## Identification bias
+
+Identification bias refers to the case when the required assumptions for an IV to be valid do not (perfectly hold)
+
+* Unconfoundedness violation: there is an unobserved confounder between the instrument and the outcome
+
+* Exclusion violation: there is an unaccounted mechanism through which the instrument affect the outcome
+
+. . . 
+
+:::{.callout-tip}
+## Recommendation? Bias analysis
+
+Sensitivity analysis, or quantitative bias analysis, refers to the exercise of measuring the impact of unobserved confounder of an assumed magnitude on the effect of interest
+
+For IVs, the sensitivity of the reduced form is usually the target of analysis
+:::
+
+## Estimation bias
+
+Estimation bias arises in the IV setting because the 2SLS estimator is biased towards the OLS estimator
+
+This bias is always present, but becomes negligible for strong instruments and large sample sizes
+
+. . . 
+
+
+* The weaker the first stage, and therefore the most similar the predicted values of $D$ to the observed input, the closest the final estimates will be
+
+. . . 
+
+:::{.callout-tip}
+## Recommendation? Properly report F-statistic
+
+Both Lal's and Felton's reviews find that, despite the test being widely referenced as a necessary check, few studies report the F-statistic of the first stage. From the ones that do so, many do it improperly, withouht accounting for non classical errors
+
+This exacerbates the estimation issues of IV 
+:::
+
+
+# Now to practice! {background-color="#17a091"}
 
 
