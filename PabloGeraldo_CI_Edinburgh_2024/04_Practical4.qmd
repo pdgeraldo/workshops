@@ -34,8 +34,12 @@ and
 ```{r, echo=TRUE}
 library(AER)
 library(broom)
-#arj <- foreign::read.dta("data/arj.dta")
-arj <- data.table::fwrite("https://github.com/pdgeraldo/workshops/tree/main/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv")
+arj <- foreign::read.dta("data/arj.dta")
+
+data.table::fwrite("/Users/pdgeraldo/Documents/GitHub/workshops/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv")
+
+arj <- data.table::fread("https://github.com/pdgeraldo/workshops/tree/main/PabloGeraldo_CI_Edinburgh_2024/data/arj.csv")
+
 
 
 ################
