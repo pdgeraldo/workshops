@@ -1,201 +1,32 @@
 ---
-title: "Practical 1: Random assignment"
+title: "Practical 4: Instrumental variables"
 format: html
 ---
 
-```{r load-packages, include = FALSE}
-library(tidyverse)
-```
+(With Chad Hazlett)
 
-This exercise is inspired by similar problems by Graeme Blair, Chad Hazlett, and Erin Hartman.
+In a well-known paper, Acemoglu, Johnson, and Robinson (2010) attempt to estimate the effect of property rights institutions on long-run economic growth. They use GDP per capita in 1995 to proxy a country's long-run economic growth. 
 
-# Learning goals
+To address the endogeneity between institutions and economic growth, they use the mortality rate faced by European settlers in the 19th century as an instrument for property rights institutions in the 20th century. 
 
-1. Understanding what a potential outcome is and how it is related to observed outcomes
-2. How to randomize treatment assignment
-3. How the estimand "average treatment effect" is constructed from potential outcomes
-4. How the estimator of the ATE, the difference-in-means, is calculated from data from an experiment
+Here we will replicate the results from 2SLS regressions in the original paper (Table 4 Columns 1 and 2). Please download \texttt{arj.dta} from [here](). The data file include the following variables:
 
+\bitem
+\item \texttt{shortnam}: three letter country name
+\item \texttt{lat\_abst}: absolute latitude of capital/90
+\item \texttt{avexpr}: average protection against expropriation risks
+\item \texttt{logpgp95}: log PPP GDP per capita in 1995
+\item \texttt{logem4}: log settler mortality
+\eitem
 
-# Potential outcomes
-
-```{r}
-# Step 1: define your sample
-
-# define a sample of N = 100 units and its treatment potential outcome (you could name the variable Y1) and its control potential outcome (you could name the variable Y0)
-
-# let's imagine the control potential outcome is random noise, representing the many factors that explain the outcome in the control group. you could use the rnorm() or the runif() function to generate that "noise"
-
-# you define how the treatment potential outcome differs from the control potential outcome
-
-# use the data.frame() function to create a data frame from scratch.
-
-Y0 <- rnorm(n=100)
-Y1 <- Y0^2 + rnorm(n=100)
-
-data <- data.frame(Y1, Y0)
-```
-
-
-# Treatment assignment
-
-```{r}
-# assign treatment (add treatment variable to your population using mutate() and you can create the variable using the sample() function.)
-
-# use ?sample to figure out how to use the function
-
-# your treatment should be binary, so it should take on values 0 and 1
-
-data <- data |> 
-  dplyr::mutate(treatment = 
-                  sample(c(0,1), 
-                         size = 100, 
-                         replace = TRUE))
-```
-
-# Observed outcomes
-
-```{r} 
-# construct observed outcome (use the switching equation!)
-
-# again use mutate() to add the observed outcome to your dataset
-
-data <- data |> 
-  dplyr::mutate(Y = ifelse(treatment == 1, Y1, Y0))
-```
-
-Take a look at your data and make sure it has potential outcomes, a treatment indicator, and your outcome (four variables total)
-
-```{r}
-data
-```
-
-
-# Calculate your estimand
-
-```{r}
-# calculate the estimand based on the potential outcomes
-# using the summarize function 
-
-data |> 
-  summarize(ATE = mean(Y1) - mean(Y0))
-
-# it should give you the same result as
-
-data |> 
-  dplyr::mutate(tau = Y1 - Y0) |> 
-  summarize(ATE = mean(tau))
-```
-
-
-# Diff-in-means
-
-```{r}
-# calculate your *estimate* of that estimand by coding up the difference-in-means estimator
-
-# again you can use the summarize() command
-
-data |> 
-  summarize(ATEhat = 
-              mean(Y[treatment==1]) - 
-              mean(Y[treatment==0]))
-
-# it should give the same result as
-
-lm(Y ~ treatment, data = data)
-```
-
-How close are your estimate and your estimand? What do you make of this?
-
-```{r}
-# combine your estimate and your estimator into one summarize command, so two numbers are produced (ATE and d-i-m)
-# i.e. data |>  summarize(ATE = ?, dim = ?)
-
-data |> 
-  summarize(ATE = mean(Y1) - mean(Y0),
-            ATEhat = mean(Y[treatment==1]) -
-              mean(Y[treatment==0]))
-```
-
-
-# Randomisation inference
-
-Let's write a function in R which takes as arguments the following: a vector of outcomes, Y ; an original treatment vector, D; and a number of iterates M. 
-
-The function should take the data, use the difference-in-means estimator on the actual data, and then run M iterates of randomization inference. For each iterate, randomize treatment assignment and calculate the difference-in-means under the sharp null assumption and the new treatment assignment.
-
-Then it will produce a plot containing the following: i) A histogram or density plot of the randomization distribution of the difference-in-means estimates under the null; ii) A vertical line representing the original result in the actual data; iii) the two-tailed p-value for the observed difference in means statistic against the sharp null.
-
-```{r}
-sharp_test <- function(Y, D, times) {
-  
-  # Get the observed ATE
-  ate <- mean(Y[D == 1]) - mean(Y[D == 0])
-  
-  # Permute the treatment, take permuted ATEs
-  perms <- tibble(ate_perm = replicate(n = times, {
-    D_perm <- sample(D, size = length(D), replace = FALSE)
-    mean(Y[D_perm == 1]) - mean(Y[D_perm == 0])
-  }))
-  
-  # Obtain the p-value
-  right <- sum(perms$ate_perm >= abs(ate))/nrow(perms)
-  left <- sum(perms$ate_perm <= -abs(ate))/nrow(perms)
-  p.val <- (right + left)
-  
-  # Make the plot
-  ggplot(perms, aes(x = ate_perm)) + geom_histogram() + geom_vline(xintercept = ate,
-                                                                   colour = "red", linetype = "dashed") + theme_classic() +
-    ggtitle("Permutation Distribution") + xlab("Difference-in-means") +
-    annotate("text", x = ate, y = times/15, label = paste("p-value=",
-                                                          p.val)) }
-```
-
-Now, let's try the function
-
-```{r}
-# Fake data 1
-D1 <- rbinom(1000, size = 1, prob = 0.5)
-Y1 <- rnorm(1000) + D1 * 0.5
-sharp_test(Y1, D1, 10000)
-
-# Fake data 2 
-D2 <- rbinom(1000, size = 1, prob = 0.1)
-Y2 <- rnorm(1000)
-sharp_test(Y2, D2, 10000)
-```
-
-
-# Randomised designs
-
-## Complete randomisation
-
-Let's create a function that conducts complete random assignment
-
-```{r}
-complete_ra <- function(data) {
-  dplyr::mutate(data, Z = sample(rep(c(0, 1), each = n()/2), n(), replace = FALSE))
-}
-```
-
-Now, let's see how can we use it 
-
-```{r}
-data <- tibble(
-  u = rnorm(100), # unobserved covariate 
-  x = rnorm(100) # observed covariate
-) |> 
-  mutate(Y0 = x + u,
-         Y1 = Y0 + 5) |> 
-  complete_ra() |> 
-  mutate(Y = if_else(Z == 0, Y0, Y1))
-
-estimatr::lm_robust(Y ~ Z, data = data) |> 
-  broom::tidy() |> 
-  filter(term == "Z")
-```
-
-
-## Block randomisation
-
-## Cluster randomisation
+\bitem
+\item[a)] Show results from (1) the first stage regression, (2) the reduced form regression, and (3) the 2SLS estimation using the following two specifications:
+\begin{eqnarray*}
+\texttt{logpgp95}_i &=& \beta_0 + \beta_1 \texttt{avexpr}_i + \epsilon_i \\
+\texttt{avexpr}_i &=& \gamma_0 + \gamma_1 \texttt{logem4} + \mu_i 
+\end{eqnarray*}
+and 
+\begin{eqnarray*}
+\texttt{logpgp95}_i &=& \beta_0 + \beta_1 \texttt{avexpr}_i + \beta_3 \texttt{lat\_abst} + \epsilon_i\\
+\texttt{avexpr}_i &=& \gamma_0 + \gamma_1 \texttt{logem4} + \gamma_2 \texttt{lat\_abst} + \mu_i
+\end{eqnarray*}
