@@ -9,18 +9,16 @@ In a well-known paper, Acemoglu, Johnson, and Robinson (2010) attempt to estimat
 
 To address the endogeneity between institutions and economic growth, they use the mortality rate faced by European settlers in the 19th century as an instrument for property rights institutions in the 20th century. 
 
-Here we will replicate the results from 2SLS regressions in the original paper (Table 4 Columns 1 and 2). Please download \texttt{arj.dta} from [here](). The data file include the following variables:
+Here we will replicate the results from 2SLS regressions in the original paper (Table 4 Columns 1 and 2). Please download \texttt{arj.dta} from [here](https://github.com/pdgeraldo/workshops/tree/main/PabloGeraldo_CI_Edinburgh_2024/data). The data file include the following variables:
 
-\bitem
-\item \texttt{shortnam}: three letter country name
-\item \texttt{lat\_abst}: absolute latitude of capital/90
-\item \texttt{avexpr}: average protection against expropriation risks
-\item \texttt{logpgp95}: log PPP GDP per capita in 1995
-\item \texttt{logem4}: log settler mortality
-\eitem
 
-\bitem
-\item[a)] Show results from (1) the first stage regression, (2) the reduced form regression, and (3) the 2SLS estimation using the following two specifications:
+* $\texttt{shortnam}$: three letter country name
+* $\texttt{lat\_abst}$: absolute latitude of capital/90
+* $\texttt{avexpr}$: average protection against expropriation risks
+* $\texttt{logpgp95}$: log PPP GDP per capita in 1995
+* $\texttt{logem4}$: log settler mortality
+
+Let's see results from (1) the first stage regression, (2) the reduced form regression, and (3) the 2SLS estimation using the following two specifications:
 \begin{eqnarray*}
 \texttt{logpgp95}_i &=& \beta_0 + \beta_1 \texttt{avexpr}_i + \epsilon_i \\
 \texttt{avexpr}_i &=& \gamma_0 + \gamma_1 \texttt{logem4} + \mu_i 
@@ -30,3 +28,81 @@ and
 \texttt{logpgp95}_i &=& \beta_0 + \beta_1 \texttt{avexpr}_i + \beta_3 \texttt{lat\_abst} + \epsilon_i\\
 \texttt{avexpr}_i &=& \gamma_0 + \gamma_1 \texttt{logem4} + \gamma_2 \texttt{lat\_abst} + \mu_i
 \end{eqnarray*}
+
+
+
+```{r, echo=TRUE}
+library(foreign)
+library(AER)
+library(broom)
+arj <- read.dta("data/arj.dta")
+
+################
+## First model
+#################
+
+# Reduced form
+rf.m1 <- lm(logpgp95 ~ logem4, data=arj) 
+summary(rf.m1)
+
+# First stage
+first.m1 <- lm(avexpr ~ logem4, data=arj)
+summary(first.m1)
+
+# Obtain predictions
+m1.aug <- augment(first.m1) 
+
+# Second stage, robust SE
+second.m1 <- estimatr::lm_robust(logpgp95 ~ m1.aug$.fitted, data=arj)
+summary(second.m1)
+
+# Using the ivreg function
+ivreg(logpgp95 ~ avexpr | logem4, data=arj) |>  summary()
+
+
+##################
+## Second model
+##################
+
+rf.m2 <- lm(logpgp95 ~ logem4 + lat_abst, data=arj)
+summary(rf.m2)
+
+first.m2 <- lm(avexpr ~ logem4 + lat_abst, data=arj)
+summary(first.m2)
+
+m2.aug <- augment(first.m2)
+
+second.m2 <- estimatr::lm_robust(logpgp95 ~ m2.aug$.fitted + lat_abst, data=arj)
+summary(second.m2)
+
+ivreg(logpgp95 ~ avexpr + lat_abst | logem4 + lat_abst, data=arj) |>  summary()
+```
+
+# Sensitivity analysys
+
+Now, let's try assessing the sensitivity to violations of the identification assumptions, following [Cinelli and Hazlett](https://carloscinelli.com/files/Cinelli%20and%20Hazlett%20(2020)%20-%20OVB%20for%20IV.pdf)
+
+Recall that "residual biases can bring the IV point estimate to zero if, and only if, they can bring the
+reduced-form point estimate to zero" (quoting from the paper above)
+
+
+
+```{r}
+library(sensemakr)
+
+# runs sensemakr for sensitivity analysis
+sensitivity <- sensemakr(model = rf.m2, 
+                         treatment = "logem4",
+                         benchmark_covariates = "lat_abst",
+                         kd = 1:3)
+
+# short description of results
+sensitivity
+
+# long description
+summary(sensitivity)
+
+# plot results
+plot(sensitivity)
+```
+
