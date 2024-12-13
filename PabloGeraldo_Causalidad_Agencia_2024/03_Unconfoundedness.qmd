@@ -1,0 +1,351 @@
+---
+title: "Selection on observables"
+title-block-banner: true
+author: "Pablo Geraldo Bastías"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference - Lecture 3"
+date: 12/13/2024
+date-format: long
+format: 
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 900
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: simple
+---
+
+# Outline {background-color="#17a091"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+## Lecture 3: Selection on observables
+
+During this lecture, we will cover one of the most popular identification strategies: selection on observables, also known as conditional ignorability/independence (stats), unconfoundedness (econ), or conditional exchangeability (epi)
+
+* First, we will locate it under the general umbrella of [observational studies](). 
+
+* Then we will review the required assumptions and show the identication results
+
+* Finally, we will discuss common estimation methods: regression, subclassification and matching, weighting, and augmented estimators
+
+# Observational studies {background-color="#00a191"}
+
+## What is an observational study?
+
+We already discussed the importance of **random assignment** to justify drawing causal conclusions and conduct statistical inference
+
+. . .
+
+Observational data is generated when the treatment of interest is **not** in control of the researcher (e.g., survey data, administrative records, etc.)
+
+. . .
+
+An observational study is an attempt to use observational data to *approximate* causal conclusions (or, as some would say, "to approximate an experiment")
+
+. . .
+
+While, in experiments, the connection between potential and observed outcomes is justified by design, in observational studies it relies on [[untestable and extra-statistical]()]{.fragment .fade-in} assumptions
+
+
+## Credible observational studies
+
+Not all comparisons are created equal!
+
+It is all too common to run some regression analysis and analyse its output as-if a credible *causal* comparison can be immediately obtained from the data
+
+. . .
+
+Many times, just recognizing that "our results are not causal" is not enough to prevent a causal interpretation!
+
+## Credible observational studies
+
+A credible observational study should be carefully designed to address common issues and rule out alternative explanations:
+
+* Assignment is not random, but is it well understood?
+
+* Do we have reliable measures of our variables of interest? Does the timing of measurement allow us to order them?
+
+* Can we check "balance" in observable characteristics?
+
+* Can we explain why some units that look similar receive different treatments?
+
+* Can we quantify the influence that unobserved confounding would have on our results?
+
+* Can we rule out alternative explanations to the observed "treatment effect"?
+
+# Unconfoundedness {background-color="#00a191"}
+
+## General setting
+
+Let's assume the following:
+
+* We observe units $i = 1, \dots, n$
+* We observe a treatment $D \in {0,1}$
+* We assume potential outcomes $Y_{di}$ are well defined
+
+. . . 
+
+Our quantity of interest can be (most commonly) the ATE or the ATT
+
+. . . 
+
+We have a collection of $k$ **pre-treatment** covariates: $X_i = [X_{i1}, \dots , X_{ik}]$
+
+* Predetermined/ causally precede $D_i$
+* If $X_i$ causes both $D$ and $Y$, it would *confound* the relationship between them
+* If $X_i$ is potentially affected by $D_i$, then it may possibly be a *mediator*, and it should be handlded with double care
+
+## Assumptions
+
+The main assumption in this context is usually referred as unconfoudedness, conditional ignorability, or conditional exhangeability
+
+It can be formalized as:
+
+$$
+\{Y_{1i}, Y_{0i}\} \indep D_i
+$$
+
+:::{.callout-note}
+## Read it like this
+Among units with the same values of $X$, the treatment $D_i$ is as-good-as randomly assigned
+:::
+
+. . .
+
+To actually be able to condition by $X$, we also require positivity (or overlap): the treatment is not deterministic at any relevant value of $X=x$
+
+## Identification of ATE/ATT
+
+**Intuition**: Within strata of X, we have an experiment
+
+**Proof**: Let's start with the strata effects $\tau(x)$
+
+$$
+E[Y_{1i} - Y_{0i}|X=x] = E[Y_{1i}|X=x] - E[Y_{0i}|X=x]  
+$$
+$$
+= E[Y_{1i}|X=x, D_i=1] - E[Y_{0i}|X=x, D_i=0] 
+$$
+
+$$
+= E[Y_{i}|X=x, D_i=1] - E[Y_{i}|X=x, D_i=0]
+$$
+Then, let's use the **positivity** assumption:
+
+$$
+ATE = E_x[\tau(x)] = E_x(E[Y_{1i} - Y_{0i}|X=x] )
+$$
+
+$$
+= \sum_x \tau(x) p(x)
+$$
+
+# Estimation {background-color="#00a191"}
+
+## Estimation overview
+
+We have seen that, under our non-parametric assumptions, the ATE/ATT is identified by the adjustment formula
+
+In practice, there are several ways to implement these ideas, and different estimators incorporate further assumptions 
+
+The most widely used are
+
+- Subclassification and Matching
+- Weighting
+- Regression
+- Augmented estimators
+
+Let's take a look at each in general, before we move into a practical application
+
+
+# Modeling the treatment assignment {background-color="#E9004C"}
+
+## Subclassification
+
+When $X$ is discrete, the subclassification estimator arises naturally, as seen before
+
+We only need to estimate strata-specific effects ans average according to the reference population shares
+
+Are we estimating any model? Are there "parameters" in the subclassification estimator?
+
+. . .
+
+As the number of covariates increases, however, the estimator becomes unfeasible
+
+This is why other estimators have become much more widely used
+
+## Matching
+
+For each treated unit $i$ with covariates $X_i$, we will estimate $\tau_i = Y_{1i} - Y_{0i}$
+
+. . .
+
+For treated units, we immediately have $Y_1$. But where do we get $Y_0$ from?
+
+* **Matching**: borrow the missing potential outcomes from control units with (nearly) the same $X_i$
+
+The estimator is then:
+
+$$
+\hat{\tau}_{ATT} = \frac{1}{N_t} \sum_{D=1}(Y_i - Y_{j(i)})
+$$
+
+Where $Y_{j(i)}$ is the outcome of unit $j$, which is closes to $i$ in terms of their covariates
+
+. . .
+
+In the simples case, $j$ is a single unit, without replacement. In more complicated versions, it can be an (weighted) average of units that are reused several times
+
+. . .
+
+:::{.callout-warning}
+## But beware of the curse of dimensionality!
+:::
+
+## Remember: Matching is NOT an identification strategy
+
+
+## Weighting 
+
+The idea of weighting comes from survey research: how do we get a representative sample?
+
+It is similar, but kind of in the opposite direction, to the previous strategies:
+
+. . .
+
+* Instead of strata-specific effects that are then reweighted by $X$, make $X$ look similar across groups and then take a simple average!
+
+. . .
+
+Recall that the difference-in-means can be viewed as:
+
+$$
+\sum_x E[Y_i | D=1, X]\color{red}{P(X|D=1)} - \sum_x E[Y_i | D=1, X]\color{red}{P(X|D=0)}
+$$
+
+How to solve the discrepancy in the weights?
+
+. . .
+
+We want the weights of the diff-in-means to be $P(X)$ for everyone, so we can re-weight by $\frac{P(D_i)}{P(D_i|X_i)}$ (but, note that this requires a model for $P(D_i|X_i)$)
+
+## What about propensity scores?
+
+The weights just used above require estimating a model for the treatment assignment $P(D_i|X_i)$ 
+
+That's why those weights are usually referred as *stabilized propensity score weights*
+
+This will achieve balance in the variables used to estimate the propensity score, *in expectation*
+
+. . .
+
+But we can also bypass this step, and directly find weights that "balance" (some moments of) the covariates, through optimization approaches --> *calibration*
+
+
+This will usually give you balance *in the sample*, up to a tolerance level
+
+. . . 
+
+In both cases, it is crucial to check for extreme weights (sometimes a few units are doing all the heavy lifting!)
+
+## Remember: Propensity score is NOT an identification strategy either!
+
+
+## Common ideas
+
+Subclassification, matching and weighting share some common ideas
+
+Most importantly, they all allow for some diagnostics *before* conducting the outcome analysis: balance testing
+
+Checking balance does not require looking at the outcome, and it can provide a guidance on the credibility of the results to come 
+
+. . . 
+
+* This is what Rubin meant by "design triumphs analysis"
+
+. . . 
+
+But be careful of overly relying on balance checking! (And use best practices, like equivalence testing)
+
+Also, beware of residual imbalance! Modeling the outcome can come handy, as we will see later
+
+# Modeling the outcome expectation {background-color="#E9004C"}
+
+## Regression
+
+We can also take a model-based approach to estimate the causal effect of interest
+
+Let's assume that the potential outcomes follow certain functional form:
+
+$$
+E[Y_i|D_i,X_i] = \beta_0 + \beta_1 D_i + \gamma^{\top}X_i
+$$
+
+Which means that $$E[Y_0|X] = E[Y|D=0,X] = \beta_0 + \gamma^{\top}X_i$$
+
+and $$E[Y_1|X] = E[Y|D=1,X] = \beta_0 + \beta_1 + \gamma^{\top}X_i$$
+
+. . .
+
+What are we assuming about the treatment effect? What are we assuming about the potential outcomes?
+
+## Imputation
+
+One way of making use of models that is less sensitive to the specification of a single coefficient is to use the model for imputation
+
+* Use the model to predict the potential outcomes, and then calculate the difference of interest
+
+* For inference, use the bootstrap
+
+In epidemiology, this is known as g-computation ("g" stands for "generalized")
+
+This works incredibly well, above and beyond what looking at a single coefficient would give you
+
+# Augmented estimators {background-color="#E9004C"}
+
+## Augmented IPW 
+
+Can we get the best of both worlds? Yes, we can!
+
+. . .
+
+Combine balancing (weighting) with outcome modeling (regression) in a single estimator: augmented IPW
+
+This has the property of **doubly robustness**: the model with be consistent for the treatment effect if either (1) the outcome model or, (2) the treatment model, are well specified
+
+. . .
+
+:::{.callout-tip}
+## Important
+
+In terms of identification, the augmented estimator requires the same unconfoundedness assumption! No free lunch
+:::
+
+## What about machine learning?
+
+There are different ways of using machine learning for estimation
+
+* Flexible model of the outcome + imputation
+
+* Flexible model of the treatment + weighting
+
+Both have problems, so two frameworks have been proposed to incorporate ML methods in the estimation of treatment effects in a principled way:
+
+* Targeted Minimum Loss Estimation (TMLE)
+
+* Double/Debiased Machine Learning (DML)
+
+

@@ -1,0 +1,425 @@
+---
+title: "Demystifying Causal Inference"
+author: "Pablo Geraldo Bastías"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference - Introduction"
+date: 11/15/2024
+date-format: long
+format: 
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 900
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+# Motivation {background-color="#00a191"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+
+## Why should we care about causal inference?
+
+. . .
+
+<br>
+The social sciences are experimenting what some authors have called a "credibility revolution" (Angrist and Pischke, 2010), an "identification revolution" (Morgan, 2016), or simply a "causal revolution" (Pearl and MacKenzie, 2018)
+
+. . .
+
+In artificial intelligence/ML, causality have been deemed [**"the next frontier"**](https://phys.org/news/2019-02-causal-disentanglement-frontier-ai.html) and [**"the next most important thing"**](https://www.datasciencecentral.com/profiles/blogs/causality-the-next-most-important-thing-in-ai-ml)
+
+. . .
+
+The enormous progress in the last decades has been facilitated by the development of mathematical frameworks that provide researchers with tools to handle causal questions: [Potential Outcomes]{.fragment .highlight-red} and the [Structural Causal Model]{.fragment .highlight-red}
+
+
+
+## Intuitions about causality
+
+### Have you heard any of these before?
+
+<br>
+
+"Correlation does not imply causation"
+
+
+:::{.fragment .r-stack}
+*But can we go from one to the other?*
+:::
+
+
+"No causation without manipulation"
+
+
+:::{.fragment .r-stack}
+*Then what about race or gender?*
+:::
+
+
+"Causal inference is a missing data problem"
+
+
+:::{.fragment .r-stack}
+*Or is it the other way around?*
+:::
+
+
+"For causal inference, design trumps analysis"
+
+
+:::{.fragment .r-stack}
+*But what do we mean by design? And analysis?*
+:::
+
+
+
+# What is causal inference about? {background-color="#00a191"}
+
+## Statistics/ML vs Causal Inference
+
+::: {.columns}
+
+::: {.column width="50%"}
+***Statistics/ML***
+
++ Passive observation of the data generating process
++ Estimand: Joint probabilities, CEF
+$$P(Y,X)$$
+$$E(Y|X=x)$$
++ Focus on asymptotics / out of sample prediction
++ Estimation problem: variance-bias tradeoff
++ Pearl: "deep learning is just curve fitting"
+:::
+
+::: {.column width="50%"}
+***Causal Inference***
+
++ Prediction **under interventions** on the DGP
++ Estimand: interventional quantities
+$$P(Y|do(x))$$ 
+$$E(Y|do(x)) - E(Y|do(x'))$$ 
+$$= E(Y_x) - E(Y_{x'})$$
++ Identification problem: consistency (infinite sample)
++ Estimation problem: in general, focus on bias over variance (but changing)
+:::
+
+:::
+---
+
+
+## The ladder of causality {background-color="#002F87"}
+
+:::{.panel-tabset}
+
+## Association
+
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| ---- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y \vert X)}$ | Seeing, Observing | Stats, Machine Learning | *What would I believe about Y if I see X?* | What is the expected income of a college graduate in a given field? |
+
+## Interventions
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| --- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y \vert do(x))}$ | Doing, Intervening | Experiments, Policy evaluation | *What would happen with Y if I change X?* | How would income levels change in response to college expansion? |
+
+## Counterfactuals
+
+| Estimand | Activity | Field/Discipline | Questions | Example |
+| --- | --- | --- | ----- | ------ |
+| $\mathbf{P(Y_x \vert x',y')}$ | Imagining, Retrospecting | Structural Models | *What would have happened with Y have I done X instead of X'? Why?* | What would have been my parents' income have they graduated from college, given that they didn't attend?| 
+:::
+
+::: aside
+Pearl and Mackenzie (2018)
+:::
+
+---
+
+## But, is **doing** *really* that different from **seeing**? 
+
+<br>
+
+![](https://imgs.xkcd.com/comics/correlation.png){width="900" fig-align="center"}
+
+:::aside
+[causality](https://imgs.xkcd.com/comics/correlation.png)
+:::
+
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Let's imagine an example: we want to know the effect of the selectivity of the graduate program a student attends on the quality of their first job after graduation
+
+. . .
+
+::: {.columns}
+
+::: {.column width="40%"}
+```{r, echo=TRUE}
+set.seed(1988)
+
+# sample size
+N <- 1000
+
+# student "potential"
+W <- rnorm(N, mean=25, sd=50) 
+
+# program selectivity
+X <- 0.6*W + rnorm(N, mean=0, sd=15)
+
+# quality of first job
+Y <- 0.4*W - 0.2*X + rnorm(N, mean = 0, sd = 25)
+
+# store everything
+data <- data.frame(Y=Y, X=X, W=W)
+```
+:::
+
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache=FALSE}
+library(ggplot2)
+ggplot2::ggplot(data, aes(x=X, y=Y)) +
+  geom_point(alpha=0.2) +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
+  theme_bw()
+```
+:::
+
+:::
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Then, let's see what story a simple linear regression would tell
+
+. . . 
+
+:::{.columns}
+
+:::{.column width="40%"}
+
+```{r, cache = FALSE}
+# Bivariate regression
+
+lm(Y~X, data=data)
+```
+
+:::{.callout-warning}
+However, we know that the true effect is negative!
+:::
+
+:::
+
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache= FALSE}
+ggplot2::ggplot(data, aes(x=X, y=Y)) +
+  geom_point(alpha=0.2) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
+  theme_bw()
+```
+:::
+
+:::
+---
+
+
+
+## Is **doing** *really* that different from **seeing**?
+
+
+What if we instead randomize students to different programs?
+
+. . .
+
+:::{.columns}
+
+:::{.column width="40%"}
+
+```{r, cache = FALSE, echo=TRUE}
+# let's simulate random assignment 
+# of students to programs!
+
+data$Xrand <- sample(min(X):max(X),
+            N, replace=TRUE)
+
+# now add quality of first job
+
+data$Yexp <- 0.4*W - 0.2*data$Xrand + rnorm(N, mean = 0, sd = 25)
+
+lm(Yexp~Xrand, data=data)
+```
+:::
+
+:::{.column widht="60%"}
+```{r, echo=FALSE, out.width='120%', cache = FALSE}
+ggplot2::ggplot(data, aes(x=Xrand, y=Yexp)) +
+  geom_point(alpha=0.2) +
+  geom_smooth(method="lm", color="red") +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
+  theme_bw()
+```
+
+:::{.callout-note}
+Now we can see the true effect!
+:::
+
+:::
+
+:::
+
+
+---
+
+
+## Is **doing** *really* that different from **seeing**?
+
+Can we fix the observational comparison by adjusting for $W$?
+
+. . . 
+
+:::{.columns}
+
+:::{.column width="40%"}
+```{r, cache = FALSE, echo=TRUE}
+# Same regression
+# Plus "adjustment" for student potential
+reg <- lm(Y~X+W, data=data)
+
+# By FWL theorem, we can replicate
+# this results with bivariate regs
+# Run the bivariate regression and save the residuals
+regresids <- broom::augment(lm(X ~ W, data = data))
+
+reg
+```
+:::
+
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache =FALSE}
+# Plot
+ggplot(data = regresids, 
+       aes(y = data$Y, x = .resid)) +
+  geom_point(alpha = 0.2) + 
+  geom_smooth(method="lm", color="red") +
+  theme_bw() + 
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
+  labs(x = "Selectivity of graduate program index (adjusting for student potential)",
+       y = "Quality of first job index (predicted)")
+```
+:::
+
+:::
+
+---
+
+## Is **doing** *really* that different from **seeing**?
+
+Where are we getting the data from? 
+
+Imagine we collected the data by looking at programs' websites, where they post the job market outcomes but 
+
+* more selective programs tend to report more
+* students will report to their programs based partially on the quality of their job offers
+
+. . .
+
+:::{.columns}
+
+:::{.column width="40%"}
+
+```{r, cache = TRUE, echo = TRUE}
+# Registry of job market candidates
+# As a function of selectivity and outcome
+prob <- 1/(1+exp(-(1.5*X+Y*2)))
+data$C <- rbinom(N, 1, prob=prob)
+
+# What would happen if we change the probs?
+# prob <- 1/(1+exp(-(X-Y*2)))
+
+lm(Y ~ X + W, data=subset(data, C==1))
+```
+:::
+
+
+:::{.column width="60%"}
+```{r, echo=FALSE, out.width='120%', cache = FALSE}
+regresids <- broom::augment(lm(X ~ W, data = data))
+data$Xres <- regresids$.resid
+
+ggplot2::ggplot(data,
+                aes(x=Xres, y=Y, color = factor(C))) +
+  geom_point(alpha=0.2) +
+  geom_smooth(method="lm", color="red",
+              data = subset(data, C==1),
+              aes(y = Y,
+                  x = Xres)) +
+  labs(x = "Selectivity of graduate program index",
+       y = "Quality of first job index") +
+  scale_y_continuous(limits = c(-100,150)) +
+  #scale_x_continuous(limits = c(-100,150)) +
+  theme_bw()
+
+#regresids <- broom::augment(lm(X ~ W, data = subset(data, C==1)))
+# ggplot2::ggplot(data, 
+#                 aes(x=X, y=Y, color = factor(C))) +
+#   geom_point(alpha=0.2) +
+#   geom_smooth(method="lm", color="red", 
+#               data = regresids,
+#               aes(y = data[data$C==1, "Y"], x = .resid)) +
+#   labs(x = "Selectivity of graduate program index",
+#        y = "Quality of first job index") +
+#   scale_y_continuous(limits = c(-100,150)) +
+#   #scale_x_continuous(limits = c(-100,150)) +
+#   theme_bw()
+```
+:::
+
+:::
+
+---
+
+The last piece was an example of so-called "selection bias".
+
+:::{.r-stack}
+![](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png){.fragment width="600"}
+
+![](https://imgs.xkcd.com/comics/confounding_variables.png){.fragment width="900"}
+:::
+
+
+:::aside
+[selection bias](https://www.explainxkcd.com/wiki/images/9/9b/selection_bias.png)
+
+[confounding](https://imgs.xkcd.com/comics/confounding_variables.png)
+:::
+
+
+# Let's move into substance! {background-color="#00a191"}

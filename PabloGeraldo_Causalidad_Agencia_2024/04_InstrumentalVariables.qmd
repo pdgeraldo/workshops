@@ -1,0 +1,437 @@
+---
+title: "Instrumental variables"
+author: "Pablo Geraldo Bastías"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference -  Lecture 4"
+date: 12/13/2024
+date-format: long
+format: 
+  revealjs:
+    #theme: simple
+    width: 1600
+    height: 900
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+# Outline {background-color="#17a091"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+## Finding as-if random variation
+
+Instrumental variables are a popular strategy when unconfoundedness does not hold, but we have some source of variation in the treatment status that is as-good-as-random, even if only in a particular subpopulation
+
+We will discuss identification and estimation in the instrumental variable setting under two frameworks:
+
+. . . 
+
+* The canonical setting, where a constant treatment effect is assumed 
+
+. . . 
+
+* The modern approach, where heterogeneous treatment effect are allowed
+
+. . .
+
+Depending on the invoked assumptions, the quantity identified by the IV analysis is different
+
+We will discuss in certain detail the common issues faced by all IV analyses, and also some issues particular to each framework
+
+. . .
+
+:::{.callout-warning}
+As described by Felton and Stewart (2024), IV is a powerful strategy, but a very fragile one that should be handled with care!
+:::
+
+## Intuition for IV
+
+Originally, the IV analysis was developed to deal with endogenous systems in equilibrium: how to determine the effect of supply on demand (and vice versa!) if they always meet at a single point?
+
+**Solution**: Find "exogeneous shifters" for one of them! 
+
+. . .
+
+In the modern IV setting, the intuition is a little simpler: if we cannot randomise the treatment of interest, can we find an (as-if) random variable that *encourages* treatment taking?
+
+. . .
+
+Imagine if we want to test the hypothesis: [Does attending this workshop improves your productivity in the long-term?]()
+
+* Can we directly compare the ones who attended to the ones who didn't attend?
+
+* Can we randomise who *actually* attended the workshop?
+
+* Can we randomise *invitations* to the workshop, or reminders?
+
+* Can we construct a variable that predicts who attended, independent of potential productivity? (would schedule conflicts work?)
+
+## Intuition for IV
+
+If we could actually randomise the reminders, then we would have an experiment!
+
+But remember, we want the effect of *attending* the workshop, not the effect of *being invited* to it!
+
+$$
+ATE_{\text{workshop}} = E[P_a - P_{\bar{a}}]
+$$
+$$
+ATE_{\text{reminder}} = E[P_r - P_{\bar{r}}]
+$$
+The first one is the effect of interest, the second one is called the *intent to treat* (ITT) effect.
+
+:::{.callout-note}
+Under which conditions would they be equivalent?
+:::
+
+## From ITT to the treatment effect
+
+If our assumptions are true 
+
+* i.e., that receiving a reminder to attend the workshop only affects people's productivity through the workshop itself
+
+then the ITT estimate comes only from the population that changed their attendance because of the invitation!
+
+* So, the $ATE_{\text{reminder}}$ is an average of (a) the effect of the reminder sent on productivity among the switchers, and (b) the zero effect from non-switchers
+
+In other words, the ITT is a diluted version of the effect of interest. Can we work back to the quantity we want? Kind of
+
+## Complier types
+
+To re-scale the ITT, we need to estimate the probability of switching the attendance to the workshop due to the reminder --> Randomisation!
+
+But in order to use that information, we need some further clarifications. Let's divide the population in four latent subgroups:
+
+. . .
+
+* **Never-takers** : those we don't care about causal inference, or about workshops, so they won't come anyways. What's the effect of the reminder for them?
+
+. . . 
+
+* **Compliers**: the forgetful (like me), so they will attend if reminded but not otherwise. What's the effect of the reminder for them?
+
+. . . 
+
+* **Always-takers**: the highly organized and quantitative geeks, that would attend under any circumstances. What's the effect for this group?
+
+. . .
+
+*  **Defiers**: those who were planned to attend, but when reminded (and after re-reading the workshop description), they would rather not! *We assume that this group does not exist*
+
+# General setting {background-color="#17a091"}
+
+## Graphical representation
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img\id_iv)
+:::
+
+:::{.column width=60%}
+
+Let's analysis together this setting
+
+* What assumptions are implied?
+
+* Can we think in applied examples in the literature?
+
+:::
+
+:::
+
+## Non-parametric asssumptions {background-color="#002F87"}
+
+In graphical terms, the non-parametric IV conditions are:
+
+* The instrument $Z$ and the treatment $D$ are $d-$connected in the observational DAG $G$:
+
+$$
+(Z \nindep D)_G
+$$
+
+* The instrument $Z$ and the outcome $Y$ are $d-$separated in the interventional DAG where we $do(z)$, $G_{\bar{X}}$
+
+$$
+(Z \indep Y)_{G_{\bar{X}}}
+$$
+
+## IV bounds
+
+Under no additional restrictions, i.e., from the non-parametric assumptions encoded in the DAG alone, the treatment effect **cannot** be identified.
+
+However, we can: 1) test the null hypothesis of no treatment effect, 2) obtain bounds for the treatment effect
+
+
+# Classical IV {background-color="#17a091"}
+
+## Some IV terminology
+
+![](img/Felton_iv_terminology.png)
+
+:::aside
+By Felton and Stewart (2024)
+:::
+
+## Identification under effect homogeneity
+
+Traditionally, the IV assumptions are described in terms of two linear model and their error terms:
+
+[First stage](): $D = \tau + \rho Z + \eta$
+
+[Second stage](): $Y = \gamma + \alpha D + \epsilon$
+
+:::{.callout-tip}
+## IV identification assumptions
+
+* **Exogeneity and exclusion**: $C(Z,\eta)=0$, and $C(Z,\epsilon) =0$
+
+* **Relevance of first stage**: $\rho \neq 0$
+
+* **Constant effect**: $\alpha = Y_{1i} - Y_{0i} ~ \forall i$
+
+:::
+
+. . .
+
+Given how strong these assumptions are, one may wonder how common is for this framework to be invoked in applied research
+
+## IV in political science
+
+A recent review by [Lal et al (2024)](https://www.cambridge.org/core/journals/political-analysis/article/how-much-should-we-trust-instrumental-variable-estimates-in-political-science-practical-advice-based-on-67-replicated-studies/70A232CA0CD55FE8B97E93543CDD6361) found that more than 70% of published IV papers in PoliSci use continuous instruments and treatments (ill-suited for modern approach)
+
+![](img/Lal_papers.png)
+
+
+## Types of instruments
+
+![](img/Lal_iv_types.png)
+
+
+## Issues: Weak first-stage
+
+![](img/Lal_iv_F.png)
+
+## Issues: Unreliable inference
+
+![](img/Lal_iv_inference.png)
+
+
+## Issues: Comparison to OLS
+
+![](img/Lal_iv_obsexp.png){width=40%}
+
+
+# Modern IV {background-color="#17a091"}
+
+
+## Effect heterogeneity and LATE
+
+
+Assuming effect heterogeneity, the estimand of interest is not the "total effect" anymore, but a new quantity:
+
+. . . 
+
+The Local Average Treatment Effect (LATE). Formally:
+
+$$
+E[\underbrace{Y_{d=1,i} - Y_{d=0,i}}_{\text{treatment effect}} \vert \underbrace{D_{z=1,i} \gt D_{z=0,i}}_{\text{among compliers}}]
+$$
+
+. . . 
+
+In words, we aim to identify the effect of the treatment $D$ on the outcome $Y$, *only among* those that are induced to receive the treatment $D=1$ by the instrument $Z$
+
+Note that this population of *compliers* can be substantially different than the total population!
+
+. . . 
+
+The IV-LATE assumptions we are going to discuss now are embedded in this quantity formalization
+
+I will closely follow the discussion by [Felton and Stewart (2024)](https://osf.io/preprints/socarxiv/3ua7q)
+
+## Assumptions: Relevance
+
+$$
+E[D_{z=1,i} - D_{z=0,i}] \neq 0
+$$
+
+. . . 
+
+**Relevance** is the assumption that the instruments does indeed makes a difference!
+
+It is an assumption about the $Z \rightarrow D$
+
+. . .
+
+Is this a testable assumption?
+
+Is it necessary for the association between $Z$ and $D$ to be causal?
+
+## Assumptions: Unconfounded instrument
+
+$$
+Y_{(d,z),i} \indep Z_i \forall d,z
+$$
+
+. . . 
+
+It reads: The joint potential outcomes (depending on the treatment $D$ and the instrument $Z$) are independent of the instrument $Z$
+
+Can you think of a graphical criteria for this?
+
+. . .
+
+$$
+D_{z,i} \indep Z_i \forall z
+$$
+
+It reads: The potential *treatment* is independent of the instrument
+
+## Assumptions:  Exclusion restriction
+
+$$
+Y_{(d,z),i} = Y_{(d,z'),i} = Y_{d,i} \forall z, z', d, i
+$$
+
+
+. . . 
+
+:::callout-note
+"Exclusion restriction" means that we can **exclude** the instrument $z$ from the outcome equation, once the treatment is accounted for
+:::
+
+. . . 
+
+It can also be described as a "full mediation" assumption: the whole effect of the instrument on the outcome goes through the treatment! 
+
+. . .
+
+Can this be tested?
+
+## Assumptions: Monotonicity
+
+$$
+D_{z=1,i} \geq D_{z=0,i} \forall i
+$$
+
+. . .
+
+This assumption is tricky! And it sounds more harmless than it is.
+
+It implies that the instrument affects *everyone* in the same direction: an instrument cannot induce some people to receive the treatment, and discourage some other people to receive the treatment
+
+## Assumptions: SUTVA and Positivity
+
+Usually not discussed much in the context of IV, but remember that we are generally assuming **SUTVA** (consistency + non interference + no relevant versions of the treatment)
+
+**Positivity** is required whenever we need to condition for certain covariates $X$, like in the case of *conditional* IV analyses.
+
+## Estimation
+
+There are several frameworks to conduct estimation in the IV settings. We are going to briefly review two common ones:
+
+. . .
+
+
+* The 2SLS (Two-stages-least-squares)
+
+* The Wald estimator (or ratio estimator)
+
+. . . 
+
+After showing how they work in practice, we are going to focus on best practices and potential issues to consider
+
+## Estimation
+
+We can estimate the ATE among complier (i.e., LATE):
+
+$$
+LATE = \frac{\text{Reduced Form}}{\text{Compliance Ratio}} = \frac{\text{ITT}}{\text{P(Complier)}}
+$$
+$$
+= \frac{Z \rightarrow Y}{Z \rightarrow D} = \frac{E[Y|Z=1] - E[Y|Z=0]}{E[D|Z=1] - E[D|Z=0]}
+$$
+$$
+= \frac{C(Z,Y)}{V(Z)}/\frac{C(Z,D)}{V(Z)}
+$$
+
+$$
+\frac{(Z'Z)^{-1}(Z'Y)}{(Z'Z)^{-1}(Z'D)} = (Z'D)^{-1}(Z'Y)
+$$
+
+## Issues
+
+Despite being a more flexible approach, allowing for effect heterogeneity, and more clearly articulated in terms of the experimental analogy, IVs in practice are still very fragile 
+
+Altough with some differences, the problems identified by Lal et al., carry over the modern IV setting
+
+Felton and Stewart identify three of these issues, all of them exacerbated by the presence of *weak instruments*
+
+Here I will only focus on the first two problems they discuss: identification bias, and estimation bias
+
+The authors also discuss Type-M bias; as a complicated issue, I will not further expand on it
+
+## Issues
+
+![](img/Felton_iv_problems.png)
+
+## An illustration
+
+![](img/Felton_iv_amplification.png)
+
+## Identification bias
+
+Identification bias refers to the case when the required assumptions for an IV to be valid do not (perfectly hold)
+
+* Unconfoundedness violation: there is an unobserved confounder between the instrument and the outcome
+
+* Exclusion violation: there is an unaccounted mechanism through which the instrument affect the outcome
+
+. . . 
+
+:::{.callout-tip}
+## Recommendation? Bias analysis
+
+Sensitivity analysis, or quantitative bias analysis, refers to the exercise of measuring the impact of unobserved confounder of an assumed magnitude on the effect of interest
+
+For IVs, the sensitivity of the reduced form is usually the target of analysis
+:::
+
+## Estimation bias
+
+Estimation bias arises in the IV setting because the 2SLS estimator is biased towards the OLS estimator
+
+This bias is always present, but becomes negligible for strong instruments and large sample sizes
+
+. . . 
+
+
+* The weaker the first stage, and therefore the most similar the predicted values of $D$ to the observed input, the closest the final estimates will be
+
+. . . 
+
+:::{.callout-tip}
+## Recommendation? Properly report F-statistic
+
+Both Lal's and Felton's reviews find that, despite the test being widely referenced as a necessary check, few studies report the F-statistic of the first stage. From the ones that do so, many do it improperly, withouht accounting for non classical errors
+
+This exacerbates the estimation issues of IV 
+:::
+
+
+# Now to practice! {background-color="#17a091"}
+
+

@@ -1,0 +1,938 @@
+---
+title: "Structural Causal Model"
+author: "Pablo Geraldo Bastías"
+logo: "https://fundit.fr/sites/default/files/styles/max_650x650/public/institutions/capture-decran-2023-07-07-162216.png?itok=1CkwlJEu"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide-logo {
+        max-height: unset;
+        height: 100px;
+      }
+      </style>
+footer: "Demystifying Causal Inference - SCM"
+date: 11/29/2024
+date-format: long
+format: 
+  revealjs:
+    theme: simple
+    width: 1600
+    height: 900
+    transition: slide
+    slide-number: c/t
+    chalkboard: true
+    auto-stretch: false
+callout-appearance: minimal
+---
+
+# Outline {background-color="#17a091"}
+
+\newcommand\indep{\perp\!\!\!\perp}
+\newcommand\nindep{\not\!\perp\!\!\!\perp}
+
+
+## Recap from previous session
+
+* We studied the difference between **seeing** (the focus of Stats/ML) and **doing** (the focus of causal inference)
+
+* We studied the importance of using the formal language  of potential outcomes to:
+  
+  + clarify *what do we want to know* (**estimand**)
+  
+  + identify *reasons for discrepancies* between what we observe and our target (**bias**) 
+  
+  + formalize *what needs to be true*  for our estimand to be identified with a given *estimator* (**assumptions**)
+  
+  
+* We studied the role of **randomisation** to identify causal effects **by design**.
+
+. . .
+
+But what do we do when we have *less than perfect* experiments?
+
+. . .
+
+And how to assess our assumptions with *observational data*?
+
+
+## Lecture 2: From causal assumptions to causal models
+
+When introducing potential outcomes, we emphasized that it is not the method what makes our results causal, but our **assumptions**
+
+. . .
+
+However, what makes our assumptions credible?
+
+. . .
+
+To answer that question, we need to be explicit about our **model**, i.e., how do we believe the world works
+
+. . . 
+
++ In this lecture we will introduce a framework that makes formulating such models easy and intuitive
+
++ We will develop the machinery needed to be explicit about our model and derive its testable implications
+
++ Potential outcomes appear now, not as *primitives*, but as quantities *derived* from a more fundamental entity: the model
+
+. . . 
+
+Researchers often leave the model implicit and unspecified. I will argue that making it explicit can greatly improve transparency in scientific communication
+
+# Graphical models {background-color="#17a091"}
+
+## Why graphical models?
+
+Formally, potential outcomes are sufficient to specify our estimand, sources of bias, and assumptions needed for causal identification.
+
+. . .
+
+However, assessing the plausibility of identification assumptions rely on researchers being able to reason about (conditional) independence between possibly *counterfactual* variables. 
+
+. . .
+
+Any ideas on how to assess the assumption about the *conditional* independence of the **potential outcomes** with respect to the treatment, without randomization?
+
+. . .
+
+We can certainly *understand* the statement saying that the treatment is assigned **as-if random** adjusting for covariates. But what about its plausibility?
+
+---
+
+## Why graphical models?
+### Assessing ignorability
+
+
+When we say the treatment assignment is **strongly ignorable** we are stating that $P(Y_d|D=d) = P(Y_d)$, but we never get to observe the full distribution of potential outcomes!
+
+
+* What type of criteria should we use when discussing others' causal claims? 
+
+* What kind of criteria should we use in our own research to judge if we are getting what we are looking for?
+
+Here is where DAGs shine, offering a graphical criteria that is equivalent to the unconfoundedness statement, the *backdoor criterion*.
+
+
+## Structural Causal Model (SCM)
+
+Unifying approach to causal inference, developed by Pearl, Robins, among others, following early developments by Wright:
+
+* (Non-parametric) Structural Equation Models
+  
+* Generalization of the path analysis and SEM you might be familiar with
+
+* Graphical representation using Directed Acyclic Graphs (DAGs)
+
+* Potential Outcomes are **derived** from a SCM
+
+* Transparent representation of **qualitative assumptions**
+
+* Testable implications of our model of the data generating process
+---
+
+
+## Directed Acyclic Graphs (DAGs)
+
+Probabilistic graphical models are mathematical objects that represent relations among variables (probability factorization) 
+
+They are compounded by two ingredients: **nodes** (vertices) and **edges** (links)
+
+Directed Acyclic Graphs (DAGs) are one class of graphical models, with the following characteristics:
+
+. . .
+
+* **Directed**: The edges point *from* one variable *to* another variable
+
+* **Acyclic**: The paths in the graph flow in certain direction, if you follow the edges you cannot arrive back to the starting point
+
+* **Graph**: well, you get it!
+
+. . .
+
+:::{.callout-warning}
+## Important! Under certain conditions, a DAG can be causally interpreted, in which case we talk about "causal DAGs" or causal diagrams
+
+Basically, this happen when we assume that no pair of nodes share a common ancestor that is not included in the DAG
+:::
+
+
+---
+
+## Paths
+
+We can go from one variable to another following a *path* along the edges 
+
+When you can traverse a path without colliding into an edge in the opposite direction we call it a **connecting path** that transmit information
+
+When you encounter an edge pointing into the opposite direction along a path we call it a **blocking path** that do not transmit information
+
+
+:::{.callout-warning}
+## Faithfulness
+$d-$connection in the graph implies association between variables in the data, while $d-$separation implies their independence
+:::
+
+
+## Building blocks
+
+* A **chain**, in which you can travel from $X$ to $Y$ through $M$, is a $d-$connected path: $$X \rightarrow M \rightarrow Y$$
+
+* A **fork**, in which you can go from a common cause $W$ to both $X$ and $Y$ is a $d-$connected path: $$X \leftarrow W \rightarrow Y$$
+
+* A **collider**, in which you can't go from $X$ to $Y$ due to two edges pointing into a third variable $C$, is a $d-$separated path: $$X \rightarrow C \leftarrow Y$$
+
+
+## Adjustment
+
+By adjusting for a variable (represented by a box in the graph), we can turn connecting into blocking paths and vice versa:
+
+* When you adjust for the intermediate variable $M$ in a chain, $X$ and $Y$ become conditionally independent: $$X \rightarrow \boxed{M} \rightarrow Y$$
+
+* When you adjust for the common cause $W$ in a fork, $X$ and $Y$ become conditionally independent: $$X \leftarrow \boxed{W} \rightarrow Y$$
+
+* When you adjust for a collider variable $C$, the pair $X$ and $Y$ become conditionally associated: $$X \cdots \boxed{C} \cdots Y$$
+
+
+## Confounding paths
+
+
+:::{.columns}
+
+:::{.column width=50%}
+
+
+| Structural Equations |
+|-----|
+| $W = f_w(U_w)$ |
+| $X = f_x(W, U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+:::
+
+:::{.column width=50%}
+
+
+![](img\confounder1.png)
+
+The DAG includes the following paths
+
+$$X \rightarrow Y$$
+
+$$X \leftarrow W \rightarrow Y$$
+:::
+
+:::
+
+## Confounding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $W = f_w(U_w)$ |
+| $X = f_x(W, U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+:::
+
+
+:::{.column width=50%}
+
+![](img\confounder3.png)
+
+The following path is open
+
+$$X \rightarrow Y$$
+
+But this is now closed
+
+$$X \leftarrow \boxed{W} \rightarrow Y$$
+:::
+
+:::
+
+
+## Confounding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $W = f_w(U_w)$ |
+| $X = f_x(W, U_x)$ |
+| $Y = f_y(W, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+
+:::{.column width=50%}
+
+![](img\confounder2.png)
+
+The DAG includes the following path
+
+$$X \leftarrow W \rightarrow Y$$
+:::
+
+:::
+---
+
+
+## Mediating paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $M = f_m(X, U_m)$ |
+| $Y = f_y(M, X, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\mediation1.png)
+
+The DAG includes the following paths
+
+$$X \rightarrow Y$$
+
+$$X \rightarrow M \rightarrow Y$$
+:::
+:::
+---
+
+
+## Mediating paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $M = f_m(X, U_m)$ |
+| $Y = f_y(M, X, U_y)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\mediation2.png)
+
+The DAG includes the following path
+
+$$X \rightarrow Y$$
+
+But this path is now closed
+
+$$X \rightarrow \boxed{M} \rightarrow Y$$
+:::
+
+:::
+
+
+## Colliding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+| $C = f_c(X, Y, U_c)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\collider1.png)
+
+The DAG includes the following paths
+
+$$X \rightarrow Y$$
+
+$$X \rightarrow C \leftarrow Y$$
+:::
+
+:::
+---
+
+## Colliding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $Y = f_y(W, U_y)$ |
+| $C = f_c(X, Y, U_c)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\collider2.png)
+
+The DAG includes the following path
+
+$$X \rightarrow C \leftarrow Y$$
+:::
+
+:::
+---
+
+## Colliding paths
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Equations |
+|-----|
+| $X = f_x(U_x)$ |
+| $Y = f_y(W, X, U_y)$ |
+| $C = f_c(X, Y, U_c)$ |
+
+<br>
+
+Are $X$ and $Y$ marginally independent?
+
+Are they conditionally independent?
+
+Is there a causal effect of $X$ on $Y$?
+:::
+
+:::{.column width=50%}
+
+![](img\collider3.png)
+
+The DAG includes the following (open) path
+
+$$X \rightarrow \boxed{C} \leftarrow Y$$
+:::
+
+:::
+
+
+## Side note: are colliders that important? {background-color="#dce0ca"}
+
+<br> 
+
+One common question (and an area of debate among practitioners) is if colliders are really that important *in applied settings*. This is a hard question to answer, because, you know... we just don't know. 
+
+But we know that they are **possible** and that their importance would depend on the structure of our causal graph.
+
+A few compelling examples of collider bias in recent social sciences are discussed by:
+
+* [Shalizi and Thomas (2011)](https://journals.sagepub.com/doi/abs/10.1177/0049124111404820) in the context of network homophily and contagion
+
+* [Breen (2018)](https://academic.oup.com/esr/article/34/6/603/5094485) in the context of intergenerational mobility
+
+* [Knox, Lowe and Mummolo (2020)](https://scholar.princeton.edu/jmummolo/publications/bias-built-how-administrative-records-mask-racially-biased-policing) in the context of police shootings
+
+A great general introduction to the topic is offered by [Elwert and Winship (2014)](https://www.annualreviews.org/doi/abs/10.1146/annurev-soc-071913-043455)
+
+---
+
+
+## Do-operator and interventions
+
+
+Pearl introduced the $do-$operator to clearly distinguish between passive observations and interventions on the data generating process
+
+In other words, is a form to make explicit the gap between interventional quantities and out more familiar conditional expectations
+
+Causal identification corresponds to removing the $do-$operator from an expression, following the rules of $do-$calculus, reducing it to an observational quantity. If there is no equivalence, it means that the quantity of interest is not identified
+
+Given the correspondence between a system of non-parametric structural equations and a given DAG, we can express the operation of **doing** as a *minimal surgery on the structural equation defining the treatment*
+
+---
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$ |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+Let's start with the observational data generating process above
+
+:::
+
+:::{.column width=50%}
+![](img\intervention1.png){width=65%}
+:::
+
+:::
+
+---
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = x$ |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+Intervening in the model to make $X=x$ creates an interventional graph $G_{\bar{X}}$, in which all the incoming arrows into $X$ have been removed
+
+:::
+
+:::{.column width=50%}
+![](img\intervention2.png){width=65%}
+:::
+
+:::
+
+---
+
+
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$ |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+
+:::
+
+:::{.column width=50%}
+![](img\intervention3.png){width=65%}
+
+Adjusting for $W$ blocks a non-causal path, but opens a new one. 
+
+$P(Y|do(x))$ is not identified conditioning on $W$ alone
+
+:::
+
+:::
+
+---
+
+
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$  |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+:::
+
+:::{.column width=50%}
+![](img\intervention4.png){width=65%}
+
+Adjusting for $(Z_1,W)$ blocks all non-causal paths
+
+$P(Y|do(x))$ is identified conditioning on $(Z_1,W)$
+:::
+
+:::
+
+---
+
+
+
+## Interventional graphs
+
+:::{.columns}
+
+:::{.column width=50%}
+
+| Structural Causal Model |
+|---|
+| $Z_1 = f_{z1}(U_{z1})$ |
+| $Z_2 = f_{z2}(U_{z2})$ |
+| $W = f_{w}(Z_1, Z_2, U_{w})$ |
+| $X = f_{z1}(Z_1, W, U_{x})$  |
+| $Y = f_{y}(Z_2, W, U_{y})$ |
+
+The purpose of an observational study is to allow only **causal paths** between the treatment $X$ and the outcome $Y$, and block all the **non causal paths**
+:::
+
+:::{.column width=50%}
+
+![](img\intervention5.png){width=65%}
+
+Adjusting for $(Z_2,W)$ also blocks all non-causal paths
+
+$P(Y|do(x))$ is identified conditioning on $(Z_2,W)$
+:::
+
+:::
+
+---
+
+## Back-door Criterion (Pearl) {background-color="#002f87"}
+
+<br>
+
+What we just did can be summarized by the back-door criterion
+
+A set of variables $W$ satisfied the back-door criterion relative to an ordered pair of variables $(X,Y)$ in a DAG $G$ if:
+
+  (i) no node in $W$ is a descendant of $X$; and
+  (ii) $W$ blocks every path between $X$ and $Y$ that contains an arrow into $X$
+
+$\color{red}{\text{Important:}}$ satifying the backdoor criterion implies the unconfoundedness assumption
+$$Y_x \indep X|W$$
+
+The **back-door adjustment** (aka **g-formula**) indicates that we can recover the effect of $X$ on $Y$ adjusting for any $W$ that satisfy the backdoor criterion
+
+$$P(Y|do(x)) = \sum_w P(Y|X,W)P(W)$$
+
+:::aside
+Pearl, *Causality*, pp.79-81
+:::
+---
+
+
+## SCM: Key insights
+
+
+* Causal identification is contingent on a given model encoding our assumptions
+
+* Causal identification is finding an observational quantity that is equivalent to an interventional quantity
+
+* Confounding (and bias) is a property of paths in a graph, not variables
+
+* Confounding is relative to the pair $(X,Y)$, not just $X$
+
+* It is not necessary to adjust for all *parents* of the treatment to block all backdoor paths
+
+* Bias is not monotonically decreasing on the number of variables included
+
+* $do-$calculus can be used to identify the effect of multiple interventions, to recover from missingness data, and to generalize study results.
+
+
+## SCM: limitations
+
+. . . 
+
+Conditional on your model, most identification tasks are rather trivial (algorithmic). But before that you need to assume a certain DAG!
+
+. . .
+
+:::{.callout-warning}
+## "Causality is in the model"
+James Heckman (2005)
+:::
+
+. . . 
+
+However, this is something that we always do! The only matter is how transparent are we about the assumptions we are making anyway
+
+. . .
+
+Another problem, more important for issues like mediation analysis and counterfactuals in general, is that we are sometimes making more assumptions that we are willing to
+
+. . . 
+
+For these cases, other causal (and graphical) models, like the [Single World Intervention Graphs](https://www.csss.washington.edu/Papers/wp128.pdf) (Richardson and Robins, 2013) can help
+
+. . . 
+
+Being fully non-parametric, certain canonical models are not identified using DAGs (like IVs). 
+
+. . . 
+
+However, this only shows that they require parametric assumptions, no matter how weak!
+
+
+# Identification strategies {background-color="#00a191"}
+
+## Identification strategies: a short tour
+
+Identification strategies are well-known set of assumptions that are sufficient for the causal interpretation of certain estimators:
+
+:::{.callout-tip}
+## Imbens (2019)
+*Partly as a result of the focus on empirical examples the econometrics literature has developed a small number of canonical settings where researchers view the specific causal models and associated statistical methods as well-established and understood. These causal models correspond to what is nowadays often referred to as* identification strategies
+:::
+
+
+---
+
+## Identification strategies: a short tour
+
+:::{.panel-tabset}
+
+## RCTs
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_random.png)
+:::
+
+:::{.column width=60%}
+
+**Estimand** : $E[Y_{1i}-Y_{0i}]$ 
+
+**Implied independences**:  $Y_d \indep D$ 
+
+**Parametric assumptions**:  No 
+
+**Estimator**:  $\hat{E}[Y|D=1] - \hat{E}[Y|D=0]$
+:::
+
+:::
+
+**Randomisation** ensures that the potential outcomes are independent from the treatment in experiments. This justifies a causal interpretation of a diff-in-means estimator
+
+## RDD_lr
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_rdd_LR.png)
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|Z=c]$
+
+**Implied independences**: $Y_d \indep D \vert \{Z = c \pm \epsilon\}$
+
+**Parametric assumptions**: No
+
+**Estimator**:  $\hat{E}[Y|c \leq Z \leq c+\epsilon] -  \hat{E}[Y |c > Z \geq c-\epsilon]$ 
+:::
+
+:::
+
+## RDD_cpo
+
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_rdd_Cont.png)
+
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|Z=c]$ 
+
+**Implied independences**: No
+
+**Parametric assumptions**: $E[Y_d|Z=c] = \lim_{z\rightarrow c}E[Y_d|Z=z]$
+
+**Estimator**:  $\hat{E}[Y|c \leq Z \leq c+\epsilon, Z] - \hat{E}[Y |c > Z \geq c-\epsilon, Z]$
+
+
+:::
+
+:::
+
+## IV 
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/id_iv.png)
+
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|D_{z=1}=1,D_{z=0}=0]$
+
+**Implied independences**: $Y_{z,d} = Y_d$,  $\{Y_{z,d}, D_z\} \indep Z$
+
+**Parametric assumptions**: $P[D_{z,i}=1] \geq P[D_{z',i}=1] \forall i, z>z'$
+
+**Estimator**:  $\hat{E}[Y|Z=1]-\hat{E}[Y|Z=0]/\hat{E}[D|Z=1]-\hat{E}[D|Z=0]$
+
+
+:::
+
+:::
+
+
+## SOO
+
+
+:::{.columns}
+
+:::{.column width=40%}
+![](img/confounder1.png)
+
+:::
+
+:::{.column width=60%}
+
+**Estimand**: $E[Y_{1i}-Y_{0i}|D=1]$
+
+**Implied independences**: $Y_d \indep D | X$, $Y_d \indep D | e(X)$
+
+**Parametric assumptions**: No
+
+**Estimator**: $\hat{E}_x(\hat{E}[Y|D=1,X=x]-\hat{E}[Y|D=0,X=x])$
+
+:::
+
+:::
+
+:::
+
+
+## Is there a ladder of identification strategies?
+
+In general, it is assumed that the stronger the assumptions, the less credible an identification strategy would be
+
+We would prefere experiments (the so-called *gold standard*) and, in the lack of experiments, we would prefer strategies in which our assumptions hold **by design**
+
+Designs in which there is an **exogenous** source of variation in the treatment status (like IV, RDD, quasi-experiments in general) are considered more plausible
+
+However, is there a natural hierarchy of identification strategies that can tell us, *a priori*, which assumptions are more credible in empirical applications?
+
+Do empirical applications corresponds to the labels that we use to describe a given research design? Any thoughts?
+
+
+---
+
+## Debates in applied research
+
+. . . 
+
+:::{.callout-tip}
+## B. G. Cochran (cited in Rosenbaum, 1995)
+*About 20 years ago, when asked in a meeting what can be done in observational studies to clarify the step from association to causation, Sir Ronald Fisher replied: 'Make your theories elaborate.' The reply puzzled me at first, since by Occam's razor, the advice usually given is to make theories as simple as is consistent with known data. What Sir Ronald meant, as subsequent discussion showed, was that when constructing a causal hypothesis one should envisage as many different consequences of its truth as possible, and plan observational studies to discover whether each of these is found to hold.*
+:::
+
+. . .
+
+:::{.callout-tip}
+## Jason Abaluck (cited in Imbens, 2019)
+*No one should ever write down a 100 variable DAG and do inference based on that. That would be an insane approach because the analysis would be totally impenetrable. Develop a research design where that 100 variable DAG trivially reduces to a familiar problem (e.g. IV!)*
+:::
+
+---
+
+## Where to go now?
+
+* Structural Causal Model
+  * The Book of Why (Pearl and MacKenzie)
+  * Causal Inference in Statistics. A Primer (Pearl, Glymour and Jewell)
+  * Causality (Pearl)
+  
+* Potential Outcomes
+  * Mostly Harmless Econometrics (Angrist and Pischke)
+  * Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction (Imbens and Rubin)
+  
+* General and integrative introductions
+  * Counterfactuals and Causal Inference (Morgan and Winship)
+  * Causal Inference (Hernan and Robins)
+  * Causal Inference: The Mixtape (Cunnigham)
+
+
+## Activity {background-color="#692044"}
+
+Open [www.dagitty.net](http://www.dagitty.net) and launch it. There, you can create a DAG, obtain a list of testable implications, and check if an effect is identified under the DAG.
+
+* Skim the following paper by [Sharkey et al.](https://www.rootcausecoalition.org/wp-content/uploads/2018/08/Community-and-the-Crime-Decline-The-Causal-Effect-of-Local-Nonprofits-on-Violent-Crime.pdf) (see Analytical Approach) and try to reconstruct the underlying DAG for the long-term model:
+
+  * Share your result
+  * Is the effect identified?
+  * Can you think in possible violations of their assumptions?
+  
+* Skim the following paper by [Doyle et al.](https://www.rootcausecoalition.org/wp-content/uploads/2018/08/Community-and-the-Crime-Decline-The-Causal-Effect-of-Local-Nonprofits-on-Violent-Crime.pdf) (see Section III. Empirical Strategy) and try to reconstruct the underlying DAG: 
+
+  * Share your result
+  * Is the effect identified?
+  * Can you think in possible violations of their assumptions?

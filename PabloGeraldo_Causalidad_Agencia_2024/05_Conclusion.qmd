@@ -1,0 +1,14 @@
+---
+title: "Demystifying Causal Inference"
+author: "Pablo Geraldo Bastías"
+date: "28/05/2024"
+format: 
+  revealjs:
+    #theme: simple
+    width: 1600
+    height: 900
+    transition: slide
+    slide-number: true
+    chalkboard: true
+---
+
